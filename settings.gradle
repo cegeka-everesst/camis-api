@@ -1,0 +1,5 @@
+rootProject.name = 'CamisAPI'
+include 'WorkOrderAccess'
+include 'SyncTimesheetApplication'
+include 'Timesheet'
+

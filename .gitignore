@@ -1,7 +1,4 @@
 /.gradle/
 /.idea/
-/SyncTimesheetApplication/build
-/Timesheet/build/
-/WorkOrderAccess/build/
-/sync_timesheet_application/build/
-/workorder_access/build/
+
+/*/build/

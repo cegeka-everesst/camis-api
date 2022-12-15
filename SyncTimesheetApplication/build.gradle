@@ -2,16 +2,18 @@ plugins {
     id 'java'
 }
 
-group 'com.cegeka.horizon.camis.api.synctimesheet.app'
-version '1.0-SNAPSHOT'
+group 'com.cegeka.horizon.camis.synctimesheet.app'
+version '$version'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    implementation project(':Timesheet')
+    implementation project(':WorkOrderAccess')
+
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 }
 
 test {

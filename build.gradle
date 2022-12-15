@@ -1,19 +1,59 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
 plugins {
-    id 'java'
+    id 'org.springframework.boot' version '3.0.0'
 }
 
-group 'com.cegeka.horizon.camis'
-version '1.0-SNAPSHOT'
-
-repositories {
-    mavenCentral()
-}
+apply plugin: 'java'
+apply plugin: 'io.spring.dependency-management'
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
+    repositories {
+        mavenCentral()
+    }
+
+    implementation platform(SpringBootPlugin.BOM_COORDINATES)
+
+    implementation('org.springframework.boot:spring-boot-starter-webflux:3.0.0')
 }
 
-test {
-    useJUnitPlatform()
+
+allprojects {
+    group 'com.cegeka.horizon.camis'
+    version "$version"
+
+    apply plugin: 'io.spring.dependency-management'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencyManagement {
+
+    }
+}
+
+
+subprojects {
+    apply plugin: 'java'
+
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+    }
+    dependencyManagement {
+        imports {
+            mavenBom(SpringBootPlugin.BOM_COORDINATES)
+        }
+        dependencies {
+            dependency 'org.assertj:assertj-core:3.23.1'
+        }
+    }
 }

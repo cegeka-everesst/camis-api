@@ -28,12 +28,15 @@ public class SyncTimesheetApp {
 
     @Bean
     public CommandLineRunner isAccessible(ApplicationContext ctx) {
-        return args -> System.out.println(
-                workorderAccessService.isAccessAllowed(new ResourceId("I098816"),
-                                                        new Workorder("LMAC000.003"),
-                                                        LocalDate.of(2022, 12, 11))
-        );
+        return args -> {
+            System.out.println(
+                    workorderAccessService.isAccessAllowed(new ResourceId("I098816"),
+                            new Workorder("LMAC000.003"),
+                            LocalDate.of(2022, 12, 11))
 
-
+            );
+            System.out.println(timesheetService.getTimesheetEntries(new ResourceId("I098816"), LocalDate.of(2022, 12, 1), LocalDate.of(2022, 12, 12)));
+        };
     }
+
 }

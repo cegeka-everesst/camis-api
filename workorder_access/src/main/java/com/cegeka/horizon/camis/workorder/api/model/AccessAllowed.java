@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AccessAllowed {
     @JsonProperty("accessAllowed")
-    boolean AccessAllowed;
+    boolean accessAllowed;
 
     public boolean isAccessAllowed() {
-        return AccessAllowed;
+        return accessAllowed;
     }
 }

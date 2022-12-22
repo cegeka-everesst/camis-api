@@ -10,4 +10,9 @@ public class ResourceId {
     public String value() {
         return this.value;
     }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }

@@ -1,7 +1,7 @@
 package com.cegeka.horizon.camis.synctimesheet;
 
 import com.cegeka.horizon.camis.domain.ResourceId;
-import com.cegeka.horizon.camis.domain.Workorder;
+import com.cegeka.horizon.camis.domain.WorkOrder;
 import com.cegeka.horizon.camis.timesheet.TimesheetService;
 import com.cegeka.horizon.camis.workorder.WorkorderAccessService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class SyncTimesheetApp {
         return args -> {
             System.out.println(
                     workorderAccessService.isAccessAllowed(new ResourceId("I098816"),
-                            new Workorder("LMAC000.003"),
+                            new WorkOrder("LMAC000.003"),
                             LocalDate.of(2022, 12, 11))
 
             );

@@ -1,7 +1,7 @@
-package com.cegeka.horizon.camis.synctimesheet.service;
+package com.cegeka.horizon.camis.timesheet.api;
 
-import com.cegeka.horizon.camis.api.timesheet.Timesheet;
-import com.cegeka.horizon.camis.synctimesheet.domain.ResourceId;
+import com.cegeka.horizon.camis.domain.ResourceId;
+import com.cegeka.horizon.camis.timesheet.api.model.Timesheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,15 +11,16 @@ import java.time.LocalDate;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 @Service
-public class TimesheetService {
+public class TimesheetServiceImpl implements com.cegeka.horizon.camis.timesheet.TimesheetService {
 
     private final WebClient webClient;
 
     @Autowired
-    public TimesheetService(WebClient webClient) {
+    public TimesheetServiceImpl(WebClient webClient) {
         this.webClient = webClient;
     }
 
+    @Override
     public String getTimesheetEntries(ResourceId resourceId, LocalDate dateFrom, LocalDate dateTo) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("timesheet")

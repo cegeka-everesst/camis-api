@@ -1,9 +1,9 @@
-package com.cegeka.horizon.camis.synctimesheet.domain;
+package com.cegeka.horizon.camis.domain;
 
-public class Workorder {
+public class ResourceId {
     private String value;
 
-    public Workorder(String value){
+    public ResourceId(String value) {
         this.value = value;
     }
 

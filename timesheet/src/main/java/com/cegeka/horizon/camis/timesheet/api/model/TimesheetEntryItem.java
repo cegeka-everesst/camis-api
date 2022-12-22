@@ -1,4 +1,4 @@
-package com.cegeka.horizon.camis.api.timesheet;
+package com.cegeka.horizon.camis.timesheet.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -1,9 +1,9 @@
 package com.cegeka.horizon.camis.synctimesheet;
 
-import com.cegeka.horizon.camis.synctimesheet.domain.ResourceId;
-import com.cegeka.horizon.camis.synctimesheet.domain.Workorder;
-import com.cegeka.horizon.camis.synctimesheet.service.TimesheetService;
-import com.cegeka.horizon.camis.synctimesheet.service.WorkorderAccessService;
+import com.cegeka.horizon.camis.domain.ResourceId;
+import com.cegeka.horizon.camis.domain.Workorder;
+import com.cegeka.horizon.camis.timesheet.TimesheetService;
+import com.cegeka.horizon.camis.workorder.WorkorderAccessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDate;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.cegeka.horizon.camis.*")
 public class SyncTimesheetApp {
 
     @Autowired

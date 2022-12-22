@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+}
+
+group 'com.cegeka.horizon.camis.domain'
+version "$version"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+}
+
+test {
+    useJUnitPlatform()
+}

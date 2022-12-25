@@ -53,6 +53,10 @@ public class TimesheetLine {
         return hoursByDays.stream().sorted(new LoggedHoursByDay.SortByDate()).toList();
     }
 
+    public WorkOrderStart getFirstUseOfWorkOrder() {
+        return new WorkOrderStart(loggedHours().get(0).date(), workOrder);
+    }
+
     public static class SortByStartDate implements java.util.Comparator<TimesheetLine> {
         @Override
         public int compare(TimesheetLine o1, TimesheetLine o2) {

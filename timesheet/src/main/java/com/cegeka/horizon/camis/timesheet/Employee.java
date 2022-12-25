@@ -3,8 +3,10 @@ package com.cegeka.horizon.camis.timesheet;
 import com.cegeka.horizon.camis.domain.ResourceId;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Employee {
     private ResourceId resourceId;
@@ -29,6 +31,19 @@ public class Employee {
 
     public List<WeeklyTimesheet> weeklyTimesheets() {
         return this.weeklyTimeSheets.stream().sorted(new WeeklyTimesheet.SortByStartDate()).toList();
+    }
+
+    public List<WorkOrderStart> getFirstUseOfWorkOrders() {
+        return this.weeklyTimeSheets.stream().map(weeklyTimesheet -> weeklyTimesheet.getFirstUseOfWorkOrders())
+                .collect(Collectors.flatMapping(List::stream, Collectors.toList()));
+    }
+
+    public ResourceId resourceId() {
+        return resourceId;
+    }
+
+    public String name() {
+        return name;
     }
 
     public static class mergeFunction implements java.util.function.BiFunction<Employee, Employee, Employee> {

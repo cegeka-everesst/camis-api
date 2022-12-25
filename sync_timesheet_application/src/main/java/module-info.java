@@ -7,8 +7,9 @@ module com.cegeka.horizon.camis.synctimesheet {
 
     opens com.cegeka.horizon.camis.synctimesheet to spring.core;
     opens com.cegeka.horizon.camis.synctimesheet.csv to spring.core, spring.beans;
+    opens com.cegeka.horizon.camis.synctimesheet.service to spring.core, spring.beans;
 
-
+    requires org.slf4j;
     requires com.opencsv;
     requires spring.beans;
     requires spring.boot.autoconfigure;

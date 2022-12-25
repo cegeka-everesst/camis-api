@@ -24,7 +24,7 @@ The operation to execute, there are two possible operations
 * **syncTimeSheets :**
 
 ### Connection parameters
-* `--baseUrl` : the base url towards the Camis REST API
+* `--baseUrl` : the base url towards the Camis REST API. Ends with a /
 * `--clientId` : the clientId, provided to you by the Camis Horizon administrator
 * `--clientSecret` : the clientSecret, provided to you by the Camis Horizon administrator
 

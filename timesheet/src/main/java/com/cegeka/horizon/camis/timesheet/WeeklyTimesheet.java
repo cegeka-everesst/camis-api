@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class WeeklyTimesheet {
     private List<TimesheetLine> lines = new ArrayList<>();
@@ -32,6 +35,12 @@ public class WeeklyTimesheet {
     public String toString() {
         return "WeeklyTimesheet{" + "lines=" + lines +
                 '}';
+    }
+
+    public List<WorkOrderStart> getFirstUseOfWorkOrders() {
+        return lines.stream().map(
+                line -> line.getFirstUseOfWorkOrder()
+        ).collect(toList());
     }
 
     public static class SortByStartDate implements java.util.Comparator<WeeklyTimesheet> {

@@ -29,7 +29,7 @@ public class WorkorderAccessServiceImpl implements WorkorderAccessService {
                 .uri(uriBuilder -> uriBuilder.path("wo/access")
                         .queryParam("resourceId", resourceId.value())
                         .queryParam("workorder", workorder.value())
-                        .queryParam("date", localDate.format(ofPattern("dd/MM/yyyy"))).build())
+                        .queryParam("date", localDate.format(ofPattern("MM/dd/yyyy"))).build())
                 .retrieve()
                 .bodyToMono(AccessAllowed.class)
                 .block(), resourceId, workorder);

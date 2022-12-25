@@ -2,4 +2,5 @@
 /.idea/
 
 /*/build/
-/sync_timesheet_application/src/main/resources/timesheetsInput.csv
+/sync_timesheet_application/src/main/resources/*.csv
+/log/*.log

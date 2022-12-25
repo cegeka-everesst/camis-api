@@ -28,6 +28,12 @@ The operation to execute, there are two possible operations
 * `--clientId` : the clientId, provided to you by the Camis Horizon administrator
 * `--clientSecret` : the clientSecret, provided to you by the Camis Horizon administrator
 
+### Results and logging
+Log files can be found at 
+
+* log/camis-horizon-app.log : general logging
+* log/check-workorders.log : specific operation logging of the **checkWorkOrders**
+* log/sync-timesheets.log : specific operation logging of the **syncTimeSheets**
 
 ## Prerequisites
 Java 17

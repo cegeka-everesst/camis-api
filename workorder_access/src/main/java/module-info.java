@@ -6,6 +6,7 @@ module com.cegeka.horizon.camis.workorder {
     opens com.cegeka.horizon.camis.workorder.api to spring.beans;
     opens com.cegeka.horizon.camis.workorder.api.model to com.fasterxml.jackson.databind;
 
+    requires org.slf4j;
     requires spring.context;
     requires spring.webflux;
     requires spring.beans;

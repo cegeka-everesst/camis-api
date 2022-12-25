@@ -15,6 +15,10 @@ dependencies {
     implementation project(':workorder_access')
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'com.opencsv:opencsv'
+
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
 test {

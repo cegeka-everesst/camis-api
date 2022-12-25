@@ -6,8 +6,10 @@ module com.cegeka.horizon.camis.synctimesheet {
     requires com.cegeka.horizon.camis.workorder;
 
     opens com.cegeka.horizon.camis.synctimesheet to spring.core;
+    opens com.cegeka.horizon.camis.synctimesheet.csv to spring.core, spring.beans;
 
 
+    requires com.opencsv;
     requires spring.beans;
     requires spring.boot.autoconfigure;
     requires spring.boot;

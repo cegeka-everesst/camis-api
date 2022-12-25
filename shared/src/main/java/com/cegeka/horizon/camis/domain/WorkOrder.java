@@ -1,18 +1,8 @@
 package com.cegeka.horizon.camis.domain;
 
-public class WorkOrder {
-    private String value;
-
-    public WorkOrder(String value){
-        this.value = value;
-    }
-
-    public String value() {
-        return this.value;
-    }
-
-    @Override
-    public String toString() {
-        return value;
+public record WorkOrder (String value) {
+    public WorkOrder {
+        if (!value.matches("[a-zA-Z0-9]*\\.[a-zA-Z0-9]*"))
+            throw new IllegalArgumentException("Invalid format work order");
     }
 }

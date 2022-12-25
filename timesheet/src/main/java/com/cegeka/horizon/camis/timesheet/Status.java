@@ -1,5 +1,5 @@
 package com.cegeka.horizon.camis.timesheet;
 
-public class Timesheet {
-
+public enum Status {
+    T
 }

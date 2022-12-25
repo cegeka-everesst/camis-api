@@ -1,6 +1,7 @@
 package com.cegeka.horizon.camis.timesheet.api;
 
 import com.cegeka.horizon.camis.domain.ResourceId;
+import com.cegeka.horizon.camis.timesheet.TimesheetService;
 import com.cegeka.horizon.camis.timesheet.api.model.Timesheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 @Service
-public class TimesheetServiceImpl implements com.cegeka.horizon.camis.timesheet.TimesheetService {
+public class TimesheetServiceImpl implements TimesheetService {
 
     private final WebClient webClient;
 

@@ -4,28 +4,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TimesheetEntryItem {
     @JsonProperty("Identifier")
-    private String identifier;
+    String identifier;
 
     @JsonProperty("Status")
-    private String status;
+    String status;
 
     @JsonProperty("Description")
-    private String description;
+    String description;
 
     @JsonProperty("Project")
-    private String project;
+    String project;
 
     @JsonProperty("TimeCode")
-    private String timeCode;
+    String timeCode;
 
     @JsonProperty("WorkOrder")
-    private String workOrder;
+    String workOrder;
 
     @JsonProperty("Unit")
-    private String unit;
+    String unit;
 
     @JsonProperty("WorkDayList")
-    private WorkDayList workDayList;
+    WorkDayList workDayList;
+
+    @JsonProperty("Activity")
+    String activity;
 
 
     @Override

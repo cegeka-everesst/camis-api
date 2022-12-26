@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Timesheet {
     @JsonProperty("EntryList")
-    private TimesheetEntryList timesheetEntryList;
+    TimesheetEntryList timesheetEntryList;
 
     @Override
     public String toString() {

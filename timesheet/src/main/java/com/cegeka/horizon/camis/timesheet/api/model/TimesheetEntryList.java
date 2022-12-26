@@ -6,11 +6,11 @@ import java.util.List;
 
 public class TimesheetEntryList {
     @JsonProperty("Entry")
-    private List<TimesheetEntryItem> entry;
+    List<TimesheetEntryItem> entries;
 
     @Override
     public String toString() {
-        return "TimesheetEntryList{" + "entry=" + entry +
+        return "TimesheetEntryList{" + "entry=" + entries +
                 '}';
     }
 }

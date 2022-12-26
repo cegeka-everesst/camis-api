@@ -6,7 +6,7 @@ import java.util.List;
 
 public class WorkDayList {
     @JsonProperty("WorkDay")
-    private List<WorkDay> workdays;
+    List<WorkDay> workdays;
 
     @Override
     public String toString() {

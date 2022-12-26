@@ -1,7 +1,9 @@
 package com.cegeka.horizon.camis.timesheet.api;
 
 import com.cegeka.horizon.camis.domain.ResourceId;
+import com.cegeka.horizon.camis.timesheet.Employee;
 import com.cegeka.horizon.camis.timesheet.TimesheetService;
+import com.cegeka.horizon.camis.timesheet.api.model.EmployeeMapper;
 import com.cegeka.horizon.camis.timesheet.api.model.Timesheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,22 +16,20 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 @Service
 public class TimesheetServiceImpl implements TimesheetService {
 
-    private final WebClient webClient;
-
     @Autowired
-    public TimesheetServiceImpl(WebClient webClient) {
-        this.webClient = webClient;
-    }
+    private WebClient webClient;
+    @Autowired
+    private EmployeeMapper employeeMapper;
 
     @Override
-    public String getTimesheetEntries(ResourceId resourceId, LocalDate dateFrom, LocalDate dateTo) {
-        return webClient.get()
+    public Employee getTimesheetEntries(ResourceId resourceId, String employeeName, LocalDate dateFrom, LocalDate dateUntil) {
+        return employeeMapper.map(webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("timesheet")
                         .queryParam("resourceId", resourceId.value())
                         .queryParam("dateFrom", dateFrom.format(ofPattern("dd/MM/yyyy")))
-                        .queryParam("dateTo", dateTo.format(ofPattern("dd/MM/yyyy"))).build())
+                        .queryParam("dateTo", dateUntil.format(ofPattern("dd/MM/yyyy"))).build())
                 .retrieve()
                 .bodyToMono(Timesheet.class)
-                .block().toString();
+                .block(), resourceId, employeeName);
     }
 }

@@ -5,5 +5,5 @@ import com.cegeka.horizon.camis.domain.ResourceId;
 import java.time.LocalDate;
 
 public interface TimesheetService {
-    String getTimesheetEntries(ResourceId resourceId, LocalDate dateFrom, LocalDate dateTo);
+    Employee getTimesheetEntries(ResourceId resourceId, String employeeName, LocalDate dateFrom, LocalDate dateTo);
 }

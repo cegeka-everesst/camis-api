@@ -1,0 +1,124 @@
+{
+  "EntryList": {
+    "Entry": [
+      {
+        "Identifier": "26177520",
+        "Status": "T",
+        "Activity": "",
+        "Description": "Acerta - Development",
+        "Project": "LMAC000",
+        "TimeCode": "AD",
+        "WorkOrder": "LMAC000.003",
+        "Unit": "H",
+        "WorkDayList": {
+          "WorkDay": [
+            {
+              "Day": "2022-11-28T00:00:00",
+              "HoursWorked": "5.5"
+            },
+            {
+              "Day": "2022-11-29T00:00:00",
+              "HoursWorked": "8"
+            },
+            {
+              "Day": "2022-11-30T00:00:00",
+              "HoursWorked": "8.5"
+            }
+          ]
+        }
+      },
+      {
+        "Identifier": "26192492",
+        "Status": "T",
+        "Activity": "",
+        "Description": "Acerta - Development",
+        "Project": "LMAC000",
+        "TimeCode": "AD",
+        "WorkOrder": "LMAC000.003",
+        "Unit": "H",
+        "WorkDayList": {
+          "WorkDay": [
+            {
+              "Day": "2022-12-01T00:00:00",
+              "HoursWorked": "8"
+            },
+            {
+              "Day": "2022-12-02T00:00:00",
+              "HoursWorked": "8"
+            }
+          ]
+        }
+      },
+      {
+        "Identifier": "26177519",
+        "Status": "T",
+        "Activity": "",
+        "Description": "No services rendered for Cegeka",
+        "Project": "AFWE002",
+        "TimeCode": "ZZ",
+        "WorkOrder": "AFWE002.001",
+        "Unit": "H",
+        "WorkDayList": {
+          "WorkDay": [
+            {
+              "Day": "2022-11-28T00:00:00",
+              "HoursWorked": "2.5"
+            }
+          ]
+        }
+      },
+      {
+        "Identifier": "26263606",
+        "Status": "C",
+        "Activity": "",
+        "Description": "Acerta - Development",
+        "Project": "LMAC000",
+        "TimeCode": "AD",
+        "WorkOrder": "LMAC000.003",
+        "Unit": "H",
+        "WorkDayList": {
+          "WorkDay": [
+            {
+              "Day": "2022-12-07T00:00:00",
+              "HoursWorked": "8.5"
+            },
+            {
+              "Day": "2022-12-08T00:00:00",
+              "HoursWorked": "9"
+            },
+            {
+              "Day": "2022-12-05T00:00:00",
+              "HoursWorked": "7.5"
+            },
+            {
+              "Day": "2022-12-06T00:00:00",
+              "HoursWorked": "8"
+            }
+          ]
+        }
+      },
+      {
+        "Identifier": "26263607",
+        "Status": "C",
+        "Activity": "",
+        "Description": "No services rendered for Cegeka",
+        "Project": "AFWE002",
+        "TimeCode": "ZZ",
+        "WorkOrder": "AFWE002.001",
+        "Unit": "H",
+        "WorkDayList": {
+          "WorkDay": [
+            {
+              "Day": "2022-12-09T00:00:00",
+              "HoursWorked": "8"
+            },
+            {
+              "Day": "2022-12-05T00:00:00",
+              "HoursWorked": "0.5"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

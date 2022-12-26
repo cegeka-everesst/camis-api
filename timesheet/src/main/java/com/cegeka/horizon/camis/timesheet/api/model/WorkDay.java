@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class WorkDay {
     @JsonProperty("Day")
-    private String day;
+    String day;
 
     @JsonProperty("HoursWorked")
-    private Double hoursWorked;
+    Double hoursWorked;
 
     @Override
     public String toString() {

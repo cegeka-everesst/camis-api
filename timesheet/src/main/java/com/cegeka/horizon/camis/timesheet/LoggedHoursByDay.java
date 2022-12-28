@@ -14,4 +14,11 @@ public record LoggedHoursByDay (LocalDate date, double hours) {
             return o1.date.compareTo(o2.date);
         }
     }
+
+    @Override
+    public String toString() {
+        return "LoggedHoursByDay{" + "date=" + date +
+                ", hours=" + hours +
+                '}';
+    }
 }

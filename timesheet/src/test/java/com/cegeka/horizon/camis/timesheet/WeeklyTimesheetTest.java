@@ -69,4 +69,28 @@ class WeeklyTimesheetTest {
         assertThat(weeklyTimesheet.lines().get(0).loggedHours().get(0).hours()).isEqualTo(8);
     }
 
+    @Test
+    public void givenTimesheetLine_whenAddLineAndSameWorkOrderYetDifferentIdentifier_thenNotMergeLine(){
+        WorkOrder sameWorkOrder = TestWorkOrders.WORK_ORDER_1;
+        LocalDate date = of(2022, 12, 5);
+        TimesheetLine existingLine = aTimesheetLine().withWorkOrder(sameWorkOrder).build();
+        existingLine.addLoggedHours(aLoggedHours(3).withDay(date).build());
+        WeeklyTimesheet weeklyTimesheet =
+                aWeeklyTimesheet()
+                        .withLine(existingLine)
+                        .build();
+
+        TimesheetLine newLine = aTimesheetLine()
+                            .withWorkOrder(sameWorkOrder)
+                            .withIdentifier("44")
+                            .build();
+        newLine.addLoggedHours(aLoggedHours(5).withDay(date).build());
+
+        weeklyTimesheet.addLine(newLine);
+
+        assertThat(weeklyTimesheet.lines()).hasSize(2);
+        assertThat(weeklyTimesheet.lines().get(0).loggedHours().get(0).date()).isEqualTo(date);
+        assertThat(weeklyTimesheet.lines().get(1).loggedHours().get(0).date()).isEqualTo(date);
+    }
+
 }

@@ -42,7 +42,12 @@ public class TimesheetLine {
     }
 
     public LocalDate startDate() {
-        return hoursByDays.stream().map(LoggedHoursByDay::date).sorted().findFirst().get().with(previous(MONDAY));
+        LocalDate localDate = hoursByDays.stream().map(LoggedHoursByDay::date).sorted().findFirst().get();
+        if(localDate.getDayOfWeek() == MONDAY){
+            return localDate;
+        }else{
+            return localDate.with(previous(MONDAY));
+        }
     }
 
     public WorkOrder workOrder() {
@@ -66,5 +71,13 @@ public class TimesheetLine {
         public int compare(TimesheetLine o1, TimesheetLine o2) {
             return o1.startDate().compareTo(o2.startDate());
         }
+    }
+
+    @Override
+    public String toString() {
+        return "TimesheetLine{" + "identifier='" + identifier + '\'' +
+                ", workOrder=" + workOrder +
+                ", hoursByDays=" + hoursByDays +
+                '}';
     }
 }

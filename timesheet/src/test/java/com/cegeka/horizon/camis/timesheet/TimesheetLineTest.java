@@ -21,4 +21,13 @@ class TimesheetLineTest {
         assertThat(line.startDate()).isEqualTo(of(2022,12, 19));
     }
 
+    @Test
+    public void givenHoursByDay_whenStartDate_mondayOfLoggedHoursWhereOneIsAMonday(){
+        TimesheetLine line = aTimesheetLine().build();
+        line.addLoggedHours(aLoggedHours().withDay(of(2022,12,22)).build());
+        line.addLoggedHours(aLoggedHours().withDay(of(2022,12,19)).build());
+
+        assertThat(line.startDate()).isEqualTo(of(2022,12, 19));
+    }
+
 }

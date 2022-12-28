@@ -49,6 +49,10 @@ public class TimesheetLine {
         return workOrder;
     }
 
+    public String identifier(){
+        return identifier;
+    }
+
     public List<LoggedHoursByDay> loggedHours() {
         return hoursByDays.stream().sorted(new LoggedHoursByDay.SortByDate()).toList();
     }

@@ -11,7 +11,7 @@ public class WeeklyTimesheet {
     private List<TimesheetLine> lines = new ArrayList<>();
 
     public void addLine(TimesheetLine lineToAdd){
-        Optional<TimesheetLine> sameWorkOrder = this.lines.stream().filter(line -> line.workOrder().equals(lineToAdd.workOrder())).findFirst();
+        Optional<TimesheetLine> sameWorkOrder = this.lines.stream().filter(line -> line.workOrder().equals(lineToAdd.workOrder()) && line.identifier().equals(lineToAdd.identifier())).findFirst();
         if(sameWorkOrder.isEmpty()){
             this.lines.add(lineToAdd);
         }else {

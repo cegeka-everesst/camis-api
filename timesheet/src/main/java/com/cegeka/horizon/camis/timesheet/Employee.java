@@ -1,7 +1,10 @@
 package com.cegeka.horizon.camis.timesheet;
 
 import com.cegeka.horizon.camis.domain.ResourceId;
+import org.threeten.extra.LocalDateRange;
 
+import java.time.Duration;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -34,7 +37,7 @@ public class Employee {
     }
 
     public List<WorkOrderStart> getFirstUseOfWorkOrders() {
-        return this.weeklyTimeSheets.stream().map(weeklyTimesheet -> weeklyTimesheet.getFirstUseOfWorkOrders())
+        return this.weeklyTimeSheets.stream().map(WeeklyTimesheet::getFirstUseOfWorkOrders)
                 .collect(Collectors.flatMapping(List::stream, Collectors.toList()));
     }
 
@@ -44,6 +47,13 @@ public class Employee {
 
     public String name() {
         return name;
+    }
+
+    public LocalDateRange getTimesheetDuration() {
+        return LocalDateRange.of(
+            this.weeklyTimeSheets.stream().min(new WeeklyTimesheet.SortByStartDate()).get().startDate(),
+            this.weeklyTimeSheets.stream().max(new WeeklyTimesheet.SortByStartDate()).get().endDate()
+                );
     }
 
     public static class mergeFunction implements java.util.function.BiFunction<Employee, Employee, Employee> {

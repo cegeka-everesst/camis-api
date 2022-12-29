@@ -66,4 +66,31 @@ class EmployeeTest {
         assertThat(employee.weeklyTimesheets()).hasSize(2);
     }
 
+    @Test
+    public void givenTimesheets_whenGetTimesheetPeriod_thenReturnTotalDuration(){
+        WeeklyTimesheet weeklyTimesheet = aWeeklyTimesheet()
+                .withLine(aTimesheetLine()
+                        .withWorkOrder(TestWorkOrders.WORK_ORDER_1)
+                        .withLoggedHours(aLoggedHours(5, of(2022, 11, 29)))
+                        .withLoggedHours(aLoggedHours(5, of(2022, 11, 30)))
+                        .build())
+                .build();
+
+        WeeklyTimesheet differentWeek = aWeeklyTimesheet()
+                .withLine(aTimesheetLine()
+                        .withWorkOrder(TestWorkOrders.WORK_ORDER_1)
+                        .withLoggedHours(aLoggedHours(5, of(2022, 12, 12)))
+                        .withLoggedHours(aLoggedHours(5, of(2022, 12, 13)))
+                        .build())
+                .build();
+
+        Employee employee = new Employee(new ResourceId("I12231"), "Ward");
+        employee.addWeeklyTimesheet(weeklyTimesheet);
+        employee.addWeeklyTimesheet(differentWeek);
+
+        assertThat(employee.getTimesheetDuration().getStart()).isEqualTo(of(2022,11,28));
+        assertThat(employee.getTimesheetDuration().getEnd()).isEqualTo(of(2022,12,18));
+    }
+
+
 }

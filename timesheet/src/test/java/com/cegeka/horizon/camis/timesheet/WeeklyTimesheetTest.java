@@ -32,6 +32,40 @@ class WeeklyTimesheetTest {
     }
 
     @Test
+    public void givenTimesheet_whenEndDate_thenFindLastSundayOfLoggedHours(){
+        TimesheetLine line1 = aTimesheetLine().build();
+        line1.addLoggedHours(aLoggedHours().withDay(of(2022,12,17)).build());
+
+        TimesheetLine line2 = aTimesheetLine().build();
+        line2.addLoggedHours(aLoggedHours().withDay(of(2022,12,15)).build());
+
+        WeeklyTimesheet weeklyTimesheet =
+                aWeeklyTimesheet()
+                        .withLine(line1, line2)
+                        .build();
+
+
+        assertThat(weeklyTimesheet.endDate()).isEqualTo(of(2022,12,18));
+    }
+
+    @Test
+    public void givenTimesheet_whenEndDate_thenFindLastSundayOfLoggedHoursIfSundayIncluded(){
+        TimesheetLine line1 = aTimesheetLine().build();
+        line1.addLoggedHours(aLoggedHours().withDay(of(2022,12,13)).build());
+
+        TimesheetLine line2 = aTimesheetLine().build();
+        line2.addLoggedHours(aLoggedHours().withDay(of(2022,12,18)).build());
+
+        WeeklyTimesheet weeklyTimesheet =
+                aWeeklyTimesheet()
+                        .withLine(line1, line2)
+                        .build();
+
+
+        assertThat(weeklyTimesheet.endDate()).isEqualTo(of(2022,12,18));
+    }
+
+    @Test
     public void givenTimesheetLine_whenAddLineAndDifferentWorkOrder_thenAddLine(){
         TimesheetLine existingLine = aTimesheetLine().withWorkOrder(new WorkOrder("LMAC003.001")).build();
         existingLine.addLoggedHours(aLoggedHours().withDay(5).build());

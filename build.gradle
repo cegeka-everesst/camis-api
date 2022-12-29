@@ -20,7 +20,7 @@ dependencies {
 
     implementation platform(SpringBootPlugin.BOM_COORDINATES)
 
-    implementation('org.springframework.boot:spring-boot-starter-webflux:3.0.0')
+    implementation('org.springframework.boot:spring-boot-starter-webflux:3.0.1')
 }
 
 
@@ -54,6 +54,7 @@ subprojects {
         }
         dependencies {
             dependency 'com.opencsv:opencsv:5.7.1'
+            dependency 'org.threeten:threeten-extra:1.7.2'
         }
     }
 }

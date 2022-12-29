@@ -12,4 +12,6 @@ module com.cegeka.horizon.camis.timesheet {
     requires spring.web;
     requires com.fasterxml.jackson.annotation;
     requires com.fasterxml.jackson.databind;
+
+    requires org.threeten.extra;
 }

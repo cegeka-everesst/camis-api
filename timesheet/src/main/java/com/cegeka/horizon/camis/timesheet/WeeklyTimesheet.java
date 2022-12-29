@@ -1,10 +1,14 @@
 package com.cegeka.horizon.camis.timesheet;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Comparator.naturalOrder;
+import static java.util.Comparator.reverseOrder;
 import static java.util.stream.Collectors.toList;
 
 public class WeeklyTimesheet {
@@ -26,6 +30,11 @@ public class WeeklyTimesheet {
         return lines.stream().map(TimesheetLine::startDate).sorted().findFirst().get();
     }
 
+    public LocalDate endDate() {
+        if(lines.isEmpty()) throw new IllegalArgumentException("A timesheet needs at least 1 line");
+        return lines.stream().map(TimesheetLine::endDate).max(naturalOrder()).get();
+    }
+
     public List<TimesheetLine> lines() {
         return lines.stream().sorted(new TimesheetLine.SortByStartDate()).toList();
     }
@@ -38,9 +47,11 @@ public class WeeklyTimesheet {
 
     public List<WorkOrderStart> getFirstUseOfWorkOrders() {
         return lines.stream().map(
-                line -> line.getFirstUseOfWorkOrder()
+                TimesheetLine::getFirstUseOfWorkOrder
         ).collect(toList());
     }
+
+
 
     public static class SortByStartDate implements java.util.Comparator<WeeklyTimesheet> {
         @Override

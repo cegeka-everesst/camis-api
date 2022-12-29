@@ -12,6 +12,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.time.DayOfWeek.MONDAY;
+import static java.time.DayOfWeek.SUNDAY;
+import static java.time.temporal.TemporalAdjusters.next;
 import static java.time.temporal.TemporalAdjusters.previous;
 
 public class TimesheetLine {
@@ -47,6 +49,15 @@ public class TimesheetLine {
             return localDate;
         }else{
             return localDate.with(previous(MONDAY));
+        }
+    }
+
+    public LocalDate endDate() {
+        LocalDate localDate = hoursByDays.stream().map(LoggedHoursByDay::date).sorted().findFirst().get();
+        if(localDate.getDayOfWeek() == SUNDAY){
+            return localDate;
+        }else{
+            return localDate.with(next(SUNDAY));
         }
     }
 

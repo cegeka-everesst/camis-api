@@ -2,6 +2,7 @@ package com.cegeka.horizon.camis.synctimesheet;
 
 import com.cegeka.horizon.camis.synctimesheet.csv.HoursLoggedCsvReader;
 import com.cegeka.horizon.camis.synctimesheet.service.CheckWorkOrderService;
+import com.cegeka.horizon.camis.synctimesheet.service.SyncTimesheetService;
 import com.cegeka.horizon.camis.timesheet.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,16 +23,15 @@ public class OperationExecutor {
     private String inputCsvFile;
     @Autowired
     private CheckWorkOrderService checkWorkOrderService;
+    @Autowired
+    private SyncTimesheetService syncTimesheetService;
 
     public void run() throws Exception {
         List<Employee> employees = new HoursLoggedCsvReader(new FileInputStream(inputCsvFile)).readCsv();
 
-        switch (operation){
-            case CHECK_WORK_ORDERS:
-                checkWorkOrderService.check(employees);
-                break;
-            case SYNC_TIMESHEETS:
-                break;
+        switch (operation) {
+            case CHECK_WORK_ORDERS -> checkWorkOrderService.check(employees);
+            case SYNC_TIMESHEETS -> syncTimesheetService.sync(employees);
         }
     }
 

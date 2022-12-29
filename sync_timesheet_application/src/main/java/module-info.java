@@ -21,4 +21,6 @@ module com.cegeka.horizon.camis.synctimesheet {
     requires reactor.netty.core;
     requires io.netty.transport;
     requires io.netty.handler;
+    requires org.threeten.extra;
+
 }

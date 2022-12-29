@@ -26,8 +26,8 @@ public class TimesheetServiceImpl implements TimesheetService {
         return employeeMapper.map(webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("timesheet")
                         .queryParam("resourceId", resourceId.value())
-                        .queryParam("dateFrom", dateFrom.format(ofPattern("dd/MM/yyyy")))
-                        .queryParam("dateTo", dateUntil.format(ofPattern("dd/MM/yyyy"))).build())
+                        .queryParam("dateFrom", dateFrom.format(ofPattern("yyyy-MM-dd")))
+                        .queryParam("dateTo", dateUntil.format(ofPattern("yyyy-MM-dd"))).build())
                 .retrieve()
                 .bodyToMono(Timesheet.class)
                 .block(), resourceId, employeeName);

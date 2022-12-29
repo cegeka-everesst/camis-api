@@ -16,14 +16,16 @@ public class EmployeeMapper {
         Employee employee = new Employee(resourceId, employeeName);
         timesheet.timesheetEntryList.entries.forEach(
                 entry -> {
-                    WeeklyTimesheet weeklyTimesheet = new WeeklyTimesheet();
-                    TimesheetLine lineToAdd = new TimesheetLine(entry.identifier, Status.valueOf(entry.status), entry.description, TimeCode.valueOf(entry.timeCode), new WorkOrder(entry.workOrder));
-                    entry.workDayList.workdays.forEach(
-                            workDay ->
-                            lineToAdd.addLoggedHours(new LoggedHoursByDay(LocalDate.parse(workDay.day, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss")), workDay.hoursWorked))
-                    );
-                    weeklyTimesheet.addLine(lineToAdd);
-                    employee.addWeeklyTimesheet(weeklyTimesheet);
+                    if(entry.identifier != null){
+                        WeeklyTimesheet weeklyTimesheet = new WeeklyTimesheet();
+                        TimesheetLine lineToAdd = new TimesheetLine(entry.identifier, Status.valueOf(entry.status), entry.description, TimeCode.valueOf(entry.timeCode), new WorkOrder(entry.workOrder));
+                        entry.workDayList.workdays.forEach(
+                                workDay ->
+                                        lineToAdd.addLoggedHours(new LoggedHoursByDay(LocalDate.parse(workDay.day, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss")), workDay.hoursWorked))
+                        );
+                        weeklyTimesheet.addLine(lineToAdd);
+                        employee.addWeeklyTimesheet(weeklyTimesheet);
+                    }
                 }
         );
         return employee;

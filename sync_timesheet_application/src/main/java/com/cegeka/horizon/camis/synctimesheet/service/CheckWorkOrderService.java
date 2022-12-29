@@ -26,23 +26,21 @@ public class CheckWorkOrderService {
 
     public void check(List<Employee> employees) {
         employees.forEach(
-                employee -> {
-                    employee.getFirstUseOfWorkOrders().stream()
-                            .collect(groupingBy(workOrderStart -> workOrderStart.workOrder())).forEach(
-                                    (workOrder, workOrderStarts) -> {
-                                        LocalDate start = workOrderStarts.stream().sorted(new WorkOrderStart.byStart()).findFirst().get().start();
-                                        WorkOrderAccess accessAllowed = workorderAccessService.isAccessAllowed(employee.resourceId(), workOrder,
-                                                start);
-                                        if(accessAllowed.access() == false){
-                                            logger.error("Access for {} for work order {} on date {} is NOT ALLOWED",
-                                                    employee.name(), workOrder.value(), start.format(ofPattern("dd/MM/yyyy")));
-                                        }else{
-                                            logger.info("Access for {} for work order {} on date {} is ALLOWED",
-                                                    employee.name(), workOrder.value(), start.format(ofPattern("dd/MM/yyyy")));
-                                        }
+                employee -> employee.getFirstUseOfWorkOrders().stream()
+                        .collect(groupingBy(WorkOrderStart::workOrder)).forEach(
+                                (workOrder, workOrderStarts) -> {
+                                    LocalDate start = workOrderStarts.stream().min(new WorkOrderStart.byStart()).get().start();
+                                    WorkOrderAccess accessAllowed = workorderAccessService.isAccessAllowed(employee.resourceId(), workOrder,
+                                            start);
+                                    if(!accessAllowed.access()){
+                                        logger.error("Access for {} for work order {} on date {} is NOT ALLOWED",
+                                                employee.name(), workOrder.value(), start.format(ofPattern("dd/MM/yyyy")));
+                                    }else{
+                                        logger.info("Access for {} for work order {} on date {} is ALLOWED",
+                                                employee.name(), workOrder.value(), start.format(ofPattern("dd/MM/yyyy")));
                                     }
-                            );
-                }
+                                }
+                        )
             );
     }
 

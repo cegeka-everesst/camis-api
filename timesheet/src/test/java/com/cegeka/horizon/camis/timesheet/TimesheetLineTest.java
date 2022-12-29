@@ -30,4 +30,23 @@ class TimesheetLineTest {
         assertThat(line.startDate()).isEqualTo(of(2022,12, 19));
     }
 
+    @Test
+    public void givenHoursByDay_whenEndDate_sundayOfLoggedHours(){
+        TimesheetLine line = aTimesheetLine().build();
+        line.addLoggedHours(aLoggedHours().withDay(of(2022,12,22)).build());
+        line.addLoggedHours(aLoggedHours().withDay(of(2022,12,21)).build());
+
+        assertThat(line.endDate()).isEqualTo(of(2022,12, 25));
+    }
+
+    @Test
+    public void givenHoursByDay_whenEndDate_sundayOfLoggedHoursWhereOneIsASunday(){
+        TimesheetLine line = aTimesheetLine().build();
+        line.addLoggedHours(aLoggedHours().withDay(of(2022,12,22)).build());
+        line.addLoggedHours(aLoggedHours().withDay(of(2022,12,25)).build());
+        line.addLoggedHours(aLoggedHours().withDay(of(2022,12,19)).build());
+
+        assertThat(line.endDate()).isEqualTo(of(2022,12, 25));
+    }
+
 }

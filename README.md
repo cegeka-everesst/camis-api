@@ -37,3 +37,5 @@ Log files can be found at
 
 ## Prerequisites
 Java 17
+! both for running the application 
+! also for Gradle JVM

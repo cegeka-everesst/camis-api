@@ -1,7 +1,5 @@
 package com.cegeka.horizon.camis.synctimesheet.service;
 
-import com.cegeka.horizon.camis.domain.ResourceId;
-import com.cegeka.horizon.camis.domain.WorkOrder;
 import com.cegeka.horizon.camis.timesheet.Employee;
 import com.cegeka.horizon.camis.timesheet.WorkOrderStart;
 import com.cegeka.horizon.camis.workorder.WorkOrderAccess;
@@ -12,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
@@ -37,7 +34,10 @@ public class CheckWorkOrderService {
                                         WorkOrderAccess accessAllowed = workorderAccessService.isAccessAllowed(employee.resourceId(), workOrder,
                                                 start);
                                         if(accessAllowed.access() == false){
-                                            logger.info("Access for {} for work order {} on date {} is NOT ALLOWED",
+                                            logger.error("Access for {} for work order {} on date {} is NOT ALLOWED",
+                                                    employee.name(), workOrder.value(), start.format(ofPattern("dd/MM/yyyy")));
+                                        }else{
+                                            logger.info("Access for {} for work order {} on date {} is ALLOWED",
                                                     employee.name(), workOrder.value(), start.format(ofPattern("dd/MM/yyyy")));
                                         }
                                     }

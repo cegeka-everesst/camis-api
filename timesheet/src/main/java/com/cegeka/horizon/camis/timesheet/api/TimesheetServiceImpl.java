@@ -1,13 +1,16 @@
 package com.cegeka.horizon.camis.timesheet.api;
 
 import com.cegeka.horizon.camis.domain.ResourceId;
-import com.cegeka.horizon.camis.timesheet.Employee;
-import com.cegeka.horizon.camis.timesheet.TimesheetService;
-import com.cegeka.horizon.camis.timesheet.api.model.EmployeeMapper;
-import com.cegeka.horizon.camis.timesheet.api.model.Timesheet;
+import com.cegeka.horizon.camis.domain.WorkOrder;
+import com.cegeka.horizon.camis.timesheet.*;
+import com.cegeka.horizon.camis.timesheet.api.post.CreateTimesheetEntry;
+import com.cegeka.horizon.camis.timesheet.api.get.EmployeeMapper;
+import com.cegeka.horizon.camis.timesheet.api.get.Timesheet;
+import com.cegeka.horizon.camis.timesheet.api.post.CreateTimesheetEntryResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 
@@ -31,5 +34,30 @@ public class TimesheetServiceImpl implements TimesheetService {
                 .retrieve()
                 .bodyToMono(Timesheet.class)
                 .block(), resourceId, employeeName);
+    }
+
+    @Override
+    public boolean createTimesheetEntry(ResourceId resourceId, WorkOrder workOrder, LoggedHoursByDay loggedHoursByDay) {
+        CreateTimesheetEntry createTimesheetEntry = new CreateTimesheetEntry(
+                resourceId.value(),
+                Status.DRAFT.value(),
+                "",
+                CreateTimesheetEntry.DEFAULT_WORKORDER_DESCRIPTION,
+                CreateTimesheetEntry.DEFAULT_WORKORDER_PROJECT,
+                TimeCode.WORK_DAY.value(),
+                workOrder.value(),
+                CreateTimesheetEntry.DEFAULT_EXTERNAL_REF,
+                loggedHoursByDay.date().format(ofPattern("yyyy-MM-dd")) + "T00:00:00",
+                Double.toString(loggedHoursByDay.hours()),
+                CreateTimesheetEntry.DEFAULT_INV_VALUE
+        );
+
+        return webClient.post()
+                .uri(uriBuilder -> uriBuilder.path("timesheet").build())
+                .body(Mono.just(createTimesheetEntry), CreateTimesheetEntry.class)
+                .retrieve()
+                .bodyToMono(CreateTimesheetEntryResult.class)
+                .block().isOk()
+                ;
     }
 }

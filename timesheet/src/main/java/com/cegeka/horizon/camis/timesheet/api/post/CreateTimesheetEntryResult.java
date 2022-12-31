@@ -1,19 +1,16 @@
-package com.cegeka.horizon.camis.timesheet.api.model;
+package com.cegeka.horizon.camis.timesheet.api.post;
 
+import com.cegeka.horizon.camis.timesheet.api.get.WorkDayList;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TimesheetEntryItem {
+import java.util.List;
+
+public class CreateTimesheetEntryResult {
     @JsonProperty("Identifier")
     String identifier;
 
-    @JsonProperty("Status")
-    String status;
-
     @JsonProperty("Description")
     String description;
-
-    @JsonProperty("Project")
-    String project;
 
     @JsonProperty("TimeCode")
     String timeCode;
@@ -21,26 +18,29 @@ public class TimesheetEntryItem {
     @JsonProperty("WorkOrder")
     String workOrder;
 
-    @JsonProperty("Unit")
-    String unit;
+    @JsonProperty("ExternalRef")
+    String externalRef;
 
     @JsonProperty("WorkDayList")
     WorkDayList workDayList;
 
-    @JsonProperty("Activity")
-    String activity;
+    @JsonProperty("Response")
+    List<StatusResponse> response;
 
+    public boolean isOk(){
+        return response.stream().allMatch(statusResponse -> statusResponse.status.equals("OK"));
+    }
 
     @Override
     public String toString() {
         return "TimesheetEntryItem{" + "identifier='" + identifier + '\'' +
-                ", status='" + status + '\'' +
                 ", description='" + description + '\'' +
-                ", project='" + project + '\'' +
                 ", timeCode='" + timeCode + '\'' +
                 ", workOrder='" + workOrder + '\'' +
-                ", unit='" + unit + '\'' +
                 ", workdays=" + workDayList +
+                ", response=" + response +
                 '}';
     }
+
+
 }

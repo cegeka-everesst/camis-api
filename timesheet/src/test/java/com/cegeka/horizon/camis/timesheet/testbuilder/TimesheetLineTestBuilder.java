@@ -11,9 +11,9 @@ import java.util.List;
 public class TimesheetLineTestBuilder {
     private WorkOrder workorder = new WorkOrder("LMAC001.001");
     private String identifier = "";
-    private Status status = Status.T;
+    private Status status = Status.TRANSFERRED;
     private String description = "description";
-    private TimeCode timeCode = TimeCode.AD;
+    private TimeCode timeCode = TimeCode.WORK_DAY;
     private List<LoggedHoursByDayTestBuilder> loggedHours = new ArrayList<>();
 
     private TimesheetLineTestBuilder(){}

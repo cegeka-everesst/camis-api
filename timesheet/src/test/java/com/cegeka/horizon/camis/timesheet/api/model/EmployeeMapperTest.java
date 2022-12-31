@@ -1,10 +1,10 @@
 package com.cegeka.horizon.camis.timesheet.api.model;
 
 import com.cegeka.horizon.camis.domain.ResourceId;
-import com.cegeka.horizon.camis.domain.WorkOrder;
 import com.cegeka.horizon.camis.timesheet.Employee;
+import com.cegeka.horizon.camis.timesheet.api.get.EmployeeMapper;
+import com.cegeka.horizon.camis.timesheet.api.get.Timesheet;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

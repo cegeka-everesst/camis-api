@@ -21,6 +21,8 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 
 public class HoursLoggedCsvReader {
 
+    public static final char SEPARATOR = ';';
+    public static final char DECIMAL_SEPARATOR = ',';
     private final InputStream csvInputStream;
 
     public HoursLoggedCsvReader(InputStream inputStream){
@@ -35,7 +37,7 @@ public class HoursLoggedCsvReader {
 
     private List<Employee> mapToEmployeeTimesheets(List<HoursLoggedByDay> hoursLoggedByDays) {
         Map<ResourceId, Employee> employees = new HashMap<>();
-        hoursLoggedByDays.forEach(
+        hoursLoggedByDays.stream().filter(hoursLoggedByDay -> hoursLoggedByDay.hoursLogged() > 0).forEach(
             hoursLoggedByDay -> {
                 Employee employee = new Employee(hoursLoggedByDay.resourceId(), hoursLoggedByDay.employeeName());
                 WeeklyTimesheet weeklyTimesheet = new WeeklyTimesheet();
@@ -54,7 +56,7 @@ public class HoursLoggedCsvReader {
         List<HoursLoggedByDay> csvLines = new ArrayList<>();
         try {
             InputStreamReader inputStreamReader = new InputStreamReader(csvInputStream);
-            CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
+            CSVParser parser = new CSVParserBuilder().withSeparator(SEPARATOR).build();
             CSVReader csvReader = new CSVReaderBuilder(inputStreamReader)
                     .withSkipLines(1) // skip header
                     .withCSVParser(parser)
@@ -66,8 +68,9 @@ public class HoursLoggedCsvReader {
                         LocalDate.parse(nextRecord[0], ofPattern("dd/MM/yyyy")),
                         new ResourceId(nextRecord[1]),
                         nextRecord[2],
-                        new WorkOrder(nextRecord[3]),
-                        Double.parseDouble(nextRecord[4])
+                        TimeCode.valueOf(nextRecord[3]),
+                        new WorkOrder(nextRecord[4]),
+                        Double.parseDouble(nextRecord[5].replace(DECIMAL_SEPARATOR,'.'))
                         ));
             }
         } catch (Exception e) {

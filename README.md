@@ -3,7 +3,7 @@
 ## How to run
 Pass as Command Line Argument when running SyncTimesheetApp Main
 (all arguments are mandatory)
-
+  
 `--input=... --operation=... --baseUrl=https:// --clientId=... --clientSecret=...` 
 
 The output file generated will contain all success and error messages associated by the chosen operation.
@@ -14,7 +14,15 @@ The output file generated will contain all success and error messages associated
 The CSV file contains the input timesheet entries to be processed.
 The file should have a header and follow the following format :
 
-`date;CAMIS resourceId;employeeName;workOrder;hoursLogged`
+`date;CAMIS resourceId;employeeName;timeCode;workOrder;hoursLogged`
+
+as an example
+date;Camis resourceId;employeeName;timeCode;workOrder;hoursLogged
+19/12/2022;I123456;Ward Br;AD;LMAC000.003;1
+20/12/2022;I123456;Ward Br;AD;LMAC000.003;7,75
+
+
+
 
 ### Operation
 `--operation`

@@ -4,6 +4,7 @@ import com.cegeka.horizon.camis.domain.ResourceId;
 import com.cegeka.horizon.camis.domain.WorkOrder;
 import com.cegeka.horizon.camis.timesheet.Employee;
 import com.cegeka.horizon.camis.timesheet.LoggedHoursByDay;
+import com.cegeka.horizon.camis.timesheet.TimesheetLineIdentifier;
 import com.cegeka.horizon.camis.timesheet.TimesheetService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.threeten.extra.LocalDateRange;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SyncTimesheetService {
@@ -34,16 +36,17 @@ public class SyncTimesheetService {
     private void createTimesheetEntry(Employee employee) {
         employee.weeklyTimesheets().forEach(
                 weeklyTimesheet -> weeklyTimesheet.lines().forEach(
-                        timesheetLine -> timesheetLine.loggedHours().forEach(
-                                loggedHoursByDay -> {
-                                    if(!timesheetService.createTimesheetEntry(employee.resourceId(), timesheetLine.workOrder(), loggedHoursByDay)){
-                                        logger.error("Failed to insert timesheet entry for {} as workorder {} with input {}", employee.name(), timesheetLine.workOrder(), loggedHoursByDay);
-                                    }
-                                }
+                        timesheetLine -> {
+                            List<LoggedHoursByDay> loggedHours = timesheetLine.loggedHours();
+                            Optional<LoggedHoursByDay> firstLoggedHours = loggedHours.stream().findFirst();
+                            TimesheetLineIdentifier timesheetLineIdentifier = timesheetService.createTimesheetEntry(employee.resourceId(), timesheetLine.workOrder(), firstLoggedHours.get());
+                            loggedHours.stream().skip(1).forEach(
+                                    loggedHoursByDay ->
+                                            timesheetService.updateTimesheetEntry(timesheetLineIdentifier, employee.resourceId(), timesheetLine.workOrder(), loggedHoursByDay)
+                            );
+                        }
                         )
-                )
-        );
-
+                );
     }
 
     private void retrieveOriginalLogging(Employee employee) {

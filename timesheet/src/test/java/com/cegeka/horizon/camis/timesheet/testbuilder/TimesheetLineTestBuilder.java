@@ -4,13 +4,14 @@ import com.cegeka.horizon.camis.domain.WorkOrder;
 import com.cegeka.horizon.camis.timesheet.Status;
 import com.cegeka.horizon.camis.timesheet.TimeCode;
 import com.cegeka.horizon.camis.timesheet.TimesheetLine;
+import com.cegeka.horizon.camis.timesheet.TimesheetLineIdentifier;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TimesheetLineTestBuilder {
     private WorkOrder workorder = new WorkOrder("LMAC001.001");
-    private String identifier = "";
+    private TimesheetLineIdentifier identifier = TimesheetLineIdentifier.TO_CREATE;
     private Status status = Status.TRANSFERRED;
     private String description = "description";
     private TimeCode timeCode = TimeCode.WORK_DAY;
@@ -36,7 +37,7 @@ public class TimesheetLineTestBuilder {
         return this;
     }
 
-    public TimesheetLineTestBuilder withIdentifier(String identifier) {
+    public TimesheetLineTestBuilder withIdentifier(TimesheetLineIdentifier identifier) {
         this.identifier = identifier;
         return this;
     }

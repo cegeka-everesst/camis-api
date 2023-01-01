@@ -116,7 +116,7 @@ class WeeklyTimesheetTest {
 
         TimesheetLine newLine = aTimesheetLine()
                             .withWorkOrder(sameWorkOrder)
-                            .withIdentifier("44")
+                            .withIdentifier(new TimesheetLineIdentifier("44"))
                             .build();
         newLine.addLoggedHours(aLoggedHours(5).withDay(date).build());
 

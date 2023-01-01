@@ -43,4 +43,7 @@ public class CreateTimesheetEntryResult {
     }
 
 
+    public String getIdentifier() {
+        return identifier;
+    }
 }

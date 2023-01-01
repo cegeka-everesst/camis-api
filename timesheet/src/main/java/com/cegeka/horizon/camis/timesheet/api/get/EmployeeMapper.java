@@ -17,7 +17,7 @@ public class EmployeeMapper {
                 entry -> {
                     if(entry.identifier != null){
                         WeeklyTimesheet weeklyTimesheet = new WeeklyTimesheet();
-                        TimesheetLine lineToAdd = new TimesheetLine(entry.identifier, Status.map(entry.status), entry.description, TimeCode.map(entry.timeCode), new WorkOrder(entry.workOrder));
+                        TimesheetLine lineToAdd = new TimesheetLine(new TimesheetLineIdentifier(entry.identifier), Status.map(entry.status), entry.description, TimeCode.map(entry.timeCode), new WorkOrder(entry.workOrder));
                         entry.workDayList.workdays.forEach(
                                 workDay ->
                                         lineToAdd.addLoggedHours(new LoggedHoursByDay(LocalDate.parse(workDay.day, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss")), workDay.hoursWorked))

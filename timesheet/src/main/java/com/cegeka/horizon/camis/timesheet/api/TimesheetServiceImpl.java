@@ -37,8 +37,35 @@ public class TimesheetServiceImpl implements TimesheetService {
     }
 
     @Override
-    public boolean createTimesheetEntry(ResourceId resourceId, WorkOrder workOrder, LoggedHoursByDay loggedHoursByDay) {
-        CreateTimesheetEntry createTimesheetEntry = new CreateTimesheetEntry(
+    public TimesheetLineIdentifier createTimesheetEntry(ResourceId resourceId, WorkOrder workOrder, LoggedHoursByDay loggedHours) {
+        CreateTimesheetEntry createTimesheetEntry = createTimesheetEntryRequest(resourceId, workOrder, loggedHours);
+
+        return mapResult(webClient.post()
+                .uri(uriBuilder -> uriBuilder.path("timesheet").build())
+                .body(Mono.just(createTimesheetEntry), CreateTimesheetEntry.class)
+                .retrieve()
+                .bodyToMono(CreateTimesheetEntryResult.class)
+                .block())
+                ;
+    }
+
+    @Override
+    public TimesheetLineIdentifier updateTimesheetEntry(TimesheetLineIdentifier timesheetLineIdentifier, ResourceId resourceId, WorkOrder workOrder, LoggedHoursByDay loggedHours) {
+        CreateTimesheetEntry createTimesheetEntry = createTimesheetEntryRequest(resourceId, workOrder, loggedHours);
+
+        return mapResult(webClient.put()
+                .uri(uriBuilder -> uriBuilder.path("timesheet")
+                        .queryParam("identifier", timesheetLineIdentifier.value())
+                        .build())
+                .body(Mono.just(createTimesheetEntry), CreateTimesheetEntry.class)
+                .retrieve()
+                .bodyToMono(CreateTimesheetEntryResult.class)
+                .block())
+                ;
+    }
+
+    private CreateTimesheetEntry createTimesheetEntryRequest(ResourceId resourceId, WorkOrder workOrder, LoggedHoursByDay loggedHoursByDay) {
+        return new CreateTimesheetEntry(
                 resourceId.value(),
                 Status.DRAFT.value(),
                 "",
@@ -51,13 +78,10 @@ public class TimesheetServiceImpl implements TimesheetService {
                 Double.toString(loggedHoursByDay.hours()),
                 CreateTimesheetEntry.DEFAULT_INV_VALUE
         );
+    }
 
-        return webClient.post()
-                .uri(uriBuilder -> uriBuilder.path("timesheet").build())
-                .body(Mono.just(createTimesheetEntry), CreateTimesheetEntry.class)
-                .retrieve()
-                .bodyToMono(CreateTimesheetEntryResult.class)
-                .block().isOk()
-                ;
+    private TimesheetLineIdentifier mapResult(CreateTimesheetEntryResult timesheet) {
+        if(! timesheet.isOk()) return TimesheetLineIdentifier.ERROR_OCCURRED;
+        return new TimesheetLineIdentifier(timesheet.getIdentifier());
     }
 }

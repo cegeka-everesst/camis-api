@@ -17,7 +17,7 @@ import static java.time.temporal.TemporalAdjusters.next;
 import static java.time.temporal.TemporalAdjusters.previous;
 
 public class TimesheetLine {
-    private String identifier;
+    private TimesheetLineIdentifier identifier;
     private Status status;
     private String description;
     private TimeCode timeCode;
@@ -25,7 +25,7 @@ public class TimesheetLine {
     private List<LoggedHoursByDay> hoursByDays = new ArrayList<>();
 
 
-    public TimesheetLine(String identifier, Status status, String description, TimeCode timeCode, WorkOrder workOrder) {
+    public TimesheetLine(TimesheetLineIdentifier identifier, Status status, String description, TimeCode timeCode, WorkOrder workOrder) {
         this.identifier = identifier;
         this.status = status;
         this.description = description;
@@ -65,7 +65,7 @@ public class TimesheetLine {
         return workOrder;
     }
 
-    public String identifier(){
+    public TimesheetLineIdentifier identifier(){
         return identifier;
     }
 

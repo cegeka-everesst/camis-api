@@ -41,7 +41,7 @@ public class HoursLoggedCsvReader {
             hoursLoggedByDay -> {
                 Employee employee = new Employee(hoursLoggedByDay.resourceId(), hoursLoggedByDay.employeeName());
                 WeeklyTimesheet weeklyTimesheet = new WeeklyTimesheet();
-                TimesheetLine timesheetLine = new TimesheetLine("", Status.TRANSFERRED, "", TimeCode.WORK_DAY, hoursLoggedByDay.workOrder());
+                TimesheetLine timesheetLine = new TimesheetLine(TimesheetLineIdentifier.TO_CREATE, Status.TRANSFERRED, "", TimeCode.WORK_DAY, hoursLoggedByDay.workOrder());
                 timesheetLine.addLoggedHours(new LoggedHoursByDay(hoursLoggedByDay.localDate(), hoursLoggedByDay.hoursLogged()));
                 weeklyTimesheet.addLine(timesheetLine);
                 employee.addWeeklyTimesheet(weeklyTimesheet);

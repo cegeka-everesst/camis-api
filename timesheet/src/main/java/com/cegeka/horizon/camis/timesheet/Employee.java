@@ -13,6 +13,7 @@ public class Employee {
     private final ResourceId resourceId;
     private final String name;
     private final List<WeeklyTimesheet> weeklyTimeSheets = new ArrayList<>();
+    private TimeCode timeCode;
 
     public Employee(ResourceId resourceId, String name) {
         this.resourceId = resourceId;
@@ -56,6 +57,10 @@ public class Employee {
             this.weeklyTimeSheets.stream().min(new WeeklyTimesheet.SortByStartDate()).get().startDate(),
             this.weeklyTimeSheets.stream().max(new WeeklyTimesheet.SortByStartDate()).get().endDate()
                 );
+    }
+
+    public boolean isToSync(TimeCode timeCode) {
+        return !(!resourceId.isExternal() && timeCode == TimeCode.NO_ASSIGNMENT);
     }
 
     public static class MergeEmployees implements java.util.function.BiFunction<Employee, Employee, Employee> {

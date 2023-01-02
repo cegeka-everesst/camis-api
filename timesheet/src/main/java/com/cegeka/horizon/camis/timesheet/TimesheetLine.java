@@ -2,14 +2,10 @@ package com.cegeka.horizon.camis.timesheet;
 
 import com.cegeka.horizon.camis.domain.WorkOrder;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.time.DayOfWeek.MONDAY;
 import static java.time.DayOfWeek.SUNDAY;
@@ -17,12 +13,12 @@ import static java.time.temporal.TemporalAdjusters.next;
 import static java.time.temporal.TemporalAdjusters.previous;
 
 public class TimesheetLine {
-    private TimesheetLineIdentifier identifier;
-    private Status status;
-    private String description;
-    private TimeCode timeCode;
-    private WorkOrder workOrder;
-    private List<LoggedHoursByDay> hoursByDays = new ArrayList<>();
+    private final TimesheetLineIdentifier identifier;
+    private final Status status;
+    private final String description;
+    private final TimeCode timeCode;
+    private final WorkOrder workOrder;
+    private final List<LoggedHoursByDay> hoursByDays = new ArrayList<>();
 
 
     public TimesheetLine(TimesheetLineIdentifier identifier, Status status, String description, TimeCode timeCode, WorkOrder workOrder) {
@@ -61,10 +57,6 @@ public class TimesheetLine {
         }
     }
 
-    public WorkOrder workOrder() {
-        return workOrder;
-    }
-
     public TimesheetLineIdentifier identifier(){
         return identifier;
     }
@@ -73,8 +65,16 @@ public class TimesheetLine {
         return hoursByDays.stream().sorted(new LoggedHoursByDay.SortByDate()).toList();
     }
 
-    public WorkOrderStart getFirstUseOfWorkOrder() {
+    public WorkOrderStart firstUseOfWorkOrder() {
         return new WorkOrderStart(loggedHours().get(0).date(), workOrder);
+    }
+
+    public TimeCode timeCode() {
+        return timeCode;
+    }
+
+    public WorkOrder workOrder() {
+        return workOrder;
     }
 
     public static class SortByStartDate implements java.util.Comparator<TimesheetLine> {

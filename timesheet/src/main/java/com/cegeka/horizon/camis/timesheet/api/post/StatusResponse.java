@@ -16,4 +16,9 @@ public class StatusResponse {
                 ", returnCode='" + returnCode + '\'' +
                 '}';
     }
+
+
+    public boolean isOk() {
+        return status.equals("OK");
+    }
 }

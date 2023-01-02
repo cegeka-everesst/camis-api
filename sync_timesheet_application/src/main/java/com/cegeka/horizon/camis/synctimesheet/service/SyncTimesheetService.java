@@ -1,7 +1,5 @@
 package com.cegeka.horizon.camis.synctimesheet.service;
 
-import com.cegeka.horizon.camis.domain.ResourceId;
-import com.cegeka.horizon.camis.domain.WorkOrder;
 import com.cegeka.horizon.camis.timesheet.Employee;
 import com.cegeka.horizon.camis.timesheet.LoggedHoursByDay;
 import com.cegeka.horizon.camis.timesheet.TimesheetLineIdentifier;
@@ -12,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.threeten.extra.LocalDateRange;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,10 +24,18 @@ public class SyncTimesheetService {
     public void sync(List<Employee> inputEmployees) {
         inputEmployees.forEach(
                 employee -> {
+                    deleteOriginalLinesWithMatchingWorkOrder(employee);
                     createTimesheetEntry(employee);
-                    retrieveOriginalLogging(employee);
                 }
             );
+    }
+
+    private void deleteOriginalLinesWithMatchingWorkOrder(Employee informationForEntry) {
+        Employee informationCurrentlyInCamis = retrieveOriginalLogging(informationForEntry);
+        informationForEntry.getUsedWorkOrders();
+        informationCurrentlyInCamis.weeklyTimesheets().forEach(weeklyTimesheet -> weeklyTimesheet.lines().stream().filter(line-> informationForEntry.getUsedWorkOrders().contains(line.workOrder())).forEach(
+                line -> timesheetService.deleteTimesheetEntry(line.identifier(), informationCurrentlyInCamis.resourceId())
+        ));
     }
 
     private void createTimesheetEntry(Employee employee) {
@@ -49,10 +54,11 @@ public class SyncTimesheetService {
                 );
     }
 
-    private void retrieveOriginalLogging(Employee employee) {
-        LocalDateRange timesheetDuration = employee.getTimesheetDuration();
-        Employee camisTimesheetEntries = timesheetService.getTimesheetEntries(employee.resourceId(), employee.name(), timesheetDuration.getStart(), timesheetDuration.getEnd());
-        logger.info("Retrieved Camis timesheet entries for {} with result {}", employee.name(),camisTimesheetEntries);
+    private Employee retrieveOriginalLogging(Employee employee) {
+        LocalDateRange timesheetDuration = employee.getTimesheetDurations();
+        Employee camisTimesheetEntries = timesheetService.getTimesheetEntries(employee.resourceId(), employee.name(), timesheetDuration);
+        logger.info("Retrieved Camis timesheet entries for {} with result {}", employee.name(), camisTimesheetEntries);
+        return camisTimesheetEntries;
     }
 
 }

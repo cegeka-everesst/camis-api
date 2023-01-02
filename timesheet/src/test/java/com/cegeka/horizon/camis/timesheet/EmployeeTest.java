@@ -1,12 +1,8 @@
 package com.cegeka.horizon.camis.timesheet;
 
 import com.cegeka.horizon.camis.domain.ResourceId;
-import com.cegeka.horizon.camis.domain.WorkOrder;
 import com.cegeka.horizon.camis.timesheet.testbuilder.*;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
 
 import static com.cegeka.horizon.camis.timesheet.testbuilder.LoggedHoursByDayTestBuilder.aLoggedHours;
 import static com.cegeka.horizon.camis.timesheet.testbuilder.TimesheetLineTestBuilder.aTimesheetLine;
@@ -88,8 +84,8 @@ class EmployeeTest {
         employee.addWeeklyTimesheet(weeklyTimesheet);
         employee.addWeeklyTimesheet(differentWeek);
 
-        assertThat(employee.getTimesheetDuration().getStart()).isEqualTo(of(2022,11,28));
-        assertThat(employee.getTimesheetDuration().getEnd()).isEqualTo(of(2022,12,18));
+        assertThat(employee.getTimesheetDurations().getStart()).isEqualTo(of(2022,11,28));
+        assertThat(employee.getTimesheetDurations().getEnd()).isEqualTo(of(2022,12,18));
     }
 
 

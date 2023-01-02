@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
 
@@ -45,7 +44,7 @@ public class HoursLoggedCsvReader {
                 timesheetLine.addLoggedHours(new LoggedHoursByDay(hoursLoggedByDay.localDate(), hoursLoggedByDay.hoursLogged()));
                 weeklyTimesheet.addLine(timesheetLine);
                 employee.addWeeklyTimesheet(weeklyTimesheet);
-                employees.merge(hoursLoggedByDay.resourceId(), employee, new Employee.mergeFunction());
+                employees.merge(hoursLoggedByDay.resourceId(), employee, new Employee.MergeEmployees());
             }
 
         );

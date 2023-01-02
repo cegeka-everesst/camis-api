@@ -28,7 +28,7 @@ public class CreateTimesheetEntryResult {
     List<StatusResponse> response;
 
     public boolean isOk(){
-        return response.stream().allMatch(statusResponse -> statusResponse.status.equals("OK"));
+        return response.stream().allMatch(StatusResponse::isOk);
     }
 
     @Override

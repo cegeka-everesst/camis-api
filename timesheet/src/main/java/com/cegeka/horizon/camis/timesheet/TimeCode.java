@@ -4,7 +4,9 @@ import java.util.Arrays;
 
 public enum TimeCode {
     WORK_DAY("AD"),
-    NO_ASSIGNMENT("ZZ");
+    NO_ASSIGNMENT("ZZ"),
+    CAO("CAO"),
+    BF("BF");
 
     private final String value;
 

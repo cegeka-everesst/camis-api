@@ -32,9 +32,7 @@ public class SyncTimesheetService {
 
     public void retrieve(List<Employee> inputEmployees) {
         inputEmployees.forEach(
-                employee -> {
-                    retrieveOriginalLogging(employee);
-                }
+                this::retrieveOriginalLogging
         );
     }
 
@@ -44,7 +42,7 @@ public class SyncTimesheetService {
         informationCurrentlyInCamis.weeklyTimesheets().forEach(weeklyTimesheet -> weeklyTimesheet.lines().stream().filter(line -> employeeForEntry.getUsedWorkOrders().contains(line.workOrder())).forEach(
                 line -> {
                     if (!timesheetService.deleteTimesheetEntry(line.identifier(), informationCurrentlyInCamis.resourceId())) {
-                        logger.error("Failure to delete timesheetLine {} of employee {}", line.identifier().value(), employeeForEntry.name());
+                        logger.error("Failure to delete timesheetLine {} of employee {} ", line.identifier().value(), employeeForEntry.name());
                     }
                 }
         ));
@@ -57,12 +55,12 @@ public class SyncTimesheetService {
                             if (employee.isToSync(timesheetLine.timeCode())) {
                                 List<LoggedHoursByDay> loggedHours = timesheetLine.loggedHours();
                                 Optional<LoggedHoursByDay> firstLoggedHours = loggedHours.stream().findFirst();
-                                TimesheetLineIdentifier timesheetLineIdentifier = timesheetService.createTimesheetEntry(employee.resourceId(), timesheetLine.workOrder(), firstLoggedHours.get());
+                                TimesheetLineIdentifier timesheetLineIdentifier = timesheetService.createTimesheetEntry(employee.resourceId(), timesheetLine.timeCode(), timesheetLine.workOrder(), firstLoggedHours.get());
                                 loggedHours.stream().skip(1).forEach(
                                         loggedHoursByDay ->
-                                                timesheetService.updateTimesheetEntry(timesheetLineIdentifier, employee.resourceId(), timesheetLine.workOrder(), loggedHoursByDay)
+                                                timesheetService.updateTimesheetEntry(timesheetLineIdentifier, employee.resourceId(), timesheetLine.timeCode(), timesheetLine.workOrder(), loggedHoursByDay)
                                 );
-                                logger.info("Updated timesheetLine of date {} from employee {}", timesheetLine.startDate(), employee.name());
+                                logger.info("Updated timesheetLine of date {} with workOrder {} from employee {} ", timesheetLine.startDate(), timesheetLine.workOrder(), employee.name());
                             }
                         }
                 )
@@ -72,7 +70,7 @@ public class SyncTimesheetService {
     private Employee retrieveOriginalLogging(Employee employee) {
         LocalDateRange timesheetDuration = employee.getTimesheetDurations();
         Employee camisTimesheetEntries = timesheetService.getTimesheetEntries(employee.resourceId(), employee.name(), timesheetDuration);
-        logger.info("Retrieved original Camis timesheet entries for {} with result {}", employee.name(), camisTimesheetEntries);
+        logger.info("Retrieved original Camis timesheet entries for {} with result {} ", employee.name(), camisTimesheetEntries);
         return camisTimesheetEntries;
     }
 

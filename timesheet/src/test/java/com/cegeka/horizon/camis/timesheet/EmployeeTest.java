@@ -2,7 +2,6 @@ package com.cegeka.horizon.camis.timesheet;
 
 import com.cegeka.horizon.camis.domain.ResourceId;
 import com.cegeka.horizon.camis.timesheet.testbuilder.*;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static com.cegeka.horizon.camis.timesheet.testbuilder.LoggedHoursByDayTestBuilder.aLoggedHours;

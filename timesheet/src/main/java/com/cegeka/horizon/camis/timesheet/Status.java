@@ -4,8 +4,9 @@ import java.util.Arrays;
 
 public enum Status {
     TRANSFERRED("T"),
+    DRAFT("P"),
     C("C"),
-    DRAFT("P");
+    N("N");
 
     private final String value;
 

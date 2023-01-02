@@ -52,8 +52,8 @@ public class TimesheetServiceImpl implements TimesheetService {
     }
 
     @Override
-    public TimesheetLineIdentifier createTimesheetEntry(ResourceId resourceId, WorkOrder workOrder, LoggedHoursByDay loggedHours) {
-        CreateTimesheetEntry createTimesheetEntry = createTimesheetEntryRequest(resourceId, workOrder, loggedHours);
+    public TimesheetLineIdentifier createTimesheetEntry(ResourceId resourceId, TimeCode timeCode, WorkOrder workOrder, LoggedHoursByDay loggedHours) {
+        CreateTimesheetEntry createTimesheetEntry = createTimesheetEntryRequest(resourceId, timeCode, workOrder, loggedHours);
 
         return mapResult(webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("timesheet").build())
@@ -64,8 +64,8 @@ public class TimesheetServiceImpl implements TimesheetService {
     }
 
     @Override
-    public TimesheetLineIdentifier updateTimesheetEntry(TimesheetLineIdentifier timesheetLineIdentifier, ResourceId resourceId, WorkOrder workOrder, LoggedHoursByDay loggedHours) {
-        CreateTimesheetEntry createTimesheetEntry = createTimesheetEntryRequest(resourceId, workOrder, loggedHours);
+    public TimesheetLineIdentifier updateTimesheetEntry(TimesheetLineIdentifier timesheetLineIdentifier, ResourceId resourceId, TimeCode timeCode, WorkOrder workOrder, LoggedHoursByDay loggedHours) {
+        CreateTimesheetEntry createTimesheetEntry = createTimesheetEntryRequest(resourceId,timeCode, workOrder, loggedHours);
 
         return mapResult(webClient.put()
                 .uri(uriBuilder -> uriBuilder.path("timesheet")
@@ -89,14 +89,14 @@ public class TimesheetServiceImpl implements TimesheetService {
                 .block().isOk();
     }
 
-    private CreateTimesheetEntry createTimesheetEntryRequest(ResourceId resourceId, WorkOrder workOrder, LoggedHoursByDay loggedHoursByDay) {
+    private CreateTimesheetEntry createTimesheetEntryRequest(ResourceId resourceId, TimeCode timeCode, WorkOrder workOrder, LoggedHoursByDay loggedHoursByDay) {
         return new CreateTimesheetEntry(
                 resourceId.value(),
                 Status.DRAFT.value(),
                 "",
                 CreateTimesheetEntry.DEFAULT_WORKORDER_DESCRIPTION,
                 CreateTimesheetEntry.DEFAULT_WORKORDER_PROJECT,
-                TimeCode.WORK_DAY.value(),
+                timeCode.value(),
                 workOrder.value(),
                 CreateTimesheetEntry.DEFAULT_EXTERNAL_REF,
                 loggedHoursByDay.date().format(ofPattern("yyyy-MM-dd")) + "T00:00:00",

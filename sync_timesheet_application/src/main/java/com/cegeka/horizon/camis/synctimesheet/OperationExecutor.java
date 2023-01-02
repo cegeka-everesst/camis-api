@@ -8,15 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.List;
 
 @Component
 public class OperationExecutor {
-    public static final String CHECK_WORK_ORDERS = "checkWorkOrders";
-    public static final String SYNC_TIMESHEETS = "syncTimesheets";
     @Value("${operation}")
     private String operation;
     @Value("${input}")
@@ -26,11 +22,18 @@ public class OperationExecutor {
     @Autowired
     private SyncTimesheetService syncTimesheetService;
 
+    enum Operation{
+        CHECK_WORK_ORDERS,
+        SYNC_TIMESHEETS,
+        VIEW_TIMESHEETS
+    }
+
     public void run() throws Exception {
         List<Employee> employees = new HoursLoggedCsvReader(new FileInputStream(inputCsvFile)).readCsv();
 
-        switch (operation) {
+        switch (Operation.valueOf(operation)) {
             case CHECK_WORK_ORDERS -> checkWorkOrderService.check(employees);
+            case VIEW_TIMESHEETS -> syncTimesheetService.retrieve(employees);
             case SYNC_TIMESHEETS -> syncTimesheetService.sync(employees);
         }
     }

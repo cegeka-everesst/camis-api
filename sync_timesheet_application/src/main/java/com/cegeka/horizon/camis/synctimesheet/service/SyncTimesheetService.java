@@ -30,6 +30,14 @@ public class SyncTimesheetService {
         );
     }
 
+    public void retrieve(List<Employee> inputEmployees) {
+        inputEmployees.forEach(
+                employee -> {
+                    retrieveOriginalLogging(employee);
+                }
+        );
+    }
+
     private void deleteOriginalLinesWithMatchingWorkOrder(Employee employeeForEntry) {
         Employee informationCurrentlyInCamis = retrieveOriginalLogging(employeeForEntry);
         employeeForEntry.getUsedWorkOrders();

@@ -19,7 +19,7 @@ public class SyncTimesheetApp {
     }
 
     @Bean
-    public CommandLineRunner isAccessible(ApplicationContext ctx) {
+    public CommandLineRunner runOperation(ApplicationContext ctx) {
         return args -> executor.run();
     }
 

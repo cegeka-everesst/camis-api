@@ -30,11 +30,15 @@ public class SyncTimesheetService {
             );
     }
 
-    private void deleteOriginalLinesWithMatchingWorkOrder(Employee informationForEntry) {
-        Employee informationCurrentlyInCamis = retrieveOriginalLogging(informationForEntry);
-        informationForEntry.getUsedWorkOrders();
-        informationCurrentlyInCamis.weeklyTimesheets().forEach(weeklyTimesheet -> weeklyTimesheet.lines().stream().filter(line-> informationForEntry.getUsedWorkOrders().contains(line.workOrder())).forEach(
-                line -> timesheetService.deleteTimesheetEntry(line.identifier(), informationCurrentlyInCamis.resourceId())
+    private void deleteOriginalLinesWithMatchingWorkOrder(Employee employeeForEntry) {
+        Employee informationCurrentlyInCamis = retrieveOriginalLogging(employeeForEntry);
+        employeeForEntry.getUsedWorkOrders();
+        informationCurrentlyInCamis.weeklyTimesheets().forEach(weeklyTimesheet -> weeklyTimesheet.lines().stream().filter(line-> employeeForEntry.getUsedWorkOrders().contains(line.workOrder())).forEach(
+                line -> {
+                    if(!timesheetService.deleteTimesheetEntry(line.identifier(), informationCurrentlyInCamis.resourceId())){
+                        logger.error("Failure to delete timesheetLine {} of employee {}", line.identifier().value(), employeeForEntry.name());
+                    }
+                }
         ));
     }
 
@@ -49,6 +53,7 @@ public class SyncTimesheetService {
                                     loggedHoursByDay ->
                                             timesheetService.updateTimesheetEntry(timesheetLineIdentifier, employee.resourceId(), timesheetLine.workOrder(), loggedHoursByDay)
                             );
+                            logger.info("Update timesheetLine of date {} from employee {}", timesheetLine.startDate(), employee.name());
                         }
                         )
                 );
@@ -57,7 +62,7 @@ public class SyncTimesheetService {
     private Employee retrieveOriginalLogging(Employee employee) {
         LocalDateRange timesheetDuration = employee.getTimesheetDurations();
         Employee camisTimesheetEntries = timesheetService.getTimesheetEntries(employee.resourceId(), employee.name(), timesheetDuration);
-        logger.info("Retrieved Camis timesheet entries for {} with result {}", employee.name(), camisTimesheetEntries);
+        logger.info("Retrieved original Camis timesheet entries for {} with result {}", employee.name(), camisTimesheetEntries);
         return camisTimesheetEntries;
     }
 

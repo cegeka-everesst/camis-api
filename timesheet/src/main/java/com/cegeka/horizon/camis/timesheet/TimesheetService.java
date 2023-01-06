@@ -12,4 +12,5 @@ public interface TimesheetService {
     TimesheetLineIdentifier updateTimesheetEntry(TimesheetLineIdentifier timesheetLineIdentifier, ResourceId resourceId, TimeCode timeCode, WorkOrder workOrder, LoggedHoursByDay loggedHours);
 
     boolean deleteTimesheetEntry(TimesheetLineIdentifier timesheetLineIdentifier, ResourceId resourceId);
+
 }

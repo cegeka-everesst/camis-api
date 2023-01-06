@@ -1,9 +1,6 @@
 package com.cegeka.horizon.camis.synctimesheet.service;
 
-import com.cegeka.horizon.camis.timesheet.Employee;
-import com.cegeka.horizon.camis.timesheet.LoggedHoursByDay;
-import com.cegeka.horizon.camis.timesheet.TimesheetLineIdentifier;
-import com.cegeka.horizon.camis.timesheet.TimesheetService;
+import com.cegeka.horizon.camis.timesheet.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.threeten.extra.LocalDateRange;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SyncTimesheetService {
@@ -26,6 +22,7 @@ public class SyncTimesheetService {
                 employee -> {
                     deleteOriginalLinesWithMatchingWorkOrder(employee);
                     createTimesheetEntry(employee);
+                    //TODO: retrieveOriginalLogging once again and add check whether it matches with input
                 }
         );
     }
@@ -39,12 +36,16 @@ public class SyncTimesheetService {
     private void deleteOriginalLinesWithMatchingWorkOrder(Employee employeeForEntry) {
         Employee informationCurrentlyInCamis = retrieveOriginalLogging(employeeForEntry);
         employeeForEntry.getUsedWorkOrders();
-        informationCurrentlyInCamis.weeklyTimesheets().forEach(weeklyTimesheet -> weeklyTimesheet.lines().stream().filter(line -> employeeForEntry.getUsedWorkOrders().contains(line.workOrder())).forEach(
-                line -> {
-                    if (!timesheetService.deleteTimesheetEntry(line.identifier(), informationCurrentlyInCamis.resourceId())) {
-                        logger.error("Failure to delete timesheetLine {} of employee {} ", line.identifier().value(), employeeForEntry.name());
-                    }
-                }
+        informationCurrentlyInCamis.weeklyTimesheets()
+                                    .forEach(
+                                            weeklyTimesheet -> weeklyTimesheet.lines().stream()
+                                                    .filter(TimesheetLine::canBeDeleted)
+                                                    .filter(line -> employeeForEntry.getUsedWorkOrders().contains(line.workOrder())).forEach(
+                                                    line -> {
+                                                            if (!timesheetService.deleteTimesheetEntry(line.identifier(), informationCurrentlyInCamis.resourceId())) {
+                                                                logger.error("Failure to delete timesheetLine {} of employee {} ", line.identifier().value(), employeeForEntry.name());
+                                                            }
+                                                    }
         ));
     }
 
@@ -53,12 +54,9 @@ public class SyncTimesheetService {
                 weeklyTimesheet -> weeklyTimesheet.lines().forEach(
                         timesheetLine -> {
                             if (employee.isToSync(timesheetLine.timeCode())) {
-                                List<LoggedHoursByDay> loggedHours = timesheetLine.loggedHours();
-                                Optional<LoggedHoursByDay> firstLoggedHours = loggedHours.stream().findFirst();
-                                TimesheetLineIdentifier timesheetLineIdentifier = timesheetService.createTimesheetEntry(employee.resourceId(), timesheetLine.timeCode(), timesheetLine.workOrder(), firstLoggedHours.get());
-                                loggedHours.stream().skip(1).forEach(
+                                timesheetLine.loggedHours().stream().forEach(
                                         loggedHoursByDay ->
-                                                timesheetService.updateTimesheetEntry(timesheetLineIdentifier, employee.resourceId(), timesheetLine.timeCode(), timesheetLine.workOrder(), loggedHoursByDay)
+                                        timesheetService.createTimesheetEntry(employee.resourceId(), timesheetLine.timeCode(), timesheetLine.workOrder(), loggedHoursByDay)
                                 );
                                 logger.info("Updated timesheetLine of date {} with workOrder {} from employee {} ", timesheetLine.startDate(), timesheetLine.workOrder(), employee.name());
                             }

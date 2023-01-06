@@ -67,7 +67,7 @@ public class HoursLoggedCsvReader {
                         LocalDate.parse(nextRecord[0], ofPattern("dd/MM/yyyy")),
                         new ResourceId(nextRecord[1]),
                         nextRecord[2],
-                        TimeCode.map(nextRecord[3]),
+                        new TimeCode(nextRecord[3]),
                         new WorkOrder(nextRecord[4]),
                         Double.parseDouble(nextRecord[5].replace(DECIMAL_SEPARATOR,'.'))
                         ));

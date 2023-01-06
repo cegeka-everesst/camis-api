@@ -77,6 +77,10 @@ public class TimesheetLine {
         return workOrder;
     }
 
+    public boolean canBeDeleted() {
+        return status.canBeDeleted();
+    }
+
     public static class SortByStartDate implements java.util.Comparator<TimesheetLine> {
         @Override
         public int compare(TimesheetLine o1, TimesheetLine o2) {
@@ -88,6 +92,7 @@ public class TimesheetLine {
     public String toString() {
         return "TimesheetLine{" + "identifier='" + identifier + '\'' +
                 ", workOrder=" + workOrder +
+                ", status=" + status +
                 ", hoursByDays=" + hoursByDays +
                 '}';
     }

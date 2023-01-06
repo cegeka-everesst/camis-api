@@ -6,7 +6,7 @@ public enum Status {
     TRANSFERRED("T"),
     DRAFT("P"),
     C("C"),
-    N("N");
+    READY("N");
 
     private final String value;
 
@@ -16,6 +16,10 @@ public enum Status {
 
     public static Status map(String valueToMap) {
         return Arrays.stream(values()).filter(status -> status.value.equals(valueToMap)).findFirst().get();
+    }
+
+    public boolean canBeDeleted(){
+        return Arrays.asList(TRANSFERRED, READY).contains(this);
     }
 
     public String value() {

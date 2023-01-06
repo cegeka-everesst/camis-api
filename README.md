@@ -17,9 +17,10 @@ The file should have a header and follow the following format :
 `date;CAMIS resourceId;employeeName;timeCode;workOrder;hoursLogged`
 
 as an example
-date;Camis resourceId;employeeName;timeCode;workOrder;hoursLogged
-19/12/2022;I123456;Ward Br;AD;LMAC000.003;1
-20/12/2022;I123456;Ward Br;AD;LMAC000.003;7,75
+
+* `date;Camis resourceId;employeeName;timeCode;workOrder;hoursLogged`
+* `19/12/2022;I123456;Ward Br;AD;LMAC000.003;1`
+* `20/12/2022;I123456;Ward Br;AD;LMAC000.003;7,75`
 
 
 

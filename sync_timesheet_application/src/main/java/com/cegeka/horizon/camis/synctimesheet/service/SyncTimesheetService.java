@@ -1,5 +1,6 @@
 package com.cegeka.horizon.camis.synctimesheet.service;
 
+import com.cegeka.horizon.camis.synctimesheet.service.command.SyncCommand;
 import com.cegeka.horizon.camis.timesheet.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,13 +17,15 @@ public class SyncTimesheetService {
 
     @Autowired
     private TimesheetService timesheetService;
+    @Autowired
+    private CompareEmployeeService compareEmployeeService;
 
     public void sync(List<Employee> inputEmployees) {
-        inputEmployees.forEach(
-                employee -> {
-                    deleteOriginalLinesWithMatchingWorkOrder(employee);
-                    createTimesheetEntry(employee);
-                    //TODO: retrieveOriginalLogging once again and add check whether it matches with input
+        inputEmployees
+                .forEach(
+                inputEmployee -> {
+                        Employee camisEmployee = retrieveOriginalLogging(inputEmployee);
+                        compareEmployeeService.compare(inputEmployee, camisEmployee).forEach(syncCommand -> syncCommand.execute(timesheetService));
                 }
         );
     }
@@ -50,11 +53,19 @@ public class SyncTimesheetService {
     }
 
     private void createTimesheetEntry(Employee employee) {
-        employee.weeklyTimesheets().forEach(
+        employee.weeklyTimesheets()
+                .stream()
+                .peek(weeklyTimesheet -> {
+                    if(weeklyTimesheet.getTotalHoursLogged() < 40.0 ){
+                        logger.error("Not syncing employee {} timesheet starting at {} due to less than 40 hours logged", employee.name(), weeklyTimesheet.startDate());
+                    }
+                })
+                .filter(weeklyTimesheet -> weeklyTimesheet.getTotalHoursLogged() >= 40.0)
+                .forEach(
                 weeklyTimesheet -> weeklyTimesheet.lines().forEach(
                         timesheetLine -> {
                             if (employee.isToSync(timesheetLine.timeCode())) {
-                                timesheetLine.loggedHours().stream().forEach(
+                                timesheetLine.loggedHours().forEach(
                                         loggedHoursByDay ->
                                         timesheetService.createTimesheetEntry(employee.resourceId(), timesheetLine.timeCode(), timesheetLine.workOrder(), loggedHoursByDay)
                                 );

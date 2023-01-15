@@ -48,6 +48,10 @@ public class WeeklyTimesheet {
         ).collect(toList());
     }
 
+    public double getTotalHoursLogged() {
+        return lines.stream().mapToDouble(TimesheetLine::getTotalHoursLogged).sum();
+    }
+
 
     public static class SortByStartDate implements java.util.Comparator<WeeklyTimesheet> {
         @Override

@@ -22,6 +22,7 @@ dependencies {
     implementation 'org.threeten:threeten-extra'
 
     testImplementation 'org.assertj:assertj-core'
+    testImplementation(testFixtures(project(":timesheet")))
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 

@@ -81,6 +81,10 @@ public class TimesheetLine {
         return status.canBeDeleted();
     }
 
+    public double getTotalHoursLogged() {
+        return hoursByDays.stream().mapToDouble(LoggedHoursByDay::hours).sum();
+    }
+
     public static class SortByStartDate implements java.util.Comparator<TimesheetLine> {
         @Override
         public int compare(TimesheetLine o1, TimesheetLine o2) {
@@ -90,9 +94,10 @@ public class TimesheetLine {
 
     @Override
     public String toString() {
-        return "TimesheetLine{" + "identifier='" + identifier + '\'' +
-                ", workOrder=" + workOrder +
-                ", status=" + status +
+        return "TimesheetLine{" + "identifier='" + identifier.value() + '\'' +
+                ", workOrder=" + workOrder.value() +
+                ", status=" + status.toString() +
+                ", timeCode=" + timeCode.value() +
                 ", hoursByDays=" + hoursByDays +
                 '}';
     }

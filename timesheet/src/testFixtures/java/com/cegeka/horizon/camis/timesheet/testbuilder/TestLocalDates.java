@@ -6,8 +6,17 @@ public class TestLocalDates {
 
 
     //5-11 December 2022
+    /**
+     * Monday 28/11/2022
+     */
     public static LocalDate WEEK_0_MONDAY = LocalDate.of(2022,11,28);
+    /**
+     * Tuesday 29/11/2022
+     */
     public static LocalDate WEEK_0_TUESDAY = LocalDate.of(2022,11,29);
+    /**
+     * Wednesday 30/11/2022
+     */
     public static LocalDate WEEK_0_WEDNESDAY = LocalDate.of(2022,11,30);
 
 

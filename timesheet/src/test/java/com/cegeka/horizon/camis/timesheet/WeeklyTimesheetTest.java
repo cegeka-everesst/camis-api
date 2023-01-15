@@ -2,6 +2,7 @@ package com.cegeka.horizon.camis.timesheet;
 
 import com.cegeka.horizon.camis.domain.WorkOrder;
 import com.cegeka.horizon.camis.timesheet.testbuilder.TestWorkOrders;
+import com.cegeka.horizon.camis.timesheet.testbuilder.TimesheetLineTestBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -16,11 +17,11 @@ class WeeklyTimesheetTest {
 
     @Test
     public void givenTimesheet_whenStartDate_thenFindFirstMondayOfLoggedHours(){
-        TimesheetLine line1 = aTimesheetLine().build();
-        line1.addLoggedHours(aLoggedHours().withDay(of(2022,12,8)).build());
+        TimesheetLineTestBuilder line1 = aTimesheetLine()
+                        .withLoggedHours(aLoggedHours().withDay(of(2022,12,8)));
 
-        TimesheetLine line2 = aTimesheetLine().build();
-        line2.addLoggedHours(aLoggedHours().withDay(of(2022,12,6)).build());
+        TimesheetLineTestBuilder line2 = aTimesheetLine()
+                        .withLoggedHours(aLoggedHours().withDay(of(2022,12,6)));
 
         WeeklyTimesheet weeklyTimesheet =
                         aWeeklyTimesheet()
@@ -33,11 +34,11 @@ class WeeklyTimesheetTest {
 
     @Test
     public void givenTimesheet_whenEndDate_thenFindLastSundayOfLoggedHours(){
-        TimesheetLine line1 = aTimesheetLine().build();
-        line1.addLoggedHours(aLoggedHours().withDay(of(2022,12,17)).build());
+        TimesheetLineTestBuilder line1 = aTimesheetLine()
+                                .withLoggedHours(aLoggedHours().withDay(of(2022,12,17)));
 
-        TimesheetLine line2 = aTimesheetLine().build();
-        line2.addLoggedHours(aLoggedHours().withDay(of(2022,12,15)).build());
+        TimesheetLineTestBuilder line2 = aTimesheetLine()
+                                .withLoggedHours(aLoggedHours().withDay(of(2022,12,15)));
 
         WeeklyTimesheet weeklyTimesheet =
                 aWeeklyTimesheet()
@@ -50,11 +51,11 @@ class WeeklyTimesheetTest {
 
     @Test
     public void givenTimesheet_whenEndDate_thenFindLastSundayOfLoggedHoursIfSundayIncluded(){
-        TimesheetLine line1 = aTimesheetLine().build();
-        line1.addLoggedHours(aLoggedHours().withDay(of(2022,12,13)).build());
+        TimesheetLineTestBuilder line1 = aTimesheetLine()
+                            .withLoggedHours(aLoggedHours().withDay(of(2022,12,13)));
 
-        TimesheetLine line2 = aTimesheetLine().build();
-        line2.addLoggedHours(aLoggedHours().withDay(of(2022,12,18)).build());
+        TimesheetLineTestBuilder line2 = aTimesheetLine()
+                                        .withLoggedHours(aLoggedHours().withDay(of(2022,12,18)));
 
         WeeklyTimesheet weeklyTimesheet =
                 aWeeklyTimesheet()
@@ -67,15 +68,13 @@ class WeeklyTimesheetTest {
 
     @Test
     public void givenTimesheetLine_whenAddLineAndDifferentWorkOrder_thenAddLine(){
-        TimesheetLine existingLine = aTimesheetLine().withWorkOrder(new WorkOrder("LMAC003.001")).build();
-        existingLine.addLoggedHours(aLoggedHours().withDay(5).build());
         WeeklyTimesheet weeklyTimesheet =
                 aWeeklyTimesheet()
-                        .withLine(existingLine)
+                        .withLine(aTimesheetLine().withWorkOrder(new WorkOrder("LMAC003.001")).withLoggedHours(aLoggedHours().withDay(5)))
                         .build();
 
-        TimesheetLine newLine = aTimesheetLine().withWorkOrder(new WorkOrder("LMAC005.001")).build();
-        newLine.addLoggedHours(aLoggedHours().withDay(5).build());
+        TimesheetLine newLine = aTimesheetLine().withWorkOrder(new WorkOrder("LMAC005.001"))
+                .withLoggedHours(aLoggedHours().withDay(5)).build();
 
         weeklyTimesheet.addLine(newLine);
 
@@ -86,11 +85,9 @@ class WeeklyTimesheetTest {
     public void givenTimesheetLine_whenAddLineAndSameWorkOrder_thenMergeLine(){
         WorkOrder sameWorkOrder = TestWorkOrders.WORK_ORDER_1;
         LocalDate date = of(2022, 12, 5);
-        TimesheetLine existingLine = aTimesheetLine().withWorkOrder(sameWorkOrder).build();
-        existingLine.addLoggedHours(aLoggedHours(3).withDay(date).build());
         WeeklyTimesheet weeklyTimesheet =
                 aWeeklyTimesheet()
-                        .withLine(existingLine)
+                        .withLine(aTimesheetLine().withWorkOrder(sameWorkOrder).withLoggedHours(aLoggedHours(3).withDay(date)))
                         .build();
 
         TimesheetLine newLine = aTimesheetLine().withWorkOrder(sameWorkOrder).build();
@@ -107,11 +104,9 @@ class WeeklyTimesheetTest {
     public void givenTimesheetLine_whenAddLineAndSameWorkOrderYetDifferentIdentifier_thenNotMergeLine(){
         WorkOrder sameWorkOrder = TestWorkOrders.WORK_ORDER_1;
         LocalDate date = of(2022, 12, 5);
-        TimesheetLine existingLine = aTimesheetLine().withWorkOrder(sameWorkOrder).build();
-        existingLine.addLoggedHours(aLoggedHours(3).withDay(date).build());
         WeeklyTimesheet weeklyTimesheet =
                 aWeeklyTimesheet()
-                        .withLine(existingLine)
+                        .withLine(aTimesheetLine().withWorkOrder(sameWorkOrder).withLoggedHours(aLoggedHours(3).withDay(date)))
                         .build();
 
         TimesheetLine newLine = aTimesheetLine()

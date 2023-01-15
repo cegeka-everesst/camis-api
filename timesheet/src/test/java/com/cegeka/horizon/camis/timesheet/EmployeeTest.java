@@ -19,7 +19,7 @@ class EmployeeTest {
                         .withWorkOrder(TestWorkOrders.WORK_ORDER_1)
                         .withLoggedHours(aLoggedHours(5, of(2022, 12, 6)))
                         .withLoggedHours(aLoggedHours(5, of(2022, 12, 7)))
-                        .build())
+                        )
                 .build();
 
         WeeklyTimesheet sameWeek = aWeeklyTimesheet()
@@ -27,7 +27,7 @@ class EmployeeTest {
                         .withWorkOrder(TestWorkOrders.WORK_ORDER_1)
                         .withLoggedHours(aLoggedHours(5, of(2022, 12, 8)))
                         .withLoggedHours(aLoggedHours(5, of(2022, 12, 9)))
-                        .build())
+                        )
                 .build();
 
         Employee employee = new Employee(new ResourceId("I12231"), "Ward");
@@ -44,7 +44,7 @@ class EmployeeTest {
                         .withWorkOrder(TestWorkOrders.WORK_ORDER_1)
                         .withLoggedHours(aLoggedHours(5, of(2022, 12, 6)))
                         .withLoggedHours(aLoggedHours(5, of(2022, 12, 7)))
-                        .build())
+                        )
                 .build();
 
         WeeklyTimesheet differentWeek = aWeeklyTimesheet()
@@ -52,7 +52,7 @@ class EmployeeTest {
                         .withWorkOrder(TestWorkOrders.WORK_ORDER_1)
                         .withLoggedHours(aLoggedHours(5, of(2022, 12, 12)))
                         .withLoggedHours(aLoggedHours(5, of(2022, 12, 13)))
-                        .build())
+                        )
                 .build();
 
         Employee employee = new Employee(new ResourceId("I12231"), "Ward");
@@ -69,7 +69,7 @@ class EmployeeTest {
                         .withWorkOrder(TestWorkOrders.WORK_ORDER_1)
                         .withLoggedHours(aLoggedHours(5, of(2022, 11, 29)))
                         .withLoggedHours(aLoggedHours(5, of(2022, 11, 30)))
-                        .build())
+                        )
                 .build();
 
         WeeklyTimesheet differentWeek = aWeeklyTimesheet()
@@ -77,7 +77,7 @@ class EmployeeTest {
                         .withWorkOrder(TestWorkOrders.WORK_ORDER_1)
                         .withLoggedHours(aLoggedHours(5, of(2022, 12, 12)))
                         .withLoggedHours(aLoggedHours(5, of(2022, 12, 13)))
-                        .build())
+                        )
                 .build();
 
         Employee employee = new Employee(new ResourceId("I12231"), "Ward");

@@ -11,7 +11,7 @@ import java.util.List;
 import static java.util.Arrays.stream;
 
 public class WeeklyTimesheetTestBuilder {
-    private List<TimesheetLine> lines = new ArrayList<>();
+    private final List<TimesheetLine> lines = new ArrayList<>();
     private TimeCode timeCode;
 
     private WeeklyTimesheetTestBuilder(){}

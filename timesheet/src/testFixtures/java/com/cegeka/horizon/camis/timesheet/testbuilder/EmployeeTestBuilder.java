@@ -14,8 +14,7 @@ public class EmployeeTestBuilder {
     }
 
     public Employee build(){
-        Employee employee = new Employee(resourceId, name);
-        return employee;
+        return new Employee(resourceId, name);
     }
 
     public EmployeeTestBuilder withIdentifier(String identifier) {

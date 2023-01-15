@@ -5,6 +5,8 @@ import com.cegeka.horizon.camis.timesheet.testbuilder.*;
 import org.junit.jupiter.api.Test;
 
 import static com.cegeka.horizon.camis.timesheet.testbuilder.LoggedHoursByDayTestBuilder.aLoggedHours;
+import static com.cegeka.horizon.camis.timesheet.testbuilder.TestLocalDates.*;
+import static com.cegeka.horizon.camis.timesheet.testbuilder.TestWorkOrders.WORK_ORDER_1;
 import static com.cegeka.horizon.camis.timesheet.testbuilder.TimesheetLineTestBuilder.aTimesheetLine;
 import static com.cegeka.horizon.camis.timesheet.testbuilder.WeeklyTimesheetTestBuilder.aWeeklyTimesheet;
 import static java.time.LocalDate.of;
@@ -16,17 +18,17 @@ class EmployeeTest {
     public void givenWeeklyTimesheets_whenSameWeek_thenMerge(){
         WeeklyTimesheet weeklyTimesheet = aWeeklyTimesheet()
                 .withLine(aTimesheetLine()
-                        .withWorkOrder(TestWorkOrders.WORK_ORDER_1)
-                        .withLoggedHours(aLoggedHours(5, of(2022, 12, 6)))
-                        .withLoggedHours(aLoggedHours(5, of(2022, 12, 7)))
+                        .withWorkOrder(WORK_ORDER_1)
+                        .withLoggedHours(aLoggedHours(5, WEEK_1_TUESDAY))
+                        .withLoggedHours(aLoggedHours(5, WEEK_1_WEDNESDAY))
                         )
                 .build();
 
         WeeklyTimesheet sameWeek = aWeeklyTimesheet()
                 .withLine(aTimesheetLine()
-                        .withWorkOrder(TestWorkOrders.WORK_ORDER_1)
-                        .withLoggedHours(aLoggedHours(5, of(2022, 12, 8)))
-                        .withLoggedHours(aLoggedHours(5, of(2022, 12, 9)))
+                        .withWorkOrder(WORK_ORDER_1)
+                        .withLoggedHours(aLoggedHours(5, WEEK_1_THURSDAY))
+                        .withLoggedHours(aLoggedHours(5, WEEK_1_FRIDAY))
                         )
                 .build();
 
@@ -41,17 +43,17 @@ class EmployeeTest {
     public void givenWeeklyTimesheets_whenDifferenWeek_thenMerge(){
         WeeklyTimesheet weeklyTimesheet = aWeeklyTimesheet()
                 .withLine(aTimesheetLine()
-                        .withWorkOrder(TestWorkOrders.WORK_ORDER_1)
-                        .withLoggedHours(aLoggedHours(5, of(2022, 12, 6)))
-                        .withLoggedHours(aLoggedHours(5, of(2022, 12, 7)))
+                        .withWorkOrder(WORK_ORDER_1)
+                        .withLoggedHours(aLoggedHours(5, WEEK_1_TUESDAY))
+                        .withLoggedHours(aLoggedHours(5, WEEK_1_WEDNESDAY))
                         )
                 .build();
 
         WeeklyTimesheet differentWeek = aWeeklyTimesheet()
                 .withLine(aTimesheetLine()
-                        .withWorkOrder(TestWorkOrders.WORK_ORDER_1)
-                        .withLoggedHours(aLoggedHours(5, of(2022, 12, 12)))
-                        .withLoggedHours(aLoggedHours(5, of(2022, 12, 13)))
+                        .withWorkOrder(WORK_ORDER_1)
+                        .withLoggedHours(aLoggedHours(5, WEEK_2_MONDAY))
+                        .withLoggedHours(aLoggedHours(5, WEEK_2_TUESDAY))
                         )
                 .build();
 
@@ -66,17 +68,17 @@ class EmployeeTest {
     public void givenTimesheets_whenGetTimesheetPeriod_thenReturnTotalDuration(){
         WeeklyTimesheet weeklyTimesheet = aWeeklyTimesheet()
                 .withLine(aTimesheetLine()
-                        .withWorkOrder(TestWorkOrders.WORK_ORDER_1)
-                        .withLoggedHours(aLoggedHours(5, of(2022, 11, 29)))
-                        .withLoggedHours(aLoggedHours(5, of(2022, 11, 30)))
+                        .withWorkOrder(WORK_ORDER_1)
+                        .withLoggedHours(aLoggedHours(5, WEEK_0_MONDAY))
+                        .withLoggedHours(aLoggedHours(5, WEEK_0_WEDNESDAY))
                         )
                 .build();
 
         WeeklyTimesheet differentWeek = aWeeklyTimesheet()
                 .withLine(aTimesheetLine()
-                        .withWorkOrder(TestWorkOrders.WORK_ORDER_1)
-                        .withLoggedHours(aLoggedHours(5, of(2022, 12, 12)))
-                        .withLoggedHours(aLoggedHours(5, of(2022, 12, 13)))
+                        .withWorkOrder(WORK_ORDER_1)
+                        .withLoggedHours(aLoggedHours(5, WEEK_2_MONDAY))
+                        .withLoggedHours(aLoggedHours(5, WEEK_2_TUESDAY))
                         )
                 .build();
 
@@ -84,8 +86,8 @@ class EmployeeTest {
         employee.addWeeklyTimesheet(weeklyTimesheet);
         employee.addWeeklyTimesheet(differentWeek);
 
-        assertThat(employee.getTimesheetDurations().getStart()).isEqualTo(of(2022,11,28));
-        assertThat(employee.getTimesheetDurations().getEnd()).isEqualTo(of(2022,12,18));
+        assertThat(employee.getTimesheetDurations().getStart()).isEqualTo(WEEK_0_MONDAY);
+        assertThat(employee.getTimesheetDurations().getEnd()).isEqualTo(WEEK_2_SUNDAY);
     }
 
     @Test

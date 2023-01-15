@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.util.Comparator.naturalOrder;
 import static java.util.stream.Collectors.toList;
@@ -50,6 +51,14 @@ public class WeeklyTimesheet {
 
     public double getTotalHoursLogged() {
         return lines.stream().mapToDouble(TimesheetLine::getTotalHoursLogged).sum();
+    }
+
+    public boolean hasStartDate(LocalDate startDate) {
+        return this.startDate().equals(startDate);
+    }
+
+    public Stream<LoggedHoursByDayDetail> loggedHoursDetails() {
+        return lines.stream().flatMap(TimesheetLine::loggedHoursDetails);
     }
 
 

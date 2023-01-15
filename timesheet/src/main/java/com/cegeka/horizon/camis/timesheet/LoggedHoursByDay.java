@@ -8,6 +8,10 @@ public record LoggedHoursByDay (LocalDate date, double hours) {
         return new LoggedHoursByDay(date, hoursByDayToAdd.hours + hours);
     }
 
+    public LoggedHoursByDay minus(double minusHours) {
+        return new LoggedHoursByDay(date, this.hours-minusHours);
+    }
+
     public static class SortByDate implements java.util.Comparator<LoggedHoursByDay> {
         @Override
         public int compare(LoggedHoursByDay o1, LoggedHoursByDay o2) {

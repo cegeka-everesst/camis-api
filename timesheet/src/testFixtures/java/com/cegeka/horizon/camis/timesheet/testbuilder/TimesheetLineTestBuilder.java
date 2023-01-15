@@ -9,6 +9,8 @@ import com.cegeka.horizon.camis.timesheet.TimesheetLineIdentifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.List.of;
+
 public class TimesheetLineTestBuilder {
     private WorkOrder workorder = new WorkOrder("LMAC001.001");
     private TimesheetLineIdentifier identifier = TimesheetLineIdentifier.TO_CREATE;
@@ -42,8 +44,8 @@ public class TimesheetLineTestBuilder {
         return this;
     }
 
-    public TimesheetLineTestBuilder withLoggedHours(LoggedHoursByDayTestBuilder aLoggedHours) {
-        this.loggedHours.add(aLoggedHours);
+    public TimesheetLineTestBuilder withLoggedHours(LoggedHoursByDayTestBuilder... aLoggedHours) {
+        this.loggedHours.addAll(of(aLoggedHours));
         return this;
     }
 }

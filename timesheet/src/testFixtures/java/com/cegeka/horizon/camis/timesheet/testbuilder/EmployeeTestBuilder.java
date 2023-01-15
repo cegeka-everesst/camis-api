@@ -27,7 +27,11 @@ public class EmployeeTestBuilder {
     }
 
     public Employee build(){
-        return new Employee(resourceId, name);
+        Employee employee = new Employee(resourceId, name);
+        weeklyTimesheets.stream().map(WeeklyTimesheetTestBuilder::build).forEach(
+                employee::addWeeklyTimesheet
+        );
+        return employee;
     }
 
     public EmployeeTestBuilder withIdentifier(String identifier) {

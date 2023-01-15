@@ -4,10 +4,12 @@ import com.cegeka.horizon.camis.domain.ResourceId;
 import com.cegeka.horizon.camis.domain.WorkOrder;
 import org.threeten.extra.LocalDateRange;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Employee {
     private final ResourceId resourceId;
@@ -61,6 +63,18 @@ public class Employee {
 
     public boolean isToSync(TimeCode timeCode) {
         return !(!resourceId.isExternal() && timeCode == TimeCode.NO_ASSIGNMENT);
+    }
+
+    public Optional<WeeklyTimesheet> findWeeklyTimesheetByStartDate(LocalDate startDate) {
+        return weeklyTimeSheets.stream().filter(weeklyTimesheet -> weeklyTimesheet.hasStartDate(startDate)).findFirst();
+    }
+
+    public Stream<LoggedHoursByDayDetail> loggedHoursDetail() {
+        return weeklyTimeSheets.stream().flatMap(WeeklyTimesheet::loggedHoursDetails);
+    }
+
+    public boolean hasMinimum40HoursLogged() {
+        return weeklyTimeSheets.stream().mapToDouble(WeeklyTimesheet::getTotalHoursLogged).allMatch(sum -> sum >= 40.0) ;
     }
 
     public static class MergeEmployees implements java.util.function.BiFunction<Employee, Employee, Employee> {

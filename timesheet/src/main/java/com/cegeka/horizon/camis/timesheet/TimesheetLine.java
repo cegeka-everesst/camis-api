@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.time.DayOfWeek.MONDAY;
 import static java.time.DayOfWeek.SUNDAY;
@@ -83,6 +84,10 @@ public class TimesheetLine {
 
     public double getTotalHoursLogged() {
         return hoursByDays.stream().mapToDouble(LoggedHoursByDay::hours).sum();
+    }
+
+    public Stream<LoggedHoursByDayDetail> loggedHoursDetails() {
+        return loggedHours().stream().flatMap(loggedHoursByDay -> Stream.of(new LoggedHoursByDayDetail(identifier, status, description, timeCode, workOrder, loggedHoursByDay)));
     }
 
     public static class SortByStartDate implements java.util.Comparator<TimesheetLine> {

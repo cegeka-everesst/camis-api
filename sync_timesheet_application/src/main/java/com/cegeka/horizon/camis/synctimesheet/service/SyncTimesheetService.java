@@ -22,57 +22,29 @@ public class SyncTimesheetService {
 
     public void sync(List<Employee> inputEmployees) {
         inputEmployees
+                .stream()
+                .peek(employee -> {
+                    if(! employee.hasMinimum40HoursLogged()){
+                        logger.error("Not syncing employee {} timesheet starting at due to less than 40 hours logged some weeks", employee.name());
+                    }
+                })
+                .filter(Employee::hasMinimum40HoursLogged)
                 .forEach(
-                inputEmployee -> {
+                    inputEmployee -> {
                         Employee camisEmployee = retrieveOriginalLogging(inputEmployee);
-                        compareEmployeeService.compare(inputEmployee, camisEmployee).forEach(syncCommand -> syncCommand.execute(timesheetService));
-                }
+                        List<SyncCommand> syncCommands = compareEmployeeService.compare(inputEmployee, camisEmployee);
+                        if(syncCommands.stream().anyMatch(SyncCommand::isError)){
+                            logger.error("Not syncing employee {} timesheets due to {}", inputEmployee.name(), syncCommands.stream().filter(SyncCommand::isError).map(SyncCommand::toString).reduce(String::concat).get());
+                        }else{
+                            syncCommands.forEach(syncCommand -> syncCommand.execute(timesheetService));
+                        }
+                    }
         );
     }
 
     public void retrieve(List<Employee> inputEmployees) {
         inputEmployees.forEach(
                 this::retrieveOriginalLogging
-        );
-    }
-
-    private void deleteOriginalLinesWithMatchingWorkOrder(Employee employeeForEntry) {
-        Employee informationCurrentlyInCamis = retrieveOriginalLogging(employeeForEntry);
-        employeeForEntry.getUsedWorkOrders();
-        informationCurrentlyInCamis.weeklyTimesheets()
-                                    .forEach(
-                                            weeklyTimesheet -> weeklyTimesheet.lines().stream()
-                                                    .filter(TimesheetLine::canBeDeleted)
-                                                    .filter(line -> employeeForEntry.getUsedWorkOrders().contains(line.workOrder())).forEach(
-                                                    line -> {
-                                                            if (!timesheetService.deleteTimesheetEntry(line.identifier(), informationCurrentlyInCamis.resourceId())) {
-                                                                logger.error("Failure to delete timesheetLine {} of employee {} ", line.identifier().value(), employeeForEntry.name());
-                                                            }
-                                                    }
-        ));
-    }
-
-    private void createTimesheetEntry(Employee employee) {
-        employee.weeklyTimesheets()
-                .stream()
-                .peek(weeklyTimesheet -> {
-                    if(weeklyTimesheet.getTotalHoursLogged() < 40.0 ){
-                        logger.error("Not syncing employee {} timesheet starting at {} due to less than 40 hours logged", employee.name(), weeklyTimesheet.startDate());
-                    }
-                })
-                .filter(weeklyTimesheet -> weeklyTimesheet.getTotalHoursLogged() >= 40.0)
-                .forEach(
-                weeklyTimesheet -> weeklyTimesheet.lines().forEach(
-                        timesheetLine -> {
-                            if (employee.isToSync(timesheetLine.timeCode())) {
-                                timesheetLine.loggedHours().forEach(
-                                        loggedHoursByDay ->
-                                        timesheetService.createTimesheetEntry(employee.resourceId(), timesheetLine.timeCode(), timesheetLine.workOrder(), loggedHoursByDay)
-                                );
-                                logger.info("Updated timesheetLine of date {} with workOrder {} from employee {} ", timesheetLine.startDate(), timesheetLine.workOrder(), employee.name());
-                            }
-                        }
-                )
         );
     }
 

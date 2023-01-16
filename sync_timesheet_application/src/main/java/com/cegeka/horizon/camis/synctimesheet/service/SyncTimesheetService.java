@@ -32,6 +32,8 @@ public class SyncTimesheetService {
                 .forEach(
                     inputEmployee -> {
                         Employee camisEmployee = retrieveOriginalLogging(inputEmployee);
+                        logger.debug("input information of employee {} : {}", inputEmployee.name(), inputEmployee);
+                        logger.debug("camis information of employee {} : {}", inputEmployee.name(), camisEmployee);
                         List<SyncCommand> syncCommands = compareEmployeeService.compare(inputEmployee, camisEmployee);
                         if(syncCommands.stream().anyMatch(SyncCommand::isError)){
                             logger.error("Not syncing employee {} timesheets due to {}", inputEmployee.name(), syncCommands.stream().filter(SyncCommand::isError).map(SyncCommand::toString).reduce(String::concat).get());
@@ -40,6 +42,8 @@ public class SyncTimesheetService {
                         }
                     }
         );
+
+        //TODO: retrieve after updates and check correspondences, for example missing holidays
     }
 
     public void retrieve(List<Employee> inputEmployees) {

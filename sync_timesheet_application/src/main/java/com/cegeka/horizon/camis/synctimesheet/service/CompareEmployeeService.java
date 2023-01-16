@@ -27,7 +27,9 @@ public class CompareEmployeeService {
         // loggedHoursByDayDetailsCamis is NOT sum-collapsed by date & workorder if identifier differs like with multiple lines (from camis api get)
         List<LoggedHoursByDayDetail> loggedHoursByDayDetailsCamis = camisEmployee.loggedHoursDetail().collect(toList());
 
-        loggedHoursByDayDetailsInput.forEach(
+        loggedHoursByDayDetailsInput
+                .filter(inputHours -> inputEmployee.isToSync(inputHours.timeCode()))
+                .forEach(
             inputHours -> {
                 List<LoggedHoursByDayDetail> camisHours =  findByWorkOrderAndDate(loggedHoursByDayDetailsCamis, inputHours.workOrder(), inputHours.loggedHoursByDay().date());
                 if(camisHours.isEmpty()){

@@ -8,6 +8,7 @@ module com.cegeka.horizon.camis.timesheet {
     opens com.cegeka.horizon.camis.timesheet.api.post to com.fasterxml.jackson.databind, spring.beans;
     opens com.cegeka.horizon.camis.timesheet.api.delete to com.fasterxml.jackson.databind, spring.beans;
 
+
     requires spring.context;
     requires spring.webflux;
     requires spring.beans;

@@ -62,7 +62,7 @@ public class Employee {
     }
 
     public boolean isToSync(TimeCode timeCode) {
-        return !(!resourceId.isExternal() && timeCode == TimeCode.NO_ASSIGNMENT);
+        return !(!resourceId.isExternal() && timeCode.equals(TimeCode.NO_ASSIGNMENT));
     }
 
     public Optional<WeeklyTimesheet> findWeeklyTimesheetByStartDate(LocalDate startDate) {

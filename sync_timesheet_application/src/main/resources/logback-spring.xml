@@ -42,7 +42,7 @@
     <logger name="CheckWorkOrders" level="INFO" additivity="false">
         <appender-ref ref="CHECK_WORKORDERS"/>
     </logger>
-    <logger name="SyncTimesheets" level="INFO" additivity="false">
+    <logger name="SyncTimesheets" level="DEBUG" additivity="false">
         <appender-ref ref="SYNC_TIMESHEETS"/>
     </logger>
     <root level="${rootLevel}" >

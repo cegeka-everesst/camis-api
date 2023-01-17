@@ -23,9 +23,9 @@ public class SyncTimesheetService {
     public void sync(List<Employee> inputEmployees) {
         inputEmployees
                 .stream()
-                .peek(employee -> {
-                    if(! employee.hasMinimum40HoursLogged()){
-                        logger.error("Not syncing employee {} timesheet starting at due to less than 40 hours logged some weeks", employee.name());
+                .peek(inputEmployee -> {
+                    if(! inputEmployee.hasMinimum40HoursLogged()){
+                        logger.error("Not syncing inputEmployee {} timesheet starting at due to less than 40 hours logged some weeks", inputEmployee.name());
                     }
                 })
                 .filter(Employee::hasMinimum40HoursLogged)

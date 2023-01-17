@@ -3,6 +3,8 @@ package com.cegeka.horizon.camis.domain;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 class WorkOrderTest {
 
     @Test
@@ -12,12 +14,12 @@ class WorkOrderTest {
 
     @Test
     public void givenInvalidWorkOrder_whenConstruct_thenCreated(){
-        Assertions.assertThatThrownBy(() -> new WorkOrder("x$z")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new WorkOrder("x$z")).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void givenInvalidWorkOrderDoubleDot_whenConstruct_thenCreated(){
-        Assertions.assertThatThrownBy(() -> new WorkOrder("LMAC001..003")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new WorkOrder("LMAC001..003")).isInstanceOf(IllegalArgumentException.class);
     }
 
 }

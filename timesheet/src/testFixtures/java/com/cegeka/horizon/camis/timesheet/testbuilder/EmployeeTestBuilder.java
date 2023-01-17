@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import static java.util.List.of;
 
 public class EmployeeTestBuilder {
-    private ResourceId resourceId = new ResourceId("I7788899");
+    private ResourceId resourceId = new ResourceId("I778899");
     private String name = "description";
     private final List<WeeklyTimesheetTestBuilder> weeklyTimesheets = new ArrayList<>();
 

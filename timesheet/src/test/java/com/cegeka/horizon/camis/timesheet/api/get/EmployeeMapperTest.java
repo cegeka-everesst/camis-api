@@ -19,7 +19,7 @@ class EmployeeMapperTest {
 
         ObjectMapper objectMapper = new ObjectMapper();
         Timesheet timesheet = objectMapper.readValue(resourceAsStream, Timesheet.class);
-        Employee employee = new EmployeeMapper().map(timesheet, new ResourceId("I123"), "Ward");
+        Employee employee = new EmployeeMapper().map(timesheet, new ResourceId("I123456"), "Ward");
 
         assertThat(employee.weeklyTimesheets()).hasSize(2);
         assertThat(employee.weeklyTimesheets().get(0).lines()).hasSize(3);

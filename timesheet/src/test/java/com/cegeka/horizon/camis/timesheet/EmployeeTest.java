@@ -32,7 +32,7 @@ class EmployeeTest {
                         )
                 .build();
 
-        Employee employee = new Employee(new ResourceId("I12231"), "Ward");
+        Employee employee = new Employee(new ResourceId("I122321"), "Ward");
         employee.addWeeklyTimesheet(weeklyTimesheet);
         employee.addWeeklyTimesheet(sameWeek);
 
@@ -57,7 +57,7 @@ class EmployeeTest {
                         )
                 .build();
 
-        Employee employee = new Employee(new ResourceId("I12231"), "Ward");
+        Employee employee = new Employee(new ResourceId("I122312"), "Ward");
         employee.addWeeklyTimesheet(weeklyTimesheet);
         employee.addWeeklyTimesheet(differentWeek);
 
@@ -82,7 +82,7 @@ class EmployeeTest {
                         )
                 .build();
 
-        Employee employee = new Employee(new ResourceId("I12231"), "Ward");
+        Employee employee = new Employee(new ResourceId("I122321"), "Ward");
         employee.addWeeklyTimesheet(weeklyTimesheet);
         employee.addWeeklyTimesheet(differentWeek);
 
@@ -99,7 +99,7 @@ class EmployeeTest {
 
     @Test
     public void givenExternalAndTimeCodeNoAssignment_whenIsTooSync_thenReturnFalse() {
-        Employee internalEmployee = EmployeeTestBuilder.anEmployee().withIdentifier("909090").build();
+        Employee internalEmployee = EmployeeTestBuilder.anEmployee().withIdentifier("9090290").build();
         assertThat(internalEmployee.isToSync(TimeCode.NO_ASSIGNMENT)).isFalse();
         assertThat(internalEmployee.isToSync(TimeCode.WORK_DAY)).isTrue();
     }

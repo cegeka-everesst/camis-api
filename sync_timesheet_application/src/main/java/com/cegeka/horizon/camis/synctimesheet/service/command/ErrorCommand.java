@@ -14,7 +14,7 @@ public class ErrorCommand implements SyncCommand{
 
     @Override
     public boolean isError() {
-        return false;
+        return true;
     }
 
     @Override

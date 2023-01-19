@@ -90,9 +90,12 @@ public class TimesheetLine {
         return loggedHours().stream().flatMap(loggedHoursByDay -> Stream.of(new LoggedHoursByDayDetail(identifier, status, description, timeCode, workOrder, loggedHoursByDay)));
     }
 
-    public static class SortByStartDate implements java.util.Comparator<TimesheetLine> {
+    public static class SortByStartDateAndWorkOrder implements java.util.Comparator<TimesheetLine> {
         @Override
         public int compare(TimesheetLine o1, TimesheetLine o2) {
+            if(o1.startDate().equals(o2.startDate())){
+                return o1.workOrder.value().compareTo(o2.workOrder.value());
+            }
             return o1.startDate().compareTo(o2.startDate());
         }
     }
@@ -103,7 +106,7 @@ public class TimesheetLine {
                 ", workOrder=" + workOrder.value() +
                 ", status=" + status.toString() +
                 ", timeCode=" + timeCode.value() +
-                ", hoursByDays=" + hoursByDays +
+                ", hoursByDays=" + hoursByDays.stream().sorted(new LoggedHoursByDay.SortByDate()).toList() +
                 '}';
     }
 }

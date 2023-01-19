@@ -34,12 +34,12 @@ public class WeeklyTimesheet {
     }
 
     public List<TimesheetLine> lines() {
-        return lines.stream().sorted(new TimesheetLine.SortByStartDate()).toList();
+        return lines.stream().sorted(new TimesheetLine.SortByStartDateAndWorkOrder()).toList();
     }
 
     @Override
     public String toString() {
-        return "WeeklyTimesheet{" + "lines=" + lines +
+        return "WeeklyTimesheet{" + "lines=" + lines() +
                 '}';
     }
 

@@ -104,7 +104,7 @@ public class Employee {
     @Override
     public String toString() {
         return "Employee{" + "resourceId=" + resourceId +
-                ", weeklyTimeSheets=" + weeklyTimeSheets +
+                ", weeklyTimeSheets=" + weeklyTimeSheets.stream().sorted(new WeeklyTimesheet.SortByStartDate()).toList() +
                 '}';
     }
 

@@ -40,7 +40,7 @@ public class CompareEmployeeService {
                     }else if(sum(camisHours) < inputHours.loggedHoursByDay().hours()){
                         result.add(new CreateTimesheetEntryCommand(inputEmployee.name(), inputEmployee.resourceId(), inputHours.workOrder(), inputHours.loggedHoursByDay().minus(sum(camisHours)), inputHours.timeCode()));
                     }else{
-                        result.add(new ErrorCommand("sum(camisHours) > inputHours for " + inputEmployee.name() + "and date " + inputHours.loggedHoursByDay().date()));
+                        result.add(new ErrorCommand(inputEmployee.name() + " sum(camisHours) > sum(tempoHours) on " + inputHours.loggedHoursByDay().date()));
                         //TODO: deleting lines and adding, for now we just throw an error,
                     }
                 }

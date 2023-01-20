@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.threeten.extra.LocalDateRange;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class SyncTimesheetService {
@@ -39,6 +40,11 @@ public class SyncTimesheetService {
                             logger.error("Not syncing employee {} timesheets due to {}", inputEmployee.name(), syncCommands.stream().filter(SyncCommand::isError).map(SyncCommand::toString).reduce(String::concat).get());
                         }else{
                             syncCommands.forEach(syncCommand -> syncCommand.execute(timesheetService));
+                        }
+                        try {
+                            TimeUnit.SECONDS.sleep(5);
+                        } catch (InterruptedException e) {
+                            logger.error("error while sleeping");
                         }
                     }
         );

@@ -32,7 +32,11 @@ public class CreateTimesheetEntryCommand implements SyncCommand {
             timesheetService.createTimesheetEntry(resourceId, timeCode, workOrder, loggedHoursByDay);
             logger.info("Updated timesheetLine of employee {} on date {} with workOrder {} and hours {} ", name, loggedHoursByDay.date(), workOrder.value(), loggedHoursByDay.hours());
         }catch (Exception e){
-            logger.error("Error occurred when trying to update timesheetLine of employee {} on date {} with workOrder {} and hours {} ", name, loggedHoursByDay.date(), workOrder.value(), loggedHoursByDay.hours());
+            if(resourceId.isExternal() && timeCode.equals(TimeCode.NO_ASSIGNMENT)){
+                logger.warn("Could not update timesheetLine of external employee {} BUT OKAY on date {} with workOrder {} and hours {} ", name, loggedHoursByDay.date(), workOrder.value(), loggedHoursByDay.hours());
+            }else{
+                logger.error("Error occurred when trying to update timesheetLine of employee {} on date {} with workOrder {} and hours {} ", name, loggedHoursByDay.date(), workOrder.value(), loggedHoursByDay.hours());
+            }
         }
     }
 

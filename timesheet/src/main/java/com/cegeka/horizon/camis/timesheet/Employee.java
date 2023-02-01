@@ -73,8 +73,8 @@ public class Employee {
         return weeklyTimeSheets.stream().flatMap(WeeklyTimesheet::loggedHoursDetails);
     }
 
-    public boolean hasMinimum40HoursLogged() {
-        return weeklyTimeSheets.stream().mapToDouble(WeeklyTimesheet::getTotalHoursLogged).allMatch(sum -> sum >= 40.0) ;
+    public boolean hasMinimumHoursLogged(double hours) {
+        return weeklyTimeSheets.stream().mapToDouble(WeeklyTimesheet::getTotalHoursLogged).allMatch(sum -> sum >= hours) ;
     }
 
     public static class MergeEmployees implements java.util.function.BiFunction<Employee, Employee, Employee> {

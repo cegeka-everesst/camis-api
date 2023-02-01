@@ -5,6 +5,7 @@ import com.cegeka.horizon.camis.timesheet.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.threeten.extra.LocalDateRange;
 
@@ -16,6 +17,8 @@ public class SyncTimesheetService {
 
     private static final Logger logger = LoggerFactory.getLogger("SyncTimesheets");
 
+    @Value("${minimumHoursLogged}")
+    private double minimumHoursLogged;
     @Autowired
     private TimesheetService timesheetService;
     @Autowired
@@ -25,11 +28,11 @@ public class SyncTimesheetService {
         inputEmployees
                 .stream()
                 .peek(inputEmployee -> {
-                    if(! inputEmployee.hasMinimum40HoursLogged()){
-                        logger.error("Not syncing inputEmployee {} timesheet starting at due to less than 40 hours logged some weeks", inputEmployee.name());
+                    if(! inputEmployee.hasMinimumHoursLogged(minimumHoursLogged)){
+                        logger.error("Not syncing inputEmployee {} timesheet starting at due to less than {} hours logged some weeks", inputEmployee.name(), minimumHoursLogged);
                     }
                 })
-                .filter(Employee::hasMinimum40HoursLogged)
+                .filter(inputEmployee -> inputEmployee.hasMinimumHoursLogged(minimumHoursLogged))
                 .forEach(
                     inputEmployee -> {
                         Employee camisEmployee = retrieveOriginalLogging(inputEmployee);

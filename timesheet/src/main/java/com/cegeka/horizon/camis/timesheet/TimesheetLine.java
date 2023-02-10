@@ -87,7 +87,11 @@ public class TimesheetLine {
     }
 
     public Stream<LoggedHoursByDayDetail> loggedHoursDetails() {
-        return loggedHours().stream().flatMap(loggedHoursByDay -> Stream.of(new LoggedHoursByDayDetail(identifier, status, description, timeCode, workOrder, loggedHoursByDay)));
+        if(timeCode.equals(TimeCode.WORK_DAY)){
+            return loggedHours().stream().flatMap(loggedHoursByDay -> Stream.of(new LoggedHoursByDayDetail(identifier, status, description, timeCode, workOrder, loggedHoursByDay)));
+        }else{
+            return Stream.empty();
+        }
     }
 
     public static class SortByStartDateAndWorkOrder implements java.util.Comparator<TimesheetLine> {

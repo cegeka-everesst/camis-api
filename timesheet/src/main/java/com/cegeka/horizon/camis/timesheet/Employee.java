@@ -15,7 +15,6 @@ public class Employee {
     private final ResourceId resourceId;
     private final String name;
     private final List<WeeklyTimesheet> weeklyTimeSheets = new ArrayList<>();
-    private TimeCode timeCode;
 
     public Employee(ResourceId resourceId, String name) {
         this.resourceId = resourceId;
@@ -103,7 +102,7 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "Employee{" + "resourceId=" + resourceId +
+        return "Employee{" + "resourceId=" + resourceId + "/" + name +
                 ", weeklyTimeSheets=" + weeklyTimeSheets.stream().sorted(new WeeklyTimesheet.SortByStartDate()).toList() +
                 '}';
     }

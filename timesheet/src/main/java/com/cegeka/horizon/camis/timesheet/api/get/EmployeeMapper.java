@@ -18,12 +18,17 @@ public class EmployeeMapper {
                     if(entry.identifier != null){
                         WeeklyTimesheet weeklyTimesheet = new WeeklyTimesheet();
                         TimesheetLine lineToAdd = new TimesheetLine(new TimesheetLineIdentifier(entry.identifier), Status.map(entry.status), entry.description, new TimeCode(entry.timeCode), new WorkOrder(entry.workOrder));
-                        entry.workDayList.workdays.forEach(
-                                workDay ->
-                                        lineToAdd.addLoggedHours(new LoggedHoursByDay(LocalDate.parse(workDay.day, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss")), workDay.hoursWorked))
-                        );
-                        weeklyTimesheet.addLine(lineToAdd);
-                        employee.addWeeklyTimesheet(weeklyTimesheet);
+                        if(! lineToAdd.workOrder().isEmpty()){
+                            entry.workDayList.workdays.forEach(
+                                    workDay ->
+                                            lineToAdd.addLoggedHours(new LoggedHoursByDay(LocalDate.parse(workDay.day, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss")), workDay.hoursWorked))
+                            );
+                            weeklyTimesheet.addLine(lineToAdd);
+                            employee.addWeeklyTimesheet(weeklyTimesheet);
+                        }
+                        else{
+                            System.out.println("ERROR : Empty workorder for employee" + employeeName);
+                        }
                     }
                 }
         );

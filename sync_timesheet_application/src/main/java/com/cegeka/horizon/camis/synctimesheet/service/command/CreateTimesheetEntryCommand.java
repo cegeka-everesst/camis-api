@@ -29,7 +29,7 @@ public class CreateTimesheetEntryCommand implements SyncCommand {
     @Override
     public void execute(TimesheetService timesheetService) {
         try{
-            //timesheetService.createTimesheetEntry(resourceId, timeCode, workOrder, loggedHoursByDay);
+            timesheetService.createTimesheetEntry(resourceId, timeCode, workOrder, loggedHoursByDay);
             logger.info("Updated timesheetLine of employee {} on date {} with workOrder {} and hours {} ", name, loggedHoursByDay.date(), workOrder.value(), loggedHoursByDay.hours());
         }catch (Exception e){
             if(resourceId.isExternal() && timeCode.equals(TimeCode.NO_ASSIGNMENT)){

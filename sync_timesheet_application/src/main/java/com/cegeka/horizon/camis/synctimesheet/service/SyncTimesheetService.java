@@ -31,7 +31,7 @@ public class SyncTimesheetService {
                 .flatMap(inputEmployee -> inputEmployee.weeklyTimesheets().stream().map(weeklyTimesheet -> new WeeklyTimesheetToSync(inputEmployee, weeklyTimesheet)))
                 .peek(weeklyTimesheetToSync -> {
                     if(! weeklyTimesheetToSync.timesheet().hasMinimumHoursLogged(minimumHoursLogged)){
-                        logger.error("Not syncing inputEmployee {} timesheet starting at {} due to less than {} hours logged some weeks", weeklyTimesheetToSync.employee().name(), weeklyTimesheetToSync.timesheet().startDate(), minimumHoursLogged);
+                        logger.error("Not syncing inputEmployee {} timesheet starting at {} due to less than {} hours logged", weeklyTimesheetToSync.employee().name(), weeklyTimesheetToSync.timesheet().startDate(), minimumHoursLogged);
                     }
                 })
                 .filter(weeklyTimesheetToSync -> weeklyTimesheetToSync.timesheet().hasMinimumHoursLogged(minimumHoursLogged))
@@ -48,7 +48,7 @@ public class SyncTimesheetService {
                             syncCommands.forEach(syncCommand -> syncCommand.execute(timesheetService));
                         }
                         try {
-                            TimeUnit.SECONDS.sleep(5);
+                            TimeUnit.SECONDS.sleep(2);
                         } catch (InterruptedException e) {
                             logger.error("error while sleeping");
                         }

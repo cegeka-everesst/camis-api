@@ -26,7 +26,7 @@ public class WeeklyTimesheet {
     }
 
     public boolean hasMinimumHoursLogged(double hours) {
-        return getTotalHoursLogged() >= hours;
+        return (hours - getTotalHoursLogged()) < 0.001;
     }
 
     public LocalDateRange getTimesheetDuration() {

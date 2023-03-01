@@ -4,10 +4,10 @@ import com.cegeka.horizon.camis.domain.ResourceId;
 import com.cegeka.horizon.camis.domain.WorkOrder;
 import com.cegeka.horizon.camis.timesheet.*;
 import com.cegeka.horizon.camis.timesheet.api.delete.StatusResponseHolder;
-import com.cegeka.horizon.camis.timesheet.api.get.LocalDateRangeSplitter;
-import com.cegeka.horizon.camis.timesheet.api.post.CreateTimesheetEntry;
 import com.cegeka.horizon.camis.timesheet.api.get.EmployeeMapper;
+import com.cegeka.horizon.camis.timesheet.api.get.LocalDateRangeSplitter;
 import com.cegeka.horizon.camis.timesheet.api.get.Timesheet;
+import com.cegeka.horizon.camis.timesheet.api.post.CreateTimesheetEntry;
 import com.cegeka.horizon.camis.timesheet.api.post.CreateTimesheetEntryResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +15,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.threeten.extra.LocalDateRange;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Optional;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
@@ -102,10 +104,17 @@ public class TimesheetServiceImpl implements TimesheetService {
                 workOrder.value(),
                 CreateTimesheetEntry.DEFAULT_EXTERNAL_REF,
                 loggedHoursByDay.date().format(ofPattern("yyyy-MM-dd")) + "T00:00:00",
-                Double.toString(loggedHoursByDay.hours()),
+                Double.toString(round(loggedHoursByDay.hours())),
                 CreateTimesheetEntry.DEFAULT_INV_VALUE
         );
     }
+
+    private double round(double value) {
+        BigDecimal bd = new BigDecimal(Double.toString(value));
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
 
     private TimesheetLineIdentifier mapResult(CreateTimesheetEntryResult timesheet) {
         if(! timesheet.isOk()) return TimesheetLineIdentifier.ERROR_OCCURRED;

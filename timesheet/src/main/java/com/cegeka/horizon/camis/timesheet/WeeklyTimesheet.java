@@ -1,5 +1,7 @@
 package com.cegeka.horizon.camis.timesheet;
 
+import org.threeten.extra.LocalDateRange;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,17 @@ public class WeeklyTimesheet {
                     loggedHour -> sameWorkOrder.get().addLoggedHours(loggedHour)
             );
         }
+    }
+
+    public boolean hasMinimumHoursLogged(double hours) {
+        return getTotalHoursLogged() >= hours;
+    }
+
+    public LocalDateRange getTimesheetDuration() {
+        return LocalDateRange.of(
+                this.startDate(),
+                this.endDate()
+        );
     }
 
     public LocalDate startDate() {

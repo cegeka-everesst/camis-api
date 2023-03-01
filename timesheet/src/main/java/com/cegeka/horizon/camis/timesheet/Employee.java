@@ -53,6 +53,7 @@ public class Employee {
         return name;
     }
 
+    @Deprecated
     public LocalDateRange getTimesheetDurations() {
         return LocalDateRange.of(
             this.weeklyTimeSheets.stream().min(new WeeklyTimesheet.SortByStartDate()).get().startDate(),
@@ -68,7 +69,7 @@ public class Employee {
         return weeklyTimeSheets.stream().filter(weeklyTimesheet -> weeklyTimesheet.hasStartDate(startDate)).findFirst();
     }
 
-    public Stream<LoggedHoursByDayDetail> loggedHoursDetail() {
+    public Stream<LoggedHoursByDayDetail> loggedHoursDetails() {
         return weeklyTimeSheets.stream().flatMap(WeeklyTimesheet::loggedHoursDetails);
     }
 

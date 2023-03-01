@@ -15,6 +15,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.threeten.extra.LocalDateRange;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 @Service
@@ -26,19 +28,21 @@ public class TimesheetServiceImpl implements TimesheetService {
     private EmployeeMapper employeeMapper;
 
     /**
-     * Get the timesheet entries of a specified dateRange.
+     * Get the timesheet entries of a specified range.
      *
-     * Beware : The API seems only able to retrieve multiple weeks if the dateRange is split into weeks, otherwise only the first week is retrieved.
-     * So we'll need to split this here.
+     * Beware : The API seems only able to retrieve multiple weeks if the range is split into weeks, otherwise only the first week is retrieved.
      * @param resourceId
      * @param employeeName
-     * @param dateRange
+     * @param range
      * @return
      */
     @Override
-    public Employee getTimesheetEntries(ResourceId resourceId, String employeeName, LocalDateRange dateRange) {
-        return LocalDateRangeSplitter.splitByWeek(dateRange).stream().map(
-          range -> employeeMapper.map(
+    public Optional<WeeklyTimesheet> getTimesheetEntries(ResourceId resourceId, String employeeName, LocalDateRange range) {
+        if(LocalDateRangeSplitter.splitByWeek(range).size() > 1) {
+            throw new IllegalArgumentException("The API is only able to retrieve a single weeks at a time");
+        }
+
+        return employeeMapper.map(
                   webClient.get()
                   .uri(uriBuilder -> uriBuilder.path("timesheet")
                           .queryParam("resourceId", resourceId.value())
@@ -46,9 +50,7 @@ public class TimesheetServiceImpl implements TimesheetService {
                           .queryParam("dateTo", range.getEnd().format(ofPattern("yyyy-MM-dd"))).build())
                   .retrieve()
                   .bodyToMono(Timesheet.class)
-                  .block(), resourceId, employeeName)
-        ).reduce(new Employee(resourceId, employeeName), new Employee.MergeEmployeesOperator());
-
+                  .block(), resourceId, employeeName).weeklyTimesheets().stream().findFirst();
     }
 
     @Override

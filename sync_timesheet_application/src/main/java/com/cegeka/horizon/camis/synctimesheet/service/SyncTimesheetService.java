@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.threeten.extra.LocalDateRange;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -27,20 +28,22 @@ public class SyncTimesheetService {
     public void sync(List<Employee> inputEmployees) {
         inputEmployees
                 .stream()
-                .peek(inputEmployee -> {
-                    if(! inputEmployee.hasMinimumHoursLogged(minimumHoursLogged)){
-                        logger.error("Not syncing inputEmployee {} timesheet starting at due to less than {} hours logged some weeks", inputEmployee.name(), minimumHoursLogged);
+                .flatMap(inputEmployee -> inputEmployee.weeklyTimesheets().stream().map(weeklyTimesheet -> new WeeklyTimesheetToSync(inputEmployee, weeklyTimesheet)))
+                .peek(weeklyTimesheetToSync -> {
+                    if(! weeklyTimesheetToSync.timesheet().hasMinimumHoursLogged(minimumHoursLogged)){
+                        logger.error("Not syncing inputEmployee {} timesheet starting at {} due to less than {} hours logged some weeks", weeklyTimesheetToSync.employee().name(), weeklyTimesheetToSync.timesheet().startDate(), minimumHoursLogged);
                     }
                 })
-                .filter(inputEmployee -> inputEmployee.hasMinimumHoursLogged(minimumHoursLogged))
+                .filter(weeklyTimesheetToSync -> weeklyTimesheetToSync.timesheet().hasMinimumHoursLogged(minimumHoursLogged))
                 .forEach(
-                    inputEmployee -> {
-                        Employee camisEmployee = retrieveOriginalLogging(inputEmployee);
-                        logger.debug("input information of employee {} : {}", inputEmployee.name(), inputEmployee);
-                        logger.debug("camis information of employee {} : {}", inputEmployee.name(), camisEmployee);
-                        List<SyncCommand> syncCommands = compareEmployeeService.compare(inputEmployee, camisEmployee);
+                    weeklyTimesheetToSync -> {
+                        Optional<WeeklyTimesheet> camisTimesheetForThatPeriod = retrieveOriginalLogging(weeklyTimesheetToSync);
+                        logger.debug("input information of employee {} : {}", weeklyTimesheetToSync.employee().name(), weeklyTimesheetToSync.employee());
+                        logger.debug("camis information of employee {} : {}", weeklyTimesheetToSync.employee().name(), camisTimesheetForThatPeriod);
+
+                        List<SyncCommand> syncCommands = compareEmployeeService.compare(weeklyTimesheetToSync.employee(), weeklyTimesheetToSync.timesheet(), camisTimesheetForThatPeriod);
                         if(syncCommands.stream().anyMatch(SyncCommand::isError)){
-                            logger.error("Not syncing employee {} timesheets due to {}", inputEmployee.name(), syncCommands.stream().filter(SyncCommand::isError).map(SyncCommand::toString).reduce(String::concat).get());
+                            logger.error("Not syncing employee {} timesheets due to {}", weeklyTimesheetToSync.employee().name(), syncCommands.stream().filter(SyncCommand::isError).map(SyncCommand::toString).reduce(String::concat).get());
                         }else{
                             syncCommands.forEach(syncCommand -> syncCommand.execute(timesheetService));
                         }
@@ -56,16 +59,17 @@ public class SyncTimesheetService {
     }
 
     public void retrieve(List<Employee> inputEmployees) {
-        inputEmployees.forEach(
-                this::retrieveOriginalLogging
-        );
+        inputEmployees
+                .stream()
+                .flatMap(inputEmployee -> inputEmployee.weeklyTimesheets().stream().map(weeklyTimesheet -> new WeeklyTimesheetToSync(inputEmployee, weeklyTimesheet)))
+                .forEach(this::retrieveOriginalLogging);
     }
 
-    private Employee retrieveOriginalLogging(Employee employee) {
-        LocalDateRange timesheetDuration = employee.getTimesheetDurations();
-        Employee camisTimesheetEntries = timesheetService.getTimesheetEntries(employee.resourceId(), employee.name(), timesheetDuration);
-        logger.info("Retrieved original Camis timesheet entries for {} with result {} ", employee.name(), camisTimesheetEntries);
-        return camisTimesheetEntries;
+    private Optional<WeeklyTimesheet> retrieveOriginalLogging(WeeklyTimesheetToSync weeklyTimesheetToSync) {
+        LocalDateRange timesheetDuration = weeklyTimesheetToSync.timesheet().getTimesheetDuration();
+        Optional<WeeklyTimesheet> camisTimesheetEntry = timesheetService.getTimesheetEntries(weeklyTimesheetToSync.employee().resourceId(), weeklyTimesheetToSync.employee().name(), timesheetDuration);
+        logger.info("Retrieved original Camis timesheet entries for {} with result {} ", weeklyTimesheetToSync.employee().name(), camisTimesheetEntry);
+        return camisTimesheetEntry;
     }
 
 }

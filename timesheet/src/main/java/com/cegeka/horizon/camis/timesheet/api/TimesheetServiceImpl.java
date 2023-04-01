@@ -45,6 +45,7 @@ public class TimesheetServiceImpl implements TimesheetService {
         }
 
         return employeeMapper.map(
+                    range.getStart(),
                   webClient.get()
                   .uri(uriBuilder -> uriBuilder.path("timesheet")
                           .queryParam("resourceId", resourceId.value())

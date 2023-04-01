@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,7 +20,7 @@ class EmployeeMapperTest {
 
         ObjectMapper objectMapper = new ObjectMapper();
         Timesheet timesheet = objectMapper.readValue(resourceAsStream, Timesheet.class);
-        Employee employee = new EmployeeMapper().map(timesheet, new ResourceId("I123456"), "Ward");
+        Employee employee = new EmployeeMapper().map(LocalDate.now(), timesheet, new ResourceId("I123456"), "Ward");
 
         assertThat(employee.weeklyTimesheets()).hasSize(2);
         assertThat(employee.weeklyTimesheets().get(0).lines()).hasSize(3);

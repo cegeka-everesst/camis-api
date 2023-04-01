@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 @Component
 public class EmployeeMapper {
 
-    public Employee map(Timesheet timesheet, ResourceId resourceId, String employeeName) {
+    public Employee map(LocalDate start, Timesheet timesheet, ResourceId resourceId, String employeeName) {
         Employee employee = new Employee(resourceId, employeeName);
         timesheet.timesheetEntryList.entries.forEach(
                 entry -> {
@@ -27,7 +27,7 @@ public class EmployeeMapper {
                             employee.addWeeklyTimesheet(weeklyTimesheet);
                         }
                         else{
-                            System.out.println("ERROR : Empty workorder for employee" + employeeName);
+                            System.out.println("ERROR : Empty workorder in Camis for employee " + employeeName + " line with date " + start);
                         }
                     }
                 }

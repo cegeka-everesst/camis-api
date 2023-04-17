@@ -20,6 +20,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'com.opencsv:opencsv'
     implementation 'org.threeten:threeten-extra'
+    implementation project(path: ':sync_error_logger')
 
     testImplementation 'org.assertj:assertj-core'
     testImplementation(testFixtures(project(":timesheet")))

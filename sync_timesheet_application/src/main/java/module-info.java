@@ -23,4 +23,5 @@ module com.cegeka.horizon.camis.synctimesheet {
     requires io.netty.handler;
     requires org.threeten.extra;
     requires com.cegeka.horizon.camis.sync_logger;
+    requires org.json;
 }

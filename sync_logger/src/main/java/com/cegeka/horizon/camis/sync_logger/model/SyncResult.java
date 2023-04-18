@@ -1,14 +1,12 @@
-package com.cegeka.horizon.camis.sync_logger;
-
-import com.cegeka.horizon.camis.sync_logger.records.*;
+package com.cegeka.horizon.camis.sync_logger.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SyncList {
+public class SyncResult {
     private List<SyncRecord> syncRecords;
 
-    public SyncList() {
+    public SyncResult() {
         this.syncRecords = new ArrayList<>();
     }
 

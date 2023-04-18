@@ -13,14 +13,14 @@ dependencies {
     implementation project(':shared')
     implementation project(':timesheet')
     implementation project(':workorder_access')
+    implementation project(path: ':sync_logger')
 
+    implementation 'com.opencsv:opencsv'
+    implementation group: 'org.json', name: 'json', version: '20220320'
     implementation 'org.springframework.boot:spring-boot-starter-logging'
     implementation 'org.slf4j:slf4j-api'
-
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'com.opencsv:opencsv'
     implementation 'org.threeten:threeten-extra'
-    implementation project(path: ':sync_logger')
 
     testImplementation 'org.assertj:assertj-core'
     testImplementation(testFixtures(project(":timesheet")))

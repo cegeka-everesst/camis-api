@@ -8,4 +8,10 @@ public abstract class SyncRecord {
         this.message = message;
         this.employeeName = employeeName;
     }
+
+    @Override
+    public String toString() {
+        return "Message: " + this.message + "\n" +
+                "Employee name : " + this.employeeName + "\n";
+    }
 }

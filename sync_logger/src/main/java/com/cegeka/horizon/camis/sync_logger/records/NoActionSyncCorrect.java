@@ -13,4 +13,11 @@ public class NoActionSyncCorrect extends SyncRecord {
         this.workOrder = workOrder;
         this.date = date;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                "Start date: " + this.date + "\n" +
+                "Work order: " + this.workOrder.value() + "\n";
+    }
 }

@@ -15,4 +15,12 @@ public class UpdateTimsheetLineSyncErrorAndCorrect extends SyncRecord {
         this.hoursLogged = hoursLogged;
         this.workOrder = workOrder;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                "Start date: " + this.date + "\n" +
+                "Hours logged: " + this.hoursLogged + "\n" +
+                "Work order: " + this.workOrder.value() + "\n";
+    }
 }

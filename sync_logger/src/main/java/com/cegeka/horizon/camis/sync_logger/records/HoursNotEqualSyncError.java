@@ -9,4 +9,10 @@ public class HoursNotEqualSyncError extends SyncRecord {
         super(message, employeeName);
         this.date = date;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() +
+                "Start date: " + this.date + "\n";
+    }
 }

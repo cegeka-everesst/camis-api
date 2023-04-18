@@ -22,6 +22,5 @@ module com.cegeka.horizon.camis.synctimesheet {
     requires io.netty.transport;
     requires io.netty.handler;
     requires org.threeten.extra;
-    requires com.cegeka.horizon.camis.sync_error_logger;
-
+    requires com.cegeka.horizon.camis.sync_logger;
 }

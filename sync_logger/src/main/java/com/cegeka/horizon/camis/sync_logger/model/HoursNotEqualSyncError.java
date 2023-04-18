@@ -1,4 +1,4 @@
-package com.cegeka.horizon.camis.sync_logger.records;
+package com.cegeka.horizon.camis.sync_logger.model;
 
 import java.time.LocalDate;
 
@@ -12,7 +12,6 @@ public class HoursNotEqualSyncError extends SyncRecord {
 
     @Override
     public String toString() {
-        return super.toString() +
-                "Start date: " + this.date + "\n";
+        return super.toString() + "Start date: " + this.date + "\n";
     }
 }

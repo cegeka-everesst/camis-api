@@ -2,7 +2,7 @@ package com.cegeka.horizon.camis.synctimesheet.service.command;
 
 import com.cegeka.horizon.camis.domain.ResourceId;
 import com.cegeka.horizon.camis.domain.WorkOrder;
-import com.cegeka.horizon.camis.sync_logger.SyncLoggerService;
+import com.cegeka.horizon.camis.sync_logger.service.SyncLoggerService;
 import com.cegeka.horizon.camis.timesheet.LoggedHoursByDay;
 import com.cegeka.horizon.camis.timesheet.TimeCode;
 import com.cegeka.horizon.camis.timesheet.TimesheetService;

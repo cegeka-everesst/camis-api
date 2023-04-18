@@ -1,4 +1,4 @@
-package com.cegeka.horizon.camis.sync_logger.records;
+package com.cegeka.horizon.camis.sync_logger.model;
 
 import java.time.LocalDate;
 
@@ -14,8 +14,6 @@ public class HoursMinimumSyncError extends SyncRecord {
 
     @Override
     public String toString() {
-        return super.toString() +
-                "Minimum hours logged: " + this.hoursLogged + "\n" +
-                "Start date: " + this.date + "\n";
+        return super.toString() + "Minimum hours logged: " + this.hoursLogged + "\n" + "Start date: " + this.date + "\n";
     }
 }

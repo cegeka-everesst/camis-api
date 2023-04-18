@@ -1,4 +1,4 @@
-package com.cegeka.horizon.camis.sync_logger.records;
+package com.cegeka.horizon.camis.sync_logger.model;
 
 public abstract class SyncRecord {
     private final String message;
@@ -11,7 +11,6 @@ public abstract class SyncRecord {
 
     @Override
     public String toString() {
-        return "Message: " + this.message + "\n" +
-                "Employee name : " + this.employeeName + "\n";
+        return "Message: " + this.message + "\n" + "Employee name : " + this.employeeName + "\n";
     }
 }

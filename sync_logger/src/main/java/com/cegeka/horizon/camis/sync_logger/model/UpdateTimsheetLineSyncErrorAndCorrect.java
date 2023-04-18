@@ -1,4 +1,4 @@
-package com.cegeka.horizon.camis.sync_logger.records;
+package com.cegeka.horizon.camis.sync_logger.model;
 
 import com.cegeka.horizon.camis.domain.WorkOrder;
 
@@ -18,9 +18,6 @@ public class UpdateTimsheetLineSyncErrorAndCorrect extends SyncRecord {
 
     @Override
     public String toString() {
-        return super.toString() +
-                "Start date: " + this.date + "\n" +
-                "Hours logged: " + this.hoursLogged + "\n" +
-                "Work order: " + this.workOrder.value() + "\n";
+        return super.toString() + "Start date: " + this.date + "\n" + "Hours logged: " + this.hoursLogged + "\n" + "Work order: " + this.workOrder.value() + "\n";
     }
 }

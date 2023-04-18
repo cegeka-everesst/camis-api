@@ -2,16 +2,12 @@ package com.cegeka.horizon.camis.synctimesheet.service.command;
 
 import com.cegeka.horizon.camis.domain.ResourceId;
 import com.cegeka.horizon.camis.domain.WorkOrder;
+import com.cegeka.horizon.camis.sync_logger.SyncLoggerService;
 import com.cegeka.horizon.camis.timesheet.LoggedHoursByDay;
 import com.cegeka.horizon.camis.timesheet.TimeCode;
 import com.cegeka.horizon.camis.timesheet.TimesheetService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CreateTimesheetEntryCommand implements SyncCommand {
-
-    private static final Logger logger = LoggerFactory.getLogger("SyncTimesheets");
-
     private final String name;
     private final ResourceId resourceId;
     private final WorkOrder workOrder;
@@ -27,15 +23,15 @@ public class CreateTimesheetEntryCommand implements SyncCommand {
     }
 
     @Override
-    public void execute(TimesheetService timesheetService) {
-        try{
+    public void execute(TimesheetService timesheetService, SyncLoggerService syncLoggerService) {
+        try {
             timesheetService.createTimesheetEntry(resourceId, timeCode, workOrder, loggedHoursByDay);
-            logger.info("Updated timesheetLine of employee {} on date {} with workOrder {} and hours {} ", name, loggedHoursByDay.date(), workOrder.value(), loggedHoursByDay.hours());
-        }catch (Exception e){
-            if(resourceId.isExternal() && timeCode.equals(TimeCode.NO_ASSIGNMENT)){
-                logger.warn("Could not update timesheetLine of external employee {} BUT OKAY on date {} with workOrder {} and hours {} ", name, loggedHoursByDay.date(), workOrder.value(), loggedHoursByDay.hours());
-            }else{
-                logger.error("Error occurred when trying to update timesheetLine of employee {} on date {} with workOrder {} and hours {} ", name, loggedHoursByDay.date(), workOrder.value(), loggedHoursByDay.hours());
+            syncLoggerService.logAndAddSyncRecord("Updated timesheetLine of employee " + name + " on date " + loggedHoursByDay.date() + " with workOrder " + workOrder.value() + " and hours " + loggedHoursByDay.hours(), name, loggedHoursByDay.date(), loggedHoursByDay.hours(), workOrder);
+        } catch (Exception e) {
+            if (resourceId.isExternal() && timeCode.equals(TimeCode.NO_ASSIGNMENT)) {
+                syncLoggerService.logAndAddSyncRecord("Could not update timesheetLine of external employee " + name + " BUT OKAY on date " + loggedHoursByDay.date() + " with workOrder " + workOrder.value() + " and hours " + loggedHoursByDay.hours(), name, loggedHoursByDay.date(), loggedHoursByDay.hours(), workOrder);
+            } else {
+                syncLoggerService.logAndAddSyncRecord("Error occurred when trying to update timesheetLine of employee " + name + " on date " + loggedHoursByDay.date() + " with workOrder " + workOrder.value() + " and hours " + loggedHoursByDay.hours(), name, loggedHoursByDay.date(), loggedHoursByDay.hours(), workOrder);
             }
         }
     }

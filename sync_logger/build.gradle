@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'com.cegeka.horizon.camis.sync_error_logger'
+group 'com.cegeka.horizon.camis.sync_logger'
 version "$version"
 
 repositories {
@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     implementation project(path: ':shared')
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     testImplementation 'org.assertj:assertj-core'
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }

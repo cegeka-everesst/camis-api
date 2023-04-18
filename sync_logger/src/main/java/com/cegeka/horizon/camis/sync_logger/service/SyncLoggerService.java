@@ -2,6 +2,7 @@ package com.cegeka.horizon.camis.sync_logger.service;
 
 import com.cegeka.horizon.camis.domain.WorkOrder;
 import com.cegeka.horizon.camis.sync_logger.model.*;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,6 @@ public class SyncLoggerService {
     public void logAndAddSyncRecord(String message, String employee) {
         logger.error(message);
         this.syncResult.addSyncRecord(new OtherSyncError(message, employee));
-    }
-
-    public void logAndAddSyncRecord(String message, String employeeName, LocalDate date) {
-        this.syncResult.addSyncRecord(new HoursNotEqualSyncError(message, employeeName, date));
     }
 
     public void logAndAddSyncRecord(String message, String employeeName, LocalDate startDate, double minimumHours) {
@@ -48,7 +45,7 @@ public class SyncLoggerService {
         return syncResult.getSyncRecords();
     }
 
-    public SyncResult getSyncResult() {
-        return this.syncResult;
+    public JSONObject getSyncResultRecordsJson() {
+        return this.syncResult.getSyncRecordsToJson();
     }
 }

@@ -37,7 +37,7 @@ public class SyncLoggerService {
         if (message.contains("Updated timesheetLine of employee")) { logger.info(message); }
         else if (message.contains("Could not update timesheetLine of external employee")) { logger.warn(message); }
         else { logger.error(message); }
-        this.syncList.addSyncRecord(new UpdateTimsheetlineSyncErrorAndCorrect(message, employeeName, date, hours, workOrder));
+        this.syncList.addSyncRecord(new UpdateTimsheetLineSyncErrorAndCorrect(message, employeeName, date, hours, workOrder));
     }
 
     public List<SyncRecord> getSyncListRecords() {

@@ -7,9 +7,13 @@
 
 name: Gradle Package
 
+#on:
+#  release:
+#    types: [created]
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - 'main'
 
 jobs:
   build:

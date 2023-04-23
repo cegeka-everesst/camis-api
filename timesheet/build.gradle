@@ -27,3 +27,16 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+
+publishing {
+    publications {
+            gpr(MavenPublication) {
+                groupId = "com.cegeka.horizon.camis"
+                artifactId = "timesheet"
+                version = "1.0.0"
+
+                from(components.java)
+            }
+    }
+}

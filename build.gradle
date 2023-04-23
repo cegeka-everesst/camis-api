@@ -23,6 +23,14 @@ dependencies {
 
 }
 
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
 
 allprojects {
     group 'com.cegeka.horizon.camis'

@@ -6,7 +6,7 @@ plugins {
     id 'maven-publish'
 }
 
-group 'com.cegeka.horizon.camis.api.timesheet'
+group "$groupId"
 version "$version"
 
 repositories {

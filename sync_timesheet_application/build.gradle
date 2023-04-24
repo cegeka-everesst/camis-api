@@ -5,8 +5,8 @@ plugins {
     id 'maven-publish'
 }
 
-group 'com.cegeka.horizon.camis.synctimesheet.app'
-version '$version'
+group "$groupId"
+version "$version"
 
 repositories {
     mavenCentral()

@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.cegeka.horizon.camis.sync_logger'
-version "1.0.3-FINAL"
+version "$version"
 
 repositories {
     mavenCentral()

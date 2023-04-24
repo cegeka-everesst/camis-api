@@ -1,7 +1,5 @@
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
-import java.util.regex.Matcher
-
 buildscript {
     repositories {
         mavenCentral()

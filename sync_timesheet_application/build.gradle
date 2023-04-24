@@ -2,8 +2,6 @@ plugins {
     id 'java'
 }
 
-apply plugin: 'maven'
-
 group 'com.cegeka.horizon.camis.synctimesheet.app'
 version '$version'
 
@@ -31,14 +29,4 @@ dependencies {
 
 test {
     useJUnitPlatform()
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "https://maven.pkg.github.com/wardbryon/CamisAPI") {
-                authentication(userName: System.getenv("GITHUB_ACTOR"), password: System.getenv("GITHUB_TOKEN"))
-            }
-        }
-    }
 }

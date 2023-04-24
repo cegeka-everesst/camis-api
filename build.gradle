@@ -36,7 +36,7 @@ jar {
 
 allprojects {
     group 'com.cegeka.horizon.camis'
-    version "$version"
+    version "1.0.3-FINAL"
 
     apply plugin: 'io.spring.dependency-management'
 

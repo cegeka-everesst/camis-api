@@ -10,6 +10,9 @@ plugins {
     id 'org.springframework.boot' version '3.0.0'
 }
 
+group "$groupId"
+version "$version"
+
 apply plugin: 'java'
 apply plugin: 'io.spring.dependency-management'
 
@@ -20,7 +23,14 @@ dependencies {
 
     implementation platform(SpringBootPlugin.BOM_COORDINATES)
 
-    implementation('org.springframework.boot:spring-boot-starter-webflux:3.0.1')
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
 }
 
 

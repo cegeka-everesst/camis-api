@@ -30,12 +30,11 @@ test {
     useJUnitPlatform()
 }
 
-
 publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/wardbryon/CamisAPI")
+            url = uri("$repoUrl")
             credentials {
                 username = System.getenv("USERNAME")
                 password = System.getenv("TOKEN")
@@ -44,9 +43,9 @@ publishing {
     }
     publications {
         gpr(MavenPublication) {
-            groupId = "com.cegeka.horizon.camis"
+            groupId = "$groupId"
             artifactId = "timesheet"
-            version = "1.0.0"
+            version = "$version"
 
             from(components.java)
         }

@@ -6,7 +6,7 @@ plugins {
 }
 
 group "$groupId"
-version "$version"
+version "1.0.3-FINAL"
 
 repositories {
     mavenCentral()

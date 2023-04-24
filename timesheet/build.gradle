@@ -45,7 +45,7 @@ publishing {
         gpr(MavenPublication) {
             groupId = "$groupId"
             artifactId = "timesheet"
-            version = "$version"
+            version = "1.0.3-FINAL"
 
             from(components.java)
         }

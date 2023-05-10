@@ -4,3 +4,5 @@
 /*/build/
 /sync_timesheet_application/src/main/resources/*.csv
 /log/*.log
+/build/publications/*
+/build/tmp/*

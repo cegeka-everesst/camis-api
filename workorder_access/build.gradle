@@ -5,7 +5,7 @@ plugins {
     id 'maven-publish'
 }
 
-group "$groupId" + ".api.workorder"
+group "$groupId"
 version "$version"
 
 repositories {

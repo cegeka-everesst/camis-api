@@ -5,7 +5,7 @@ plugins {
     id 'maven-publish'
 }
 
-group "$groupId" + ".web_client_factory"
+group "$groupId"
 version "$version"
 
 repositories {

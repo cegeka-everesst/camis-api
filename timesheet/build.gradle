@@ -6,7 +6,7 @@ plugins {
     id 'maven-publish'
 }
 
-group "$groupId" + ".timesheet"
+group "$groupId"
 version "$version"
 
 repositories {

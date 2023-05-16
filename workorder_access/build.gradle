@@ -5,7 +5,7 @@ plugins {
     id 'maven-publish'
 }
 
-group 'com.cegeka.horizon.camis.api.workorder'
+group "$groupId" + ".api.workorder"
 version "$version"
 
 repositories {
@@ -15,7 +15,7 @@ repositories {
 dependencies {
     implementation project(':shared')
 
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:3.0.0'
 
     testImplementation 'org.assertj:assertj-core'
     testImplementation 'org.junit.jupiter:junit-jupiter'

@@ -1,51 +1,39 @@
 package com.cegeka.horizon.camis.sync_logger.service;
 
-import com.cegeka.horizon.camis.domain.WorkOrder;
-import com.cegeka.horizon.camis.sync_logger.model.*;
-import org.json.JSONObject;
+import com.cegeka.horizon.camis.sync_logger.model.data.EmployeeData;
+import com.cegeka.horizon.camis.sync_logger.model.data.RecordData;
+import com.cegeka.horizon.camis.sync_logger.model.syncrecord.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.List;
-
 @Service
 public class SyncLoggerService {
-    private SyncResult syncResult = new SyncResult();
     private static final Logger logger = LoggerFactory.getLogger("SyncTimesheets");
 
-    public void logAndAddSyncRecord(String message, String employee) {
-        logger.error(message);
-        this.syncResult.addSyncRecord(new OtherSyncError(message, employee));
+    public SyncRecord logAndAddSyncRecordWithOtherError(EmployeeData employerData, RecordData recordData) {
+        logger.error(recordData.getMessage());
+        return new OtherSyncError(employerData, recordData);
     }
 
-    public void logAndAddSyncRecord(String message, String employeeName, LocalDate startDate, double minimumHours) {
-        logger.error(message);
-        this.syncResult.addSyncRecord(new HoursMinimumSyncError(message, employeeName, startDate, minimumHours));
+    public SyncRecord logAndAddSyncRecordWithHoursMinimum(EmployeeData employerData, RecordData recordData, double minimumHours) {
+        logger.error(recordData.getMessage());
+        return new HoursMinimumSyncError(employerData, recordData, minimumHours);
     }
 
-    public void logAndAddSyncRecord(String message, String employeeName, LocalDate date, WorkOrder workOrder) {
-        logger.info(message);
-        this.syncResult.addSyncRecord(new NoActionSyncCorrect(message, employeeName, date, workOrder));
+    public SyncRecord logAndAddSyncRecordWithNoAction(EmployeeData employerData, RecordData recordData) {
+        logger.info(recordData.getMessage());
+        return new NoActionSyncCorrect(employerData, recordData);
     }
 
-    public void logAndAddSyncRecord(String message, String employeeName, LocalDate date, double hours, WorkOrder workOrder) {
-        if (message.contains("Updated timesheetLine of employee")) {
-            logger.info(message);
-        } else if (message.contains("Could not update timesheetLine of external employee")) {
-            logger.warn(message);
+    public SyncRecord logAndAddSyncRecordWithUpdate(EmployeeData employerData, RecordData recordData, double hours) {
+        if (recordData.getMessage().contains("Updated timesheetLine of employee")) {
+            logger.info(recordData.getMessage());
+        } else if (recordData.getMessage().contains("Could not update timesheetLine of external employee")) {
+            logger.warn(recordData.getMessage());
         } else {
-            logger.error(message);
+            logger.error(recordData.getMessage());
         }
-        this.syncResult.addSyncRecord(new UpdateTimsheetLineSyncErrorAndCorrect(message, employeeName, date, hours, workOrder));
-    }
-
-    public List<SyncRecord> getSyncResultRecords() {
-        return syncResult.getSyncRecords();
-    }
-
-    public JSONObject getSyncResultRecordsJson() {
-        return this.syncResult.getSyncRecordsToJson();
+        return new UpdateTimesheetLineSyncErrorAndCorrect(employerData, recordData, hours);
     }
 }

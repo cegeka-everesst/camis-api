@@ -1,13 +1,15 @@
-module com.cegeka.horizon.camis.synctimesheet {
-    exports com.cegeka.horizon.camis.synctimesheet;
+module com.cegeka.horizon.camis.sync_timesheet {
+    exports com.cegeka.horizon.camis.sync_timesheet.csv;
+    exports com.cegeka.horizon.camis.sync_timesheet.service;
+    exports com.cegeka.horizon.camis.sync_timesheet.service.command;
 
     requires com.cegeka.horizon.camis.domain;
     requires com.cegeka.horizon.camis.timesheet;
     requires com.cegeka.horizon.camis.workorder;
 
-    opens com.cegeka.horizon.camis.synctimesheet to spring.core;
-    opens com.cegeka.horizon.camis.synctimesheet.csv to spring.core, spring.beans;
-    opens com.cegeka.horizon.camis.synctimesheet.service to spring.core, spring.beans;
+    opens com.cegeka.horizon.camis.sync_timesheet.csv to spring.core, spring.beans;
+    opens com.cegeka.horizon.camis.sync_timesheet.service to spring.core, spring.beans;
+    opens com.cegeka.horizon.camis.sync_timesheet.service.command to spring.core, spring.beans;
 
     requires org.slf4j;
     requires com.opencsv;
@@ -24,4 +26,5 @@ module com.cegeka.horizon.camis.synctimesheet {
     requires org.threeten.extra;
     requires com.cegeka.horizon.camis.sync_logger;
     requires org.json;
+    requires spring.webmvc;
 }

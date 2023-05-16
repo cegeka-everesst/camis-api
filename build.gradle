@@ -43,12 +43,10 @@ allprojects {
     repositories {
         mavenCentral()
     }
-
     dependencyManagement {
 
     }
 }
-
 
 subprojects {
     apply plugin: 'java'
@@ -65,6 +63,9 @@ subprojects {
         dependencies {
             dependency 'com.opencsv:opencsv:5.7.1'
             dependency 'org.threeten:threeten-extra:1.7.2'
+            dependency 'org.springframework.boot:spring-boot-starter-logging:3.0.0'
+            dependency 'org.springframework.boot:spring-boot-starter-webflux:3.0.0'
+
         }
     }
 }

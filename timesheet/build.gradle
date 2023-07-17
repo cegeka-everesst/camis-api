@@ -15,9 +15,8 @@ repositories {
 
 dependencies {
     implementation project(':shared')
-
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.threeten:threeten-extra'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:3.0.0'
+    implementation 'org.threeten:threeten-extra:1.7.2'
 
     testFixturesImplementation project(':shared')
 

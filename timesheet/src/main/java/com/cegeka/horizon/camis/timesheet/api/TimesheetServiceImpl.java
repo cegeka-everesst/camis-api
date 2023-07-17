@@ -17,6 +17,7 @@ import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
@@ -24,8 +25,6 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 @Service
 public class TimesheetServiceImpl implements TimesheetService {
 
-    @Autowired
-    private WebClient webClient;
     @Autowired
     private EmployeeMapper employeeMapper;
 
@@ -39,51 +38,51 @@ public class TimesheetServiceImpl implements TimesheetService {
      * @return
      */
     @Override
-    public Optional<WeeklyTimesheet> getTimesheetEntries(ResourceId resourceId, String employeeName, LocalDateRange range) {
+    public Optional<WeeklyTimesheet> getTimesheetEntries(WebClient webClient, ResourceId resourceId, String employeeName, LocalDateRange range) {
         if(LocalDateRangeSplitter.splitByWeek(range).size() > 1) {
             throw new IllegalArgumentException("The API is only able to retrieve a single weeks at a time");
         }
 
         return employeeMapper.map(
                     range.getStart(),
-                  webClient.get()
-                  .uri(uriBuilder -> uriBuilder.path("timesheet")
-                          .queryParam("resourceId", resourceId.value())
-                          .queryParam("dateFrom", range.getStart().format(ofPattern("yyyy-MM-dd")))
-                          .queryParam("dateTo", range.getEnd().format(ofPattern("yyyy-MM-dd"))).build())
-                  .retrieve()
-                  .bodyToMono(Timesheet.class)
-                  .block(), resourceId, employeeName).weeklyTimesheets().stream().findFirst();
+                Objects.requireNonNull(webClient.get()
+                        .uri(uriBuilder -> uriBuilder.path("timesheet")
+                                .queryParam("resourceId", resourceId.value())
+                                .queryParam("dateFrom", range.getStart().format(ofPattern("yyyy-MM-dd")))
+                                .queryParam("dateTo", range.getEnd().format(ofPattern("yyyy-MM-dd"))).build())
+                        .retrieve()
+                        .bodyToMono(Timesheet.class)
+                        .block()), resourceId, employeeName).weeklyTimesheets().stream().findFirst();
     }
 
     @Override
-    public TimesheetLineIdentifier createTimesheetEntry(ResourceId resourceId, TimeCode timeCode, WorkOrder workOrder, LoggedHoursByDay loggedHours) {
+    public TimesheetLineIdentifier createTimesheetEntry(WebClient webClient, ResourceId resourceId, TimeCode timeCode, WorkOrder workOrder, LoggedHoursByDay loggedHours) {
         CreateTimesheetEntry createTimesheetEntry = createTimesheetEntryRequest(resourceId, timeCode, workOrder, loggedHours);
 
-        return mapResult(webClient.post()
+        return mapResult(Objects.requireNonNull(webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("timesheet").build())
                 .body(Mono.just(createTimesheetEntry), CreateTimesheetEntry.class)
                 .retrieve()
                 .bodyToMono(CreateTimesheetEntryResult.class)
-                .block());
+                .block()));
     }
 
     @Override
-    public TimesheetLineIdentifier updateTimesheetEntry(TimesheetLineIdentifier timesheetLineIdentifier, ResourceId resourceId, TimeCode timeCode, WorkOrder workOrder, LoggedHoursByDay loggedHours) {
+    public TimesheetLineIdentifier updateTimesheetEntry(WebClient webClient, TimesheetLineIdentifier timesheetLineIdentifier, ResourceId resourceId, TimeCode timeCode, WorkOrder workOrder, LoggedHoursByDay loggedHours) {
         CreateTimesheetEntry createTimesheetEntry = createTimesheetEntryRequest(resourceId,timeCode, workOrder, loggedHours);
 
-        return mapResult(webClient.put()
+        return mapResult(Objects.requireNonNull(webClient.put()
                 .uri(uriBuilder -> uriBuilder.path("timesheet")
                         .queryParam("identifier", timesheetLineIdentifier.value())
                         .build())
                 .body(Mono.just(createTimesheetEntry), CreateTimesheetEntry.class)
                 .retrieve()
                 .bodyToMono(CreateTimesheetEntryResult.class)
-                .block());
+                .block()));
     }
 
     @Override
-    public boolean deleteTimesheetEntry(TimesheetLineIdentifier timesheetLineIdentifier, ResourceId resourceId) {
+    public boolean deleteTimesheetEntry(WebClient webClient, TimesheetLineIdentifier timesheetLineIdentifier, ResourceId resourceId) {
         return webClient.delete()
                 .uri(uriBuilder -> uriBuilder.path("timesheet")
                         .queryParam("identifier", timesheetLineIdentifier.value())

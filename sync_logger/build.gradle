@@ -1,0 +1,64 @@
+import java.util.regex.Matcher
+
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+group "$groupId"
+version "$version"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(path: ':shared')
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:3.0.0'
+    implementation group: 'org.json', name: 'json', version: '20220320'
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("$repoUrl")
+            credentials {
+                username = System.getenv("USERNAME")
+                password = System.getenv("TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            groupId = "$groupId"
+            artifactId = "sync_logger"
+            version = "$version"
+
+            from(components.java)
+        }
+    }
+}
+
+
+tasks.withType(GenerateMavenPom).all {
+    doLast {
+        File file = new File("$buildDir/publications/gpr/pom-default.xml")
+        def text = file.text
+        def pattern = "(?s)(<dependencyManagement>.+?<dependencies>)(.+?)(</dependencies>.+?</dependencyManagement>)"
+        Matcher matcher = text =~ pattern
+        if (matcher.find()) {
+            text = text.replaceFirst(pattern, "")
+            def firstDeps = matcher.group(2)
+            text = text.replaceFirst(pattern, '$1$2' + firstDeps + '$3')
+        }
+        file.write(text)
+    }
+}

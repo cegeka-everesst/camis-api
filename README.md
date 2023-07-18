@@ -48,3 +48,11 @@ Log files can be found at
 Java 17
 ! both for running the application 
 ! also for Gradle JVM
+
+## About Github Actions and publishing to the Github Packages repository
+
+Under profile, Developer Settings
+add `Fine-grained personal access tokens` under the name GithubPackagesRegistry
+
+When you `Release` a new version, this will trigger a Github Action that upon success will publish artifacts to the Github Packages repository.
+This in turn can then be used in dependent project https://github.com/wardbryon/EveresstTempoSyncTool to retrieve the necessary libraries.

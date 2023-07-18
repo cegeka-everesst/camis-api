@@ -20,9 +20,7 @@ dependencies {
     repositories {
         mavenCentral()
     }
-
     implementation platform(SpringBootPlugin.BOM_COORDINATES)
-
 }
 
 bootJar {

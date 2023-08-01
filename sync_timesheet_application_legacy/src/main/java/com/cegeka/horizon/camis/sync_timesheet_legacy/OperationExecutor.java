@@ -34,7 +34,8 @@ public class OperationExecutor {
     enum Operation{
         CHECK_WORK_ORDERS,
         SYNC_TIMESHEETS,
-        VIEW_TIMESHEETS
+        VIEW_TIMESHEETS,
+        REMOVE_DOUBLE_TIMESHEETS
     }
 
     public void run() throws Exception {
@@ -43,6 +44,7 @@ public class OperationExecutor {
         switch (Operation.valueOf(operation)) {
             case CHECK_WORK_ORDERS -> checkWorkOrderService.check(webClient, employees);
             case VIEW_TIMESHEETS -> syncTimesheetService.retrieve(webClient, employees);
+            case REMOVE_DOUBLE_TIMESHEETS -> syncTimesheetService.removeDoubleTimesheets(webClient, employees);
             case SYNC_TIMESHEETS -> syncTimesheetService.sync(webClient, employees);
         }
     }

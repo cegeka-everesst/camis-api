@@ -6,12 +6,10 @@ public final class EmployeeData {
     private final ResourceId resourceId;
     private final String employeeName;
 
-    private final String slackEmployeeName;
 
-    public EmployeeData(ResourceId resourceId, String employeeName, String slackEmployeeName) {
+    public EmployeeData(ResourceId resourceId, String employeeName) {
         this.resourceId = resourceId;
         this.employeeName = employeeName;
-        this.slackEmployeeName = slackEmployeeName;
     }
 
     public ResourceId getResourceId() {
@@ -22,7 +20,4 @@ public final class EmployeeData {
         return employeeName;
     }
 
-    public String getSlackEmployeeName() {
-        return slackEmployeeName;
-    }
 }

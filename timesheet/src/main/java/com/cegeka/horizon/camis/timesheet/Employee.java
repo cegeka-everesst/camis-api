@@ -14,13 +14,11 @@ import java.util.stream.Stream;
 public class Employee {
     private final ResourceId resourceId;
     private final String name;
-    private String slackName;
     private final List<WeeklyTimesheet> weeklyTimeSheets = new ArrayList<>();
 
     public Employee(ResourceId resourceId, String name) {
         this.resourceId = resourceId;
         this.name = name;
-        this.slackName = "";
     }
 
     public void addWeeklyTimesheet(WeeklyTimesheet weeklyTimesheetToAdd){
@@ -115,13 +113,5 @@ public class Employee {
         public int compare(Employee o1, Employee o2) {
             return o1.name.compareTo(o2.name);
         }
-    }
-
-    public void setSlackName(String slackName) {
-        this.slackName = slackName;
-    }
-
-    public String getSlackName() {
-        return slackName;
     }
 }

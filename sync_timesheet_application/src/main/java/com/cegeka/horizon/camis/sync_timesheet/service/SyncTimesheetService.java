@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 public class SyncTimesheetService {
     private static final Logger logger = LoggerFactory.getLogger("SyncTimesheets");
     private static final int MINIMUM_HOURS = 1;
-
     private final TimesheetService timesheetService;
     private final CompareEmployeeService compareEmployeeService;
     private final SyncLoggerService syncLoggerService;
@@ -39,7 +38,7 @@ public class SyncTimesheetService {
                 new WeeklyTimesheetToSync(inputEmployee, weeklyTimesheet))).peek(weeklyTimesheetToSync -> {
             if (!weeklyTimesheetToSync.timesheet().hasMinimumHoursLogged(MINIMUM_HOURS)) {
                 syncResult.addSyncDays(getSyncDaysMinimumHours(weeklyTimesheetToSync));
-                syncResult.addSyncRecord(syncLoggerService.logAndAddSyncRecordWithHoursMinimum(new EmployeeData(weeklyTimesheetToSync.employee().resourceId(), weeklyTimesheetToSync.employee().name(), weeklyTimesheetToSync.employee().getSlackName()), new RecordData(weeklyTimesheetToSync.timesheet().startDate(), "Not syncing inputEmployee " + weeklyTimesheetToSync.employee().name() + " timesheet starting at " + weeklyTimesheetToSync.timesheet().startDate() + " due to less than " + MINIMUM_HOURS + " hours logged",null), MINIMUM_HOURS));
+                syncResult.addSyncRecord(syncLoggerService.logAndAddSyncRecordWithHoursMinimum(new EmployeeData(weeklyTimesheetToSync.employee().resourceId(), weeklyTimesheetToSync.employee().name()), new RecordData(weeklyTimesheetToSync.timesheet().startDate(), "Not syncing inputEmployee " + weeklyTimesheetToSync.employee().name() + " timesheet starting at " + weeklyTimesheetToSync.timesheet().startDate() + " due to less than " + MINIMUM_HOURS + " hours logged",null), MINIMUM_HOURS));
             }
         }).filter(weeklyTimesheetToSync -> weeklyTimesheetToSync.timesheet().hasMinimumHoursLogged(MINIMUM_HOURS)).forEach(weeklyTimesheetToSync -> {
             Optional<WeeklyTimesheet> camisTimesheetForThatPeriod = retrieveOriginalLogging(webClient, weeklyTimesheetToSync);
@@ -51,7 +50,7 @@ public class SyncTimesheetService {
             syncResult.addSyncDays(compareEmployeeService.getSyncDays(weeklyTimesheetToSync.employee(), weeklyTimesheetToSync.timesheet(), camisTimesheetForThatPeriod));
 
             if (syncCommands.stream().anyMatch(SyncCommand::isError)) {
-                syncResult.addSyncRecord(syncLoggerService.logAndAddSyncRecordWithOtherError(new EmployeeData(weeklyTimesheetToSync.employee().resourceId(), weeklyTimesheetToSync.employee().name(), weeklyTimesheetToSync.employee().getSlackName()), new RecordData(weeklyTimesheetToSync.timesheet().startDate(),"Not syncing employee " + weeklyTimesheetToSync.employee().name() + " timesheets due to " + syncCommands.stream().filter(SyncCommand::isError).map(SyncCommand::toString).reduce(String::concat).get(),  null)));
+                syncResult.addSyncRecord(syncLoggerService.logAndAddSyncRecordWithOtherError(new EmployeeData(weeklyTimesheetToSync.employee().resourceId(), weeklyTimesheetToSync.employee().name()), new RecordData(weeklyTimesheetToSync.timesheet().startDate(),"Not syncing employee " + weeklyTimesheetToSync.employee().name() + " timesheets due to " + syncCommands.stream().filter(SyncCommand::isError).map(SyncCommand::toString).reduce(String::concat).get(),  null)));
             } else {
                 syncCommands.forEach(syncCommand -> syncResult.addSyncRecord(syncCommand.execute(webClient, timesheetService, syncLoggerService)));
             }

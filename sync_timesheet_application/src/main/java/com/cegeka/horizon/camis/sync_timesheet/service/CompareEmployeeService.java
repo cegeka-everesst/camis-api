@@ -38,12 +38,12 @@ public class CompareEmployeeService {
             inputHours -> {
                 List<LoggedHoursByDayDetail> camisHours =  findByWorkOrderAndDate(loggedHoursByDayDetailsCamis, inputHours.workOrder(), inputHours.loggedHoursByDay().date());
                 if(camisHours.isEmpty()){
-                    result.add(new CreateTimesheetEntryCommand(new EmployeeData(inputEmployee.resourceId(), inputEmployee.name(), inputEmployee.getSlackName()),  inputHours.workOrder(), inputHours.loggedHoursByDay(), inputHours.timeCode()));
+                    result.add(new CreateTimesheetEntryCommand(new EmployeeData(inputEmployee.resourceId(), inputEmployee.name()),  inputHours.workOrder(), inputHours.loggedHoursByDay(), inputHours.timeCode()));
                 }else{
                     if(abs(sum(camisHours) - inputHours.loggedHoursByDay().hours()) < 0.01){
-                        result.add(new NothingToSyncCommand(new EmployeeData(inputEmployee.resourceId(), inputEmployee.name(), inputEmployee.getSlackName()), inputHours.workOrder(), inputHours.loggedHoursByDay().date()));
+                        result.add(new NothingToSyncCommand(new EmployeeData(inputEmployee.resourceId(), inputEmployee.name()), inputHours.workOrder(), inputHours.loggedHoursByDay().date()));
                     }else if(sum(camisHours) < inputHours.loggedHoursByDay().hours()){
-                        result.add(new CreateTimesheetEntryCommand(new EmployeeData(inputEmployee.resourceId(), inputEmployee.name(), inputEmployee.getSlackName()),  inputHours.workOrder(), inputHours.loggedHoursByDay().minus(sum(camisHours)), inputHours.timeCode()));
+                        result.add(new CreateTimesheetEntryCommand(new EmployeeData(inputEmployee.resourceId(), inputEmployee.name()),  inputHours.workOrder(), inputHours.loggedHoursByDay().minus(sum(camisHours)), inputHours.timeCode()));
                     }else{
                         result.add(new ErrorCommand(inputEmployee.name() + " sum(camisHours) > sum(tempoHours) on " + inputHours.loggedHoursByDay().date()));
                         //TODO: deleting lines and adding, for now we just throw an error,

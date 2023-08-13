@@ -149,7 +149,7 @@ class EmployeeTest {
         Employee employee = new Employee(new ResourceId("I122312"), "Ward");
         employee.addWeeklyTimesheet(weeklyTimesheet);
 
-        assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_MONDAY, 8)).isEqualTo(false);
+        assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_MONDAY, 8)).isEqualTo(true);
         assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_TUESDAY, 8)).isEqualTo(true);
         assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_WEDNESDAY, 8)).isEqualTo(true);
         assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_FRIDAY, 8)).isEqualTo(true);

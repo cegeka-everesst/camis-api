@@ -5,31 +5,31 @@ import com.cegeka.horizon.camis.sync_logger.model.data.RecordData;
 
 public abstract class SyncRecord {
 
-    private final EmployeeIdentification employerData;
+    private final EmployeeIdentification employeeIdentification;
     private final RecordData recordData;
     protected int errorCode;
     protected double hoursLogged;
 
-    protected SyncRecord(EmployeeIdentification employerData, RecordData recordData) {
-        this.employerData = employerData;
+    protected SyncRecord(EmployeeIdentification employeeIdentification, RecordData recordData) {
+        this.employeeIdentification = employeeIdentification;
         this.recordData = recordData;
         this.errorCode = -1;
         this.hoursLogged = -1;
     }
 
-    public EmployeeIdentification getEmployerData() {
-        return employerData;
+    public EmployeeIdentification employeeIdentification() {
+        return employeeIdentification;
     }
 
-    public RecordData getRecordData() {
+    public RecordData recordData() {
         return recordData;
     }
 
-    public int getErrorCode() {
+    public int errorCode() {
         return errorCode;
     }
 
-    public double getHoursLogged() {
+    public double hoursLogged() {
         return hoursLogged;
     }
 }

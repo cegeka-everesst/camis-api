@@ -1,7 +1,9 @@
 package com.cegeka.horizon.camis.timesheet;
 
+import com.cegeka.horizon.camis.domain.EmployeeIdentification;
 import com.cegeka.horizon.camis.domain.ResourceId;
 import com.cegeka.horizon.camis.timesheet.testbuilder.EmployeeTestBuilder;
+import com.cegeka.horizon.camis.timesheet.testbuilder.WeeklyTimesheetTestBuilder;
 import org.junit.jupiter.api.Test;
 
 import static com.cegeka.horizon.camis.timesheet.testbuilder.LoggedHoursByDayTestBuilder.aLoggedHours;
@@ -32,7 +34,8 @@ class EmployeeTest {
                         )
                 .build();
 
-        Employee employee = new Employee(new ResourceId("I122321"), "Ward");
+
+        Employee employee = new Employee(new EmployeeIdentification(new ResourceId("I122312"), "Ward"));
         employee.addWeeklyTimesheet(weeklyTimesheet);
         employee.addWeeklyTimesheet(sameWeek);
 
@@ -57,7 +60,7 @@ class EmployeeTest {
                         )
                 .build();
 
-        Employee employee = new Employee(new ResourceId("I122312"), "Ward");
+        Employee employee = new Employee(new EmployeeIdentification(new ResourceId("I122312"), "Ward"));
         employee.addWeeklyTimesheet(weeklyTimesheet);
         employee.addWeeklyTimesheet(differentWeek);
 
@@ -66,25 +69,22 @@ class EmployeeTest {
 
     @Test
     public void givenTimesheets_whenGetTimesheetPeriod_thenReturnTotalDuration(){
-        WeeklyTimesheet weeklyTimesheet = aWeeklyTimesheet()
+        WeeklyTimesheetTestBuilder weeklyTimesheet = aWeeklyTimesheet()
                 .withLine(aTimesheetLine()
                         .withWorkOrder(WORK_ORDER_1)
                         .withLoggedHours(aLoggedHours(5, WEEK_0_MONDAY))
                         .withLoggedHours(aLoggedHours(5, WEEK_0_WEDNESDAY))
-                        )
-                .build();
+                        );
 
-        WeeklyTimesheet differentWeek = aWeeklyTimesheet()
+        WeeklyTimesheetTestBuilder differentWeek = aWeeklyTimesheet()
                 .withLine(aTimesheetLine()
                         .withWorkOrder(WORK_ORDER_1)
                         .withLoggedHours(aLoggedHours(5, WEEK_2_MONDAY))
                         .withLoggedHours(aLoggedHours(5, WEEK_2_TUESDAY))
-                        )
-                .build();
+                        );
 
-        Employee employee = new Employee(new ResourceId("I122321"), "Ward");
-        employee.addWeeklyTimesheet(weeklyTimesheet);
-        employee.addWeeklyTimesheet(differentWeek);
+        Employee employee = EmployeeTestBuilder.anEmployee()
+                .withTimeSheet(weeklyTimesheet, differentWeek).build();
 
         assertThat(employee.getTimesheetDurations().getStart()).isEqualTo(WEEK_0_MONDAY);
         assertThat(employee.getTimesheetDurations().getEnd()).isEqualTo(WEEK_2_SUNDAY);
@@ -106,25 +106,22 @@ class EmployeeTest {
 
     @Test
     public void givenEmployee_whenLoggedHoursRange_thenRange(){
-        WeeklyTimesheet weeklyTimesheet = aWeeklyTimesheet()
+        WeeklyTimesheetTestBuilder weeklyTimesheet = aWeeklyTimesheet()
                 .withLine(aTimesheetLine()
                         .withWorkOrder(WORK_ORDER_1)
                         .withLoggedHours(aLoggedHours(5, WEEK_1_TUESDAY))
                         .withLoggedHours(aLoggedHours(5, WEEK_1_WEDNESDAY))
-                )
-                .build();
+                );
 
-        WeeklyTimesheet differentWeek = aWeeklyTimesheet()
+        WeeklyTimesheetTestBuilder differentWeek = aWeeklyTimesheet()
                 .withLine(aTimesheetLine()
                         .withWorkOrder(WORK_ORDER_1)
                         .withLoggedHours(aLoggedHours(5, WEEK_2_MONDAY))
                         .withLoggedHours(aLoggedHours(5, WEEK_2_TUESDAY))
-                )
-                .build();
+                );
 
-        Employee employee = new Employee(new ResourceId("I122312"), "Ward");
-        employee.addWeeklyTimesheet(weeklyTimesheet);
-        employee.addWeeklyTimesheet(differentWeek);
+        Employee employee = EmployeeTestBuilder.anEmployee()
+                .withTimeSheet(weeklyTimesheet, differentWeek).build();
 
         assertThat(employee.loggedHoursRange().getStart()).isEqualTo(WEEK_1_TUESDAY);
         assertThat(employee.loggedHoursRange().getEndInclusive()).isEqualTo(WEEK_2_TUESDAY);
@@ -132,7 +129,7 @@ class EmployeeTest {
 
     @Test
     public void givenEmployee_hasMinimumDailyHoursLogged_thenCheckSum(){
-        WeeklyTimesheet weeklyTimesheet = aWeeklyTimesheet()
+        WeeklyTimesheetTestBuilder weeklyTimesheet = aWeeklyTimesheet()
                 .withLine(aTimesheetLine()
                         .withWorkOrder(WORK_ORDER_1)
                         .withLoggedHours(aLoggedHours(5, WEEK_1_TUESDAY))
@@ -143,11 +140,10 @@ class EmployeeTest {
                         .withWorkOrder(WORK_ORDER_2)
                         .withLoggedHours(aLoggedHours(4, WEEK_1_MONDAY))
                         .withLoggedHours(aLoggedHours(3, WEEK_1_TUESDAY))
-                )
-                .build();
+                );
 
-        Employee employee = new Employee(new ResourceId("I122312"), "Ward");
-        employee.addWeeklyTimesheet(weeklyTimesheet);
+        Employee employee = EmployeeTestBuilder.anEmployee()
+                .withTimeSheet(weeklyTimesheet).build();
 
         assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_MONDAY, 8)).isEqualTo(true);
         assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_TUESDAY, 8)).isEqualTo(true);

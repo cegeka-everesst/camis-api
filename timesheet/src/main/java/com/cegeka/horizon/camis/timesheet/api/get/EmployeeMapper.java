@@ -1,5 +1,6 @@
 package com.cegeka.horizon.camis.timesheet.api.get;
 
+import com.cegeka.horizon.camis.domain.EmployeeIdentification;
 import com.cegeka.horizon.camis.domain.ResourceId;
 import com.cegeka.horizon.camis.domain.WorkOrder;
 import com.cegeka.horizon.camis.timesheet.*;
@@ -12,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 public class EmployeeMapper {
 
     public Employee map(LocalDate start, Timesheet timesheet, ResourceId resourceId, String employeeName) {
-        Employee employee = new Employee(resourceId, employeeName);
+        Employee employee = new Employee(new EmployeeIdentification(resourceId, employeeName));
         timesheet.timesheetEntryList.entries.forEach(
                 entry -> {
                     if(entry.identifier != null){

@@ -1,12 +1,11 @@
 package com.cegeka.horizon.camis.timesheet.testbuilder;
 
+import com.cegeka.horizon.camis.domain.EmployeeIdentification;
 import com.cegeka.horizon.camis.domain.ResourceId;
 import com.cegeka.horizon.camis.timesheet.Employee;
-import com.cegeka.horizon.camis.timesheet.WeeklyTimesheet;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.List.of;
 
@@ -27,7 +26,7 @@ public class EmployeeTestBuilder {
     }
 
     public Employee build(){
-        Employee employee = new Employee(resourceId, name);
+        Employee employee = new Employee(new EmployeeIdentification(resourceId, name));
         weeklyTimesheets.stream().map(WeeklyTimesheetTestBuilder::build).forEach(
                 employee::addWeeklyTimesheet
         );

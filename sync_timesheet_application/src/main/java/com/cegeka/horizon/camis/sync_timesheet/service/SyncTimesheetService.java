@@ -14,14 +14,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.threeten.extra.LocalDateRange;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
 public class SyncTimesheetService {
     private static final Logger logger = LoggerFactory.getLogger("SyncTimesheets");
-    private static final int MINIMUM_HOURS = 1;
+
     private final TimesheetService timesheetService;
     private final CompareEmployeeService compareEmployeeService;
     private final SyncLoggerService syncLoggerService;
@@ -32,37 +34,44 @@ public class SyncTimesheetService {
         this.syncLoggerService = syncLoggerService;
     }
 
-    public SyncResult sync(WebClient webClient, List<Employee> inputEmployees) {
+    public SyncResult sync(WebClient webClient, List<Employee> inputEmployees, double minimumHoursLogged) {
         SyncResult syncResult = new SyncResult();
-        inputEmployees.stream().flatMap(inputEmployee -> inputEmployee.weeklyTimesheets().stream().map(weeklyTimesheet ->
-                new WeeklyTimesheetToSync(inputEmployee, weeklyTimesheet))).peek(weeklyTimesheetToSync -> {
-            if (!weeklyTimesheetToSync.timesheet().hasMinimumHoursLogged(MINIMUM_HOURS)) {
-                syncResult.addSyncDays(getSyncDaysMinimumHours(weeklyTimesheetToSync));
-                syncResult.addSyncRecord(syncLoggerService.logAndAddSyncRecordWithHoursMinimum(new EmployeeData(weeklyTimesheetToSync.employee().resourceId(), weeklyTimesheetToSync.employee().name()), new RecordData(weeklyTimesheetToSync.timesheet().startDate(), "Not syncing inputEmployee " + weeklyTimesheetToSync.employee().name() + " timesheet starting at " + weeklyTimesheetToSync.timesheet().startDate() + " due to less than " + MINIMUM_HOURS + " hours logged",null), MINIMUM_HOURS));
-            }
-        }).filter(weeklyTimesheetToSync -> weeklyTimesheetToSync.timesheet().hasMinimumHoursLogged(MINIMUM_HOURS)).forEach(weeklyTimesheetToSync -> {
-            Optional<WeeklyTimesheet> camisTimesheetForThatPeriod = retrieveOriginalLogging(webClient, weeklyTimesheetToSync);
 
-            logger.debug("input information of employee {} : {}", weeklyTimesheetToSync.employee().name(), weeklyTimesheetToSync.employee());
-            logger.debug("camis information of employee {} : {}", weeklyTimesheetToSync.employee().name(), camisTimesheetForThatPeriod);
+        new MinimalDailyHoursLoggedValidator(minimumHoursLogged).validate(inputEmployees, syncResult);
 
-            List<SyncCommand> syncCommands = compareEmployeeService.compare(weeklyTimesheetToSync.employee(), weeklyTimesheetToSync.timesheet(), camisTimesheetForThatPeriod);
-            syncResult.addSyncDays(compareEmployeeService.getSyncDays(weeklyTimesheetToSync.employee(), weeklyTimesheetToSync.timesheet(), camisTimesheetForThatPeriod));
+        inputEmployees.stream()
+        .flatMap(inputEmployee ->
+                        inputEmployee.weeklyTimesheets().stream()
+                                .map(weeklyTimesheet -> new WeeklyTimesheetToSync(inputEmployee, weeklyTimesheet)))
+        .forEach(inputTimesheet -> {
+            Optional<WeeklyTimesheet> existingCamisTimesheet = retrieveOriginalLogging(webClient, inputTimesheet);
+
+            logger.debug("input information of employee {} : {}", inputTimesheet.employee().name(), inputTimesheet.employee());
+            logger.debug("camis information of employee {} : {}", inputTimesheet.employee().name(), existingCamisTimesheet);
+
+            List<SyncCommand> syncCommands = compareEmployeeService.compare(inputTimesheet.employee(), inputTimesheet.timesheet(), existingCamisTimesheet);
+            syncResult.addSyncDays(compareEmployeeService.getSyncDays(inputTimesheet.employee(), inputTimesheet.timesheet(), existingCamisTimesheet));
 
             if (syncCommands.stream().anyMatch(SyncCommand::isError)) {
-                syncResult.addSyncRecord(syncLoggerService.logAndAddSyncRecordWithOtherError(new EmployeeData(weeklyTimesheetToSync.employee().resourceId(), weeklyTimesheetToSync.employee().name()), new RecordData(weeklyTimesheetToSync.timesheet().startDate(),"Not syncing employee " + weeklyTimesheetToSync.employee().name() + " timesheets due to " + syncCommands.stream().filter(SyncCommand::isError).map(SyncCommand::toString).reduce(String::concat).get(),  null)));
+                syncResult.addSyncRecord(syncLoggerService.logAndAddSyncRecordWithOtherError(new EmployeeData(inputTimesheet.employee().resourceId(), inputTimesheet.employee().name()), new RecordData(inputTimesheet.timesheet().startDate(),"Not syncing employee " + inputTimesheet.employee().name() + " timesheets due to " + syncCommands.stream().filter(SyncCommand::isError).map(SyncCommand::toString).reduce(String::concat).get(),  null)));
             } else {
                 syncCommands.forEach(syncCommand -> syncResult.addSyncRecord(syncCommand.execute(webClient, timesheetService, syncLoggerService)));
             }
-            try {
-                TimeUnit.SECONDS.sleep(2);
-            } catch (InterruptedException e) {
-                logger.error("error while sleeping");
-            }
+            waitBetweenEmployeesToNotOverextentCamisService();
         });
         return syncResult;
 
         //TODO: retrieve after updates and check correspondences, for example missing holidays
+    }
+
+
+
+    private static void waitBetweenEmployeesToNotOverextentCamisService() {
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (InterruptedException e) {
+            logger.error("error while sleeping");
+        }
     }
 
     public void retrieve(WebClient webClient, List<Employee> inputEmployees) {
@@ -111,7 +120,7 @@ public class SyncTimesheetService {
                 if(linesToBeDeleted.size() > 0){
                     logger.error("Deleting double Camis timesheet entries for {} in week {} ", weeklyTimesheetToSync.employee().name(), timesheetDuration);
                 }
-                    linesToBeDeleted.stream()
+                    linesToBeDeleted
                             .forEach(lineIdentifier -> timesheetService.deleteTimesheetEntry(webClient, lineIdentifier, weeklyTimesheetToSync.employee().resourceId()));
             }
         }catch (Exception e){
@@ -134,10 +143,10 @@ public class SyncTimesheetService {
                 .toList();
     }
 
-    private class LoggedHoursTimesheetLineIdentifier{
+    private static class LoggedHoursTimesheetLineIdentifier{
         private final WorkOrder workOrder;
-        private TimesheetLineIdentifier identifier;
-        private LoggedHoursByDay loggedHours;
+        private final TimesheetLineIdentifier identifier;
+        private final LoggedHoursByDay loggedHours;
 
         public LoggedHoursTimesheetLineIdentifier(TimesheetLineIdentifier identifier, WorkOrder workOrder, LoggedHoursByDay loggedHours) {
             this.workOrder = workOrder;

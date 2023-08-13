@@ -26,6 +26,8 @@ public class OperationExecutor {
     private String clientId;
     @Value("${clientSecret}")
     private String clientSecret;
+    @Value("${minimumDailyHours}")
+    private String minimumDailyHours;
     @Autowired
     private CheckWorkOrderService checkWorkOrderService;
     @Autowired
@@ -45,7 +47,7 @@ public class OperationExecutor {
             case CHECK_WORK_ORDERS -> checkWorkOrderService.check(webClient, employees);
             case VIEW_TIMESHEETS -> syncTimesheetService.retrieve(webClient, employees);
             case REMOVE_DOUBLE_TIMESHEETS -> syncTimesheetService.removeDoubleTimesheets(webClient, employees);
-            case SYNC_TIMESHEETS -> syncTimesheetService.sync(webClient, employees);
+            case SYNC_TIMESHEETS -> syncTimesheetService.sync(webClient, employees, Double.parseDouble(minimumDailyHours));
         }
     }
 }

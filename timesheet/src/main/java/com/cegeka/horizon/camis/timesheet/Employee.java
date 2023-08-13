@@ -73,8 +73,24 @@ public class Employee {
         return weeklyTimeSheets.stream().flatMap(WeeklyTimesheet::loggedHoursDetails);
     }
 
-    public boolean hasMinimumHoursLogged(double hours) {
-        return weeklyTimeSheets.stream().mapToDouble(WeeklyTimesheet::getTotalHoursLogged).allMatch(sum -> sum >= hours) ;
+    public boolean hasMinimumDailyHoursLogged(LocalDate date, double minimalDailyHours) {
+        double sumForDate = loggedHoursDetails().filter(
+                        loggedHoursByDayDetail -> loggedHoursByDayDetail.loggedHoursByDay().date().equals(date)
+                ).mapToDouble(loggedHoursByDayDetail -> loggedHoursByDayDetail.loggedHoursByDay().hours())
+                .sum();
+        return sumForDate - minimalDailyHours >= 0;
+    }
+
+    public LocalDateRange loggedHoursRange() {
+        LocalDate start = loggedHoursDetails()
+                .map(loggedHoursByDayDetail -> loggedHoursByDayDetail.loggedHoursByDay().date())
+                .min(LocalDate::compareTo).get();
+
+        LocalDate end = loggedHoursDetails()
+                .map(loggedHoursByDayDetail -> loggedHoursByDayDetail.loggedHoursByDay().date())
+                .max(LocalDate::compareTo).get();
+
+        return LocalDateRange.of(start, end.plusDays(1));
     }
 
     public static class MergeEmployees implements java.util.function.BiFunction<Employee, Employee, Employee> {

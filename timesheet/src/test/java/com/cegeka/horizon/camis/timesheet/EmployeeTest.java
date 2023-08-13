@@ -1,15 +1,15 @@
 package com.cegeka.horizon.camis.timesheet;
 
 import com.cegeka.horizon.camis.domain.ResourceId;
-import com.cegeka.horizon.camis.timesheet.testbuilder.*;
+import com.cegeka.horizon.camis.timesheet.testbuilder.EmployeeTestBuilder;
 import org.junit.jupiter.api.Test;
 
 import static com.cegeka.horizon.camis.timesheet.testbuilder.LoggedHoursByDayTestBuilder.aLoggedHours;
 import static com.cegeka.horizon.camis.timesheet.testbuilder.TestLocalDates.*;
 import static com.cegeka.horizon.camis.timesheet.testbuilder.TestWorkOrders.WORK_ORDER_1;
+import static com.cegeka.horizon.camis.timesheet.testbuilder.TestWorkOrders.WORK_ORDER_2;
 import static com.cegeka.horizon.camis.timesheet.testbuilder.TimesheetLineTestBuilder.aTimesheetLine;
 import static com.cegeka.horizon.camis.timesheet.testbuilder.WeeklyTimesheetTestBuilder.aWeeklyTimesheet;
-import static java.time.LocalDate.of;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class EmployeeTest {
@@ -40,7 +40,7 @@ class EmployeeTest {
     }
 
     @Test
-    public void givenWeeklyTimesheets_whenDifferenWeek_thenMerge(){
+    public void givenWeeklyTimesheets_whenDifferentWeek_thenMerge(){
         WeeklyTimesheet weeklyTimesheet = aWeeklyTimesheet()
                 .withLine(aTimesheetLine()
                         .withWorkOrder(WORK_ORDER_1)
@@ -104,5 +104,55 @@ class EmployeeTest {
         assertThat(internalEmployee.isToSync(TimeCode.WORK_DAY)).isTrue();
     }
 
+    @Test
+    public void givenEmployee_whenLoggedHoursRange_thenRange(){
+        WeeklyTimesheet weeklyTimesheet = aWeeklyTimesheet()
+                .withLine(aTimesheetLine()
+                        .withWorkOrder(WORK_ORDER_1)
+                        .withLoggedHours(aLoggedHours(5, WEEK_1_TUESDAY))
+                        .withLoggedHours(aLoggedHours(5, WEEK_1_WEDNESDAY))
+                )
+                .build();
+
+        WeeklyTimesheet differentWeek = aWeeklyTimesheet()
+                .withLine(aTimesheetLine()
+                        .withWorkOrder(WORK_ORDER_1)
+                        .withLoggedHours(aLoggedHours(5, WEEK_2_MONDAY))
+                        .withLoggedHours(aLoggedHours(5, WEEK_2_TUESDAY))
+                )
+                .build();
+
+        Employee employee = new Employee(new ResourceId("I122312"), "Ward");
+        employee.addWeeklyTimesheet(weeklyTimesheet);
+        employee.addWeeklyTimesheet(differentWeek);
+
+        assertThat(employee.loggedHoursRange().getStart()).isEqualTo(WEEK_1_TUESDAY);
+        assertThat(employee.loggedHoursRange().getEndInclusive()).isEqualTo(WEEK_2_TUESDAY);
+    }
+
+    @Test
+    public void givenEmployee_hasMinimumDailyHoursLogged_thenCheckSum(){
+        WeeklyTimesheet weeklyTimesheet = aWeeklyTimesheet()
+                .withLine(aTimesheetLine()
+                        .withWorkOrder(WORK_ORDER_1)
+                        .withLoggedHours(aLoggedHours(5, WEEK_1_TUESDAY))
+                        .withLoggedHours(aLoggedHours(9, WEEK_1_WEDNESDAY))
+                        .withLoggedHours(aLoggedHours(8, WEEK_1_FRIDAY))
+                )
+                .withLine(aTimesheetLine()
+                        .withWorkOrder(WORK_ORDER_2)
+                        .withLoggedHours(aLoggedHours(4, WEEK_1_MONDAY))
+                        .withLoggedHours(aLoggedHours(3, WEEK_1_TUESDAY))
+                )
+                .build();
+
+        Employee employee = new Employee(new ResourceId("I122312"), "Ward");
+        employee.addWeeklyTimesheet(weeklyTimesheet);
+
+        assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_MONDAY, 8)).isEqualTo(false);
+        assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_TUESDAY, 8)).isEqualTo(true);
+        assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_WEDNESDAY, 8)).isEqualTo(true);
+        assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_FRIDAY, 8)).isEqualTo(true);
+    }
 
 }

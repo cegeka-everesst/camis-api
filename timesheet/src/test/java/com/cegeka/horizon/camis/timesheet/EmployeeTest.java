@@ -128,7 +128,7 @@ class EmployeeTest {
     }
 
     @Test
-    public void givenEmployee_hasMinimumDailyHoursLogged_thenCheckSum(){
+    public void givenEmployee_hasMinimumDailyHoursLogged_thenValidation(){
         WeeklyTimesheetTestBuilder weeklyTimesheet = aWeeklyTimesheet()
                 .withLine(aTimesheetLine()
                         .withWorkOrder(WORK_ORDER_1)
@@ -145,7 +145,7 @@ class EmployeeTest {
         Employee employee = EmployeeTestBuilder.anEmployee()
                 .withTimeSheet(weeklyTimesheet).build();
 
-        assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_MONDAY, 8)).isEqualTo(true);
+        assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_MONDAY, 8)).isEqualTo(false);
         assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_TUESDAY, 8)).isEqualTo(true);
         assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_WEDNESDAY, 8)).isEqualTo(true);
         assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_FRIDAY, 8)).isEqualTo(true);

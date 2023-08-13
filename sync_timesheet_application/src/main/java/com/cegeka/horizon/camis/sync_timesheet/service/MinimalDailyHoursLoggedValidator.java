@@ -28,7 +28,7 @@ public class MinimalDailyHoursLoggedValidator {
                     .forEach(date -> {
                         if(! inputEmployee.hasMinimumDailyHoursLogged(date, minimumHoursLogged)){
                             syncResult.addSyncRecord(
-                                    loggerService.logAndAddSyncRecordWithHoursMinimum(inputEmployee.id(), new RecordData(date, String.format("Less than %1$.1f logged on %2", minimumHoursLogged, date.format(ISO_DATE))), minimumHoursLogged));
+                                    loggerService.logAndAddSyncRecordWithHoursMinimum(inputEmployee.id(), new RecordData(date, String.format("Less than %1$.1f hours logged on %2", minimumHoursLogged, date.format(ISO_DATE))), minimumHoursLogged));
                         }
                     }));
     }

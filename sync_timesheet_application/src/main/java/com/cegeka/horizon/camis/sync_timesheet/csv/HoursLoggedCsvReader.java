@@ -1,5 +1,6 @@
 package com.cegeka.horizon.camis.sync_timesheet.csv;
 
+import com.cegeka.horizon.camis.domain.EmployeeIdentification;
 import com.cegeka.horizon.camis.domain.ResourceId;
 import com.cegeka.horizon.camis.domain.WorkOrder;
 import com.cegeka.horizon.camis.timesheet.*;
@@ -37,7 +38,7 @@ public class HoursLoggedCsvReader {
         Map<ResourceId, Employee> employees = new HashMap<>();
         hoursLoggedByDays.stream().filter(hoursLoggedByDay -> hoursLoggedByDay.hoursLogged() > 0).forEach(
             hoursLoggedByDay -> {
-                Employee employee = new Employee(hoursLoggedByDay.resourceId(), hoursLoggedByDay.employeeName());
+                Employee employee = new Employee(new EmployeeIdentification(hoursLoggedByDay.resourceId(), hoursLoggedByDay.employeeName()));
                 WeeklyTimesheet weeklyTimesheet = new WeeklyTimesheet();
                 TimesheetLine timesheetLine = new TimesheetLine(TimesheetLineIdentifier.TO_CREATE, Status.DRAFT, "", hoursLoggedByDay.timeCode(), hoursLoggedByDay.workOrder());
                 timesheetLine.addLoggedHours(new LoggedHoursByDay(hoursLoggedByDay.localDate(), hoursLoggedByDay.hoursLogged()));

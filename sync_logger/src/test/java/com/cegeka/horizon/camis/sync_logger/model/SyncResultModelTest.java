@@ -1,8 +1,8 @@
 package com.cegeka.horizon.camis.sync_logger.model;
 
+import com.cegeka.horizon.camis.domain.EmployeeIdentification;
 import com.cegeka.horizon.camis.domain.ResourceId;
 import com.cegeka.horizon.camis.domain.WorkOrder;
-import com.cegeka.horizon.camis.sync_logger.model.data.EmployeeData;
 import com.cegeka.horizon.camis.sync_logger.model.data.RecordData;
 import com.cegeka.horizon.camis.sync_logger.model.syncrecord.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,35 +36,35 @@ public class SyncResultModelTest {
 
     @Test
     public void givenCorrectHoursMinimumSyncErrorRecord_whenAddSyncResult_thenAddedRecordToSyncResult() {
-        HoursMinimumSyncError hoursMinimumSyncErrorRecord = new HoursMinimumSyncError(new EmployeeData(new ResourceId("I000001"), "Employee1"), new RecordData(LocalDate.now(), "Message 1", new WorkOrder("001.001")), 40);
+        HoursMinimumSyncError hoursMinimumSyncErrorRecord = new HoursMinimumSyncError(new EmployeeIdentification(new ResourceId("I000001"), "Employee1"), new RecordData(LocalDate.now(), "Message 1", new WorkOrder("001.001")), 40);
         syncResult.addSyncRecord(hoursMinimumSyncErrorRecord);
         assertEquals(hoursMinimumSyncErrorRecord, syncResult.getSyncRecords().get(0));
     }
 
     @Test
     public void givenCorrectHoursNotEqualSyncErrorRecord_whenAddSyncResult_thenAddedRecordToSyncResult() {
-        HoursNotEqualSyncError hoursNotEqualSyncErrorRecord = new HoursNotEqualSyncError(new EmployeeData(new ResourceId("I000002"), "Employee2"), new RecordData(LocalDate.now(), "Message 2", new WorkOrder("002.002")));
+        HoursNotEqualSyncError hoursNotEqualSyncErrorRecord = new HoursNotEqualSyncError(new EmployeeIdentification(new ResourceId("I000002"), "Employee2"), new RecordData(LocalDate.now(), "Message 2", new WorkOrder("002.002")));
         syncResult.addSyncRecord(hoursNotEqualSyncErrorRecord);
         assertEquals(hoursNotEqualSyncErrorRecord, syncResult.getSyncRecords().get(0));
     }
 
     @Test
     public void givenCorrectNoActionSyncRecord_whenAddSyncResult_thenAddedRecordToSyncResult() {
-        NoActionSyncCorrect noActionSyncCorrectRecord = new NoActionSyncCorrect(new EmployeeData(new ResourceId("I000003"), "Employee3"), new RecordData(LocalDate.now(), "Message 3", new WorkOrder("003.003")));
+        NoActionSyncCorrect noActionSyncCorrectRecord = new NoActionSyncCorrect(new EmployeeIdentification(new ResourceId("I000003"), "Employee3"), new RecordData(LocalDate.now(), "Message 3", new WorkOrder("003.003")));
         syncResult.addSyncRecord(noActionSyncCorrectRecord);
         assertEquals(noActionSyncCorrectRecord, syncResult.getSyncRecords().get(0));
     }
 
     @Test
     public void givenCorrectOtherSyncErrorRecord_whenAddSyncResult_thenAddedRecordToSyncResult() {
-        OtherSyncError otherSyncError = new OtherSyncError(new EmployeeData(new ResourceId("I000004"), "Employee4"), new RecordData(LocalDate.now(), "Message 4", new WorkOrder("004.004")));
+        OtherSyncError otherSyncError = new OtherSyncError(new EmployeeIdentification(new ResourceId("I000004"), "Employee4"), new RecordData(LocalDate.now(), "Message 4", new WorkOrder("004.004")));
         syncResult.addSyncRecord(otherSyncError);
         assertEquals(otherSyncError, syncResult.getSyncRecords().get(0));
     }
 
     @Test
     public void givenCorrectUpdateTimesheetLineSyncErrorAndCorrectRecord_whenAddSyncResult_thenAddedRecordToSyncResult() {
-        UpdateTimesheetLineSyncErrorAndCorrect updateTimesheetLineSyncErrorAndCorrect = new UpdateTimesheetLineSyncErrorAndCorrect(new EmployeeData(new ResourceId("I000005"), "Employee5"), new RecordData(LocalDate.now(), "Message 3", new WorkOrder("005.005")), 40);
+        UpdateTimesheetLineSyncErrorAndCorrect updateTimesheetLineSyncErrorAndCorrect = new UpdateTimesheetLineSyncErrorAndCorrect(new EmployeeIdentification(new ResourceId("I000005"), "Employee5"), new RecordData(LocalDate.now(), "Message 3", new WorkOrder("005.005")), 40);
         syncResult.addSyncRecord(updateTimesheetLineSyncErrorAndCorrect);
         assertEquals(updateTimesheetLineSyncErrorAndCorrect, syncResult.getSyncRecords().get(0));
     }

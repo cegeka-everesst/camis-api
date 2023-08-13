@@ -7,7 +7,12 @@ import java.time.LocalDate;
 public final class RecordData {
     private final LocalDate date;
     private final String message;
-    private final WorkOrder workOrder;
+    private WorkOrder workOrder;
+
+    public RecordData(LocalDate localDate, String message) {
+        this.date = localDate;
+        this.message = message;
+    }
 
     public RecordData(LocalDate localDate, String message, WorkOrder workOrder) {
         this.date = localDate;

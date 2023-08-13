@@ -1,9 +1,9 @@
 package com.cegeka.horizon.camis.sync_timesheet.service;
 
+import com.cegeka.horizon.camis.domain.EmployeeIdentification;
 import com.cegeka.horizon.camis.domain.WorkOrder;
 import com.cegeka.horizon.camis.sync_logger.model.SyncDay;
 import com.cegeka.horizon.camis.sync_logger.model.SyncResult;
-import com.cegeka.horizon.camis.sync_logger.model.data.EmployeeData;
 import com.cegeka.horizon.camis.sync_logger.model.data.RecordData;
 import com.cegeka.horizon.camis.sync_logger.service.SyncLoggerService;
 import com.cegeka.horizon.camis.sync_timesheet.service.command.SyncCommand;
@@ -37,7 +37,8 @@ public class SyncTimesheetService {
     public SyncResult sync(WebClient webClient, List<Employee> inputEmployees, double minimumHoursLogged) {
         SyncResult syncResult = new SyncResult();
 
-        new MinimalDailyHoursLoggedValidator(minimumHoursLogged).validate(inputEmployees, syncResult);
+        new MinimalDailyHoursLoggedValidator(minimumHoursLogged, syncLoggerService)
+                .validate(inputEmployees, syncResult);
 
         inputEmployees.stream()
         .flatMap(inputEmployee ->
@@ -53,7 +54,7 @@ public class SyncTimesheetService {
             syncResult.addSyncDays(compareEmployeeService.getSyncDays(inputTimesheet.employee(), inputTimesheet.timesheet(), existingCamisTimesheet));
 
             if (syncCommands.stream().anyMatch(SyncCommand::isError)) {
-                syncResult.addSyncRecord(syncLoggerService.logAndAddSyncRecordWithOtherError(new EmployeeData(inputTimesheet.employee().resourceId(), inputTimesheet.employee().name()), new RecordData(inputTimesheet.timesheet().startDate(),"Not syncing employee " + inputTimesheet.employee().name() + " timesheets due to " + syncCommands.stream().filter(SyncCommand::isError).map(SyncCommand::toString).reduce(String::concat).get(),  null)));
+                syncResult.addSyncRecord(syncLoggerService.logAndAddSyncRecordWithOtherError(new EmployeeIdentification(inputTimesheet.employee().resourceId(), inputTimesheet.employee().name()), new RecordData(inputTimesheet.timesheet().startDate(),"Not syncing employee " + inputTimesheet.employee().name() + " timesheets due to " + syncCommands.stream().filter(SyncCommand::isError).map(SyncCommand::toString).reduce(String::concat).get(),  null)));
             } else {
                 syncCommands.forEach(syncCommand -> syncResult.addSyncRecord(syncCommand.execute(webClient, timesheetService, syncLoggerService)));
             }

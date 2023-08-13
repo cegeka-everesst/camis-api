@@ -1,5 +1,6 @@
 package com.cegeka.horizon.camis.timesheet;
 
+import com.cegeka.horizon.camis.domain.EmployeeIdentification;
 import com.cegeka.horizon.camis.domain.ResourceId;
 import com.cegeka.horizon.camis.domain.WorkOrder;
 import org.threeten.extra.LocalDateRange;
@@ -12,13 +13,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Employee {
-    private final ResourceId resourceId;
-    private final String name;
+    private final EmployeeIdentification id;
     private final List<WeeklyTimesheet> weeklyTimeSheets = new ArrayList<>();
 
-    public Employee(ResourceId resourceId, String name) {
-        this.resourceId = resourceId;
-        this.name = name;
+    public Employee(EmployeeIdentification id) {
+        this.id = id;
     }
 
     public void addWeeklyTimesheet(WeeklyTimesheet weeklyTimesheetToAdd){
@@ -46,11 +45,11 @@ public class Employee {
     }
 
     public ResourceId resourceId() {
-        return resourceId;
+        return id.resourceId();
     }
 
     public String name() {
-        return name;
+        return id.name();
     }
 
     @Deprecated
@@ -62,7 +61,7 @@ public class Employee {
     }
 
     public boolean isToSync(TimeCode timeCode) {
-        return !(!resourceId.isExternal() && timeCode.equals(TimeCode.NO_ASSIGNMENT));
+        return !(!id.resourceId().isExternal() && timeCode.equals(TimeCode.NO_ASSIGNMENT));
     }
 
     public Optional<WeeklyTimesheet> findWeeklyTimesheetByStartDate(LocalDate startDate) {
@@ -93,13 +92,17 @@ public class Employee {
         return LocalDateRange.of(start, end.plusDays(1));
     }
 
+    public EmployeeIdentification id() {
+        return id;
+    }
+
     public static class MergeEmployees implements java.util.function.BiFunction<Employee, Employee, Employee> {
         @Override
         public Employee apply(Employee employee1, Employee employee2) {
-            if(! employee1.resourceId.equals(employee2.resourceId)){
+            if(! employee1.id.resourceId().equals(employee2.id.resourceId())){
                 throw new IllegalArgumentException("Only employees with same resourceId can be merged");
             }
-            Employee mergedEmployee = new Employee(employee1.resourceId, employee1.name);
+            Employee mergedEmployee = new Employee(employee1.id);
             employee2.weeklyTimeSheets.forEach(
                     mergedEmployee::addWeeklyTimesheet
             );
@@ -119,7 +122,7 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "Employee{" + "resourceId=" + resourceId + "/" + name +
+        return "Employee{" + "resourceId=" + id.resourceId() + "/" + id.name() +
                 ", weeklyTimeSheets=" + weeklyTimeSheets.stream().sorted(new WeeklyTimesheet.SortByStartDate()).toList() +
                 '}';
     }
@@ -127,7 +130,7 @@ public class Employee {
     public static class SortByName implements java.util.Comparator<Employee> {
         @Override
         public int compare(Employee o1, Employee o2) {
-            return o1.name.compareTo(o2.name);
+            return o1.id.name().compareTo(o2.id.name());
         }
     }
 }

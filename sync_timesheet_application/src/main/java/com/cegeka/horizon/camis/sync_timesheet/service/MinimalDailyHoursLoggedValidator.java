@@ -6,7 +6,10 @@ import com.cegeka.horizon.camis.sync_logger.service.SyncLoggerService;
 import com.cegeka.horizon.camis.timesheet.Employee;
 import org.threeten.extra.LocalDateRange;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static java.time.format.DateTimeFormatter.ISO_DATE;
 
@@ -25,12 +28,17 @@ public class MinimalDailyHoursLoggedValidator {
 
         inputEmployees
             .forEach(inputEmployee -> dateRange.stream()
+                    .filter(isWeekend().negate())
                     .forEach(date -> {
                         if(! inputEmployee.hasMinimumDailyHoursLogged(date, minimumHoursLogged)){
                             syncResult.addSyncRecord(
-                                    loggerService.logAndAddSyncRecordWithHoursMinimum(inputEmployee.id(), new RecordData(date, String.format("Less than %1$.1f hours logged on %2", minimumHoursLogged, date.format(ISO_DATE))), minimumHoursLogged));
+                                    loggerService.logAndAddSyncRecordWithHoursMinimum(inputEmployee.id(), new RecordData(date, String.format("Less than %.1f hours logged on %s by %s", minimumHoursLogged, date.format(ISO_DATE), inputEmployee.name())), minimumHoursLogged));
                         }
                     }));
+    }
+
+    private static Predicate<LocalDate> isWeekend() {
+        return date -> date.getDayOfWeek().equals(DayOfWeek.SATURDAY) || date.getDayOfWeek().equals(DayOfWeek.SUNDAY);
     }
 
     private LocalDateRange determineMaximumPeriod(List<Employee> inputEmployees) {

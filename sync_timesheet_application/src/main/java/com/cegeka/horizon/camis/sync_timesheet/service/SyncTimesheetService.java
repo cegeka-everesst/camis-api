@@ -65,16 +65,6 @@ public class SyncTimesheetService {
         //TODO: retrieve after updates and check correspondences, for example missing holidays
     }
 
-
-
-    private static void waitBetweenEmployeesToNotOverextentCamisService() {
-        try {
-            TimeUnit.SECONDS.sleep(2);
-        } catch (InterruptedException e) {
-            logger.error("error while sleeping");
-        }
-    }
-
     public void retrieve(WebClient webClient, List<Employee> inputEmployees) {
         inputEmployees.stream()
                 .flatMap(
@@ -88,17 +78,8 @@ public class SyncTimesheetService {
         LocalDateRange timesheetDuration = weeklyTimesheetToSync.timesheet().getTimesheetDuration();
         Optional<WeeklyTimesheet> camisTimesheetEntry = timesheetService.getTimesheetEntries(webClient, weeklyTimesheetToSync.employee().resourceId(), weeklyTimesheetToSync.employee().name(), timesheetDuration);
         logger.info("Retrieved original Camis timesheet entries for {} with result {} ", weeklyTimesheetToSync.employee().name(), camisTimesheetEntry);
+        waitBetweenEmployeesToNotOverextentCamisService();
         return camisTimesheetEntry;
-    }
-
-    private List<SyncDay> getSyncDaysMinimumHours(WeeklyTimesheetToSync weeklyTimesheetToSync) {
-        List<SyncDay> syncDays = new ArrayList<>();
-        weeklyTimesheetToSync.timesheet().loggedHoursDetails().forEach(loggedHoursByDayDetail ->
-                syncDays.add(new SyncDay(weeklyTimesheetToSync.employee().resourceId(),
-                        loggedHoursByDayDetail.loggedHoursByDay().date(),
-                        loggedHoursByDayDetail.workOrder(),-1,
-                        loggedHoursByDayDetail.loggedHoursByDay().hours())));
-        return syncDays;
     }
 
     public void removeDoubleTimesheets(WebClient webClient, List<Employee> inputEmployees) {
@@ -153,6 +134,14 @@ public class SyncTimesheetService {
             this.workOrder = workOrder;
             this.identifier = identifier;
             this.loggedHours = loggedHours;
+        }
+    }
+
+    private static void waitBetweenEmployeesToNotOverextentCamisService() {
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (InterruptedException e) {
+            logger.error("error while sleeping");
         }
     }
 }

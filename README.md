@@ -4,7 +4,7 @@
 Pass as Command Line Argument when running SyncTimesheetApp Main
 (all arguments are mandatory)
   
-`--input=... --operation=... --baseUrl=https:// --clientId=... --clientSecret=...` 
+`--input=... --operation=... --baseUrl=https:// --clientId=... --clientSecret=... --minimumDailyHours=8` 
 
 The output file generated will contain all success and error messages associated by the chosen operation.
 

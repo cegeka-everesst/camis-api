@@ -19,13 +19,13 @@ dependencies {
     implementation project(':sync_logger')
     implementation project(':web_client_factory')
 
-    implementation 'com.opencsv:opencsv:5.7.1'
+    implementation 'com.opencsv:opencsv'
     implementation group: 'org.json', name: 'json', version: '20220320'
-    implementation 'org.springframework.boot:spring-boot-starter-logging:3.0.0'
+    implementation 'org.springframework.boot:spring-boot-starter-logging'
     implementation 'org.slf4j:slf4j-api:2.0.4'
     implementation 'org.springframework:spring-webmvc:6.0.8'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux:3.0.0'
-    implementation 'org.threeten:threeten-extra:1.7.2'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.threeten:threeten-extra'
 
     testImplementation 'org.assertj:assertj-core'
     testImplementation(testFixtures(project(":timesheet")))

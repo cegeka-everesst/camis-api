@@ -41,16 +41,24 @@ public class MinimalDailyHoursLoggedValidator {
         return date -> date.getDayOfWeek().equals(DayOfWeek.SATURDAY) || date.getDayOfWeek().equals(DayOfWeek.SUNDAY);
     }
 
-    private LocalDateRange determineMaximumPeriod(List<Employee> inputEmployees) {
+    LocalDateRange determineMaximumPeriod(List<Employee> inputEmployees) {
         return inputEmployees.stream()
                 .map(Employee::loggedHoursRange)
-                .reduce(new LocalDateRangeOperator()).get();
+                .reduce(new JoiningLocalDateRangeOperator()).get();
     }
 
-    public static class LocalDateRangeOperator implements java.util.function.BinaryOperator<LocalDateRange> {
+    public static class JoiningLocalDateRangeOperator implements java.util.function.BinaryOperator<LocalDateRange> {
         @Override
         public LocalDateRange apply(LocalDateRange range1, LocalDateRange range2) {
-            return range1.union(range2);
+            if(range1.isConnected(range2)){
+                return range1.union(range2);
+            }else{
+                if(range1.isBefore(range2)){
+                    return LocalDateRange.of(range1.getStart(), range2.getEnd());
+                }else{
+                    return LocalDateRange.of(range2.getStart(), range1.getEnd());
+                }
+            }
         }
     }
 

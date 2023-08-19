@@ -2,7 +2,7 @@ package com.cegeka.horizon.camis.sync_timesheet.service;
 
 import com.cegeka.horizon.camis.domain.EmployeeIdentification;
 import com.cegeka.horizon.camis.domain.WorkOrder;
-import com.cegeka.horizon.camis.sync_logger.model.SyncDay;
+import com.cegeka.horizon.camis.sync_logger.model.syncresult.SuccessfulSync;
 import com.cegeka.horizon.camis.sync_timesheet.service.command.CreateTimesheetEntryCommand;
 import com.cegeka.horizon.camis.sync_timesheet.service.command.ErrorCommand;
 import com.cegeka.horizon.camis.sync_timesheet.service.command.NothingToSyncCommand;
@@ -54,22 +54,6 @@ public class CompareEmployeeService {
         return result;
     }
 
-    public List<SyncDay> getSyncDays(Employee inputEmployee, WeeklyTimesheet inputTimeSheet, Optional<WeeklyTimesheet> camisTimesheetForThatPeriod) {
-        List<SyncDay> result = new ArrayList<>();
-
-        Stream<LoggedHoursByDayDetail> loggedHoursByDayDetailsInput = inputTimeSheet.loggedHoursDetails();
-        List<LoggedHoursByDayDetail> loggedHoursByDayDetailsCamis = getLoggedHoursByDayDetails(camisTimesheetForThatPeriod);
-
-        loggedHoursByDayDetailsInput
-                .filter(inputHours -> inputEmployee.isToSync(inputHours.timeCode()))
-                .forEach(
-                        inputHours -> {
-                            List<LoggedHoursByDayDetail> camisHours = findByWorkOrderAndDate(loggedHoursByDayDetailsCamis, inputHours.workOrder(), inputHours.loggedHoursByDay().date());
-                            result.add(new SyncDay(inputEmployee.resourceId(), inputHours.loggedHoursByDay().date(), inputHours.workOrder(), sum(camisHours), inputHours.loggedHoursByDay().hours()));
-                        }
-                );
-        return result;
-    }
 
     private List<LoggedHoursByDayDetail> getLoggedHoursByDayDetails(Optional<WeeklyTimesheet> camisTimesheetForThatPeriod) {
         return camisTimesheetForThatPeriod.map(weeklyTimesheet -> weeklyTimesheet.loggedHoursDetails().collect(toList())).orElseGet(ArrayList::new);

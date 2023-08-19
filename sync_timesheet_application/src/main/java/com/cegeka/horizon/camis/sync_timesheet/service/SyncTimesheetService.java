@@ -2,9 +2,8 @@ package com.cegeka.horizon.camis.sync_timesheet.service;
 
 import com.cegeka.horizon.camis.domain.EmployeeIdentification;
 import com.cegeka.horizon.camis.domain.WorkOrder;
-import com.cegeka.horizon.camis.sync_logger.model.SyncDay;
-import com.cegeka.horizon.camis.sync_logger.model.SyncResult;
-import com.cegeka.horizon.camis.sync_logger.model.data.RecordData;
+import com.cegeka.horizon.camis.sync_logger.model.syncresult.SyncResult;
+import com.cegeka.horizon.camis.sync_logger.model.syncresult.CamisWorkorderInfo;
 import com.cegeka.horizon.camis.sync_logger.service.SyncLoggerService;
 import com.cegeka.horizon.camis.sync_timesheet.service.command.SyncCommand;
 import com.cegeka.horizon.camis.timesheet.*;
@@ -13,8 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.threeten.extra.LocalDateRange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -34,11 +34,12 @@ public class SyncTimesheetService {
         this.syncLoggerService = syncLoggerService;
     }
 
-    public SyncResult sync(WebClient webClient, List<Employee> inputEmployees, double minimumHoursLogged) {
-        SyncResult syncResult = new SyncResult();
+    public Flux<SyncResult> sync(WebClient webClient, List<Employee> inputEmployees, double minimumHoursLogged) {
+        Sinks.Many<SyncResult> sink = Sinks.many().multicast().onBackpressureBuffer();
 
         new MinimalDailyHoursLoggedValidator(minimumHoursLogged, syncLoggerService)
-                .validate(inputEmployees, syncResult);
+                .validate(inputEmployees)
+                .forEach(syncResult -> sink.tryEmitNext(syncResult));
 
         inputEmployees.stream()
         .flatMap(inputEmployee ->
@@ -51,17 +52,23 @@ public class SyncTimesheetService {
             logger.debug("camis information of employee {} : {}", inputTimesheet.employee().name(), existingCamisTimesheet);
 
             List<SyncCommand> syncCommands = compareEmployeeService.compare(inputTimesheet.employee(), inputTimesheet.timesheet(), existingCamisTimesheet);
-            syncResult.addSyncDays(compareEmployeeService.getSyncDays(inputTimesheet.employee(), inputTimesheet.timesheet(), existingCamisTimesheet));
 
             if (syncCommands.stream().anyMatch(SyncCommand::isError)) {
-                syncResult.addSyncRecord(syncLoggerService.logAndAddSyncRecordWithOtherError(new EmployeeIdentification(inputTimesheet.employee().resourceId(), inputTimesheet.employee().name()), new RecordData(inputTimesheet.timesheet().startDate(),"Not syncing employee " + inputTimesheet.employee().name() + " timesheets due to " + syncCommands.stream().filter(SyncCommand::isError).map(SyncCommand::toString).reduce(String::concat).get(),  null)));
+                sink.tryEmitNext(
+                        syncLoggerService.logAndAddSyncRecordWithOtherError(
+                                new EmployeeIdentification(inputTimesheet.employee().resourceId(),
+                                inputTimesheet.employee().name()),
+                                new CamisWorkorderInfo(inputTimesheet.timesheet().startDate(),
+                        String.format("Not syncing any of employee %s timesheets due to %s",
+                                        inputTimesheet.employee().name(),
+                                        syncCommands.stream().filter(SyncCommand::isError).map(SyncCommand::toString).reduce(String::concat).get()),
+                                        WorkOrder.empty())));
             } else {
-                syncCommands.forEach(syncCommand -> syncResult.addSyncRecord(syncCommand.execute(webClient, timesheetService, syncLoggerService)));
+                syncCommands.forEach(syncCommand -> sink.tryEmitNext(syncCommand.execute(webClient, timesheetService, syncLoggerService)));
             }
             waitBetweenEmployeesToNotOverextentCamisService();
         });
-        return syncResult;
-
+        return sink.asFlux();
         //TODO: retrieve after updates and check correspondences, for example missing holidays
     }
 

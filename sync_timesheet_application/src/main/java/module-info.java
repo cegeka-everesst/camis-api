@@ -27,4 +27,5 @@ module com.cegeka.horizon.camis.sync_timesheet {
     requires com.cegeka.horizon.camis.sync_logger;
     requires org.json;
     requires spring.webmvc;
+    requires reactor.core;
 }

@@ -6,7 +6,11 @@ public record WorkOrder (String value) {
             throw new IllegalArgumentException("Invalid format work order <" + value +">");
     }
 
+    public static WorkOrder empty() {
+        return new WorkOrder("");
+    }
+
     public boolean isEmpty(){
-        return "".equals(this.value);
+        return empty().value.equals(this.value);
     }
 }

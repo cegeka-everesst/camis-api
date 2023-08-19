@@ -1,10 +1,8 @@
 package com.cegeka.horizon.camis.sync_timesheet.service;
 
-import com.cegeka.horizon.camis.sync_logger.service.SyncLoggerService;
+import com.cegeka.horizon.camis.sync.logger.service.SyncLoggerService;
 import com.cegeka.horizon.camis.timesheet.Employee;
-import com.cegeka.horizon.camis.timesheet.WeeklyTimesheet;
 import com.cegeka.horizon.camis.timesheet.testbuilder.EmployeeTestBuilder;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.threeten.extra.LocalDateRange;
@@ -13,7 +11,6 @@ import java.util.List;
 
 import static com.cegeka.horizon.camis.timesheet.testbuilder.LoggedHoursByDayTestBuilder.aLoggedHours;
 import static com.cegeka.horizon.camis.timesheet.testbuilder.TestLocalDates.*;
-import static com.cegeka.horizon.camis.timesheet.testbuilder.TestWorkOrders.WORK_ORDER_1;
 import static com.cegeka.horizon.camis.timesheet.testbuilder.TimesheetLineTestBuilder.aTimesheetLine;
 import static com.cegeka.horizon.camis.timesheet.testbuilder.WeeklyTimesheetTestBuilder.aWeeklyTimesheet;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,7 +1,7 @@
 package com.cegeka.horizon.camis.sync_timesheet.service.command;
 
-import com.cegeka.horizon.camis.sync_logger.model.syncresult.SyncResult;
-import com.cegeka.horizon.camis.sync_logger.service.SyncLoggerService;
+import com.cegeka.horizon.camis.sync.logger.model.result.SyncResult;
+import com.cegeka.horizon.camis.sync.logger.service.SyncLoggerService;
 import com.cegeka.horizon.camis.timesheet.TimesheetService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

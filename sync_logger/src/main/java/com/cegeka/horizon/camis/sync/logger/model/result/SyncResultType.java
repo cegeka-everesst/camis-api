@@ -1,4 +1,4 @@
-package com.cegeka.horizon.camis.sync_logger.model.syncresult;
+package com.cegeka.horizon.camis.sync.logger.model.result;
 
 public enum SyncResultType {
 

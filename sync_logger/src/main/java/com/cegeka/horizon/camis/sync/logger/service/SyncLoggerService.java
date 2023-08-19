@@ -1,12 +1,12 @@
-package com.cegeka.horizon.camis.sync_logger.service;
+package com.cegeka.horizon.camis.sync.logger.service;
 
 import com.cegeka.horizon.camis.domain.EmployeeIdentification;
-import com.cegeka.horizon.camis.sync_logger.model.syncresult.CamisWorkorderInfo;
-import com.cegeka.horizon.camis.sync_logger.model.syncresult.*;
-;
+import com.cegeka.horizon.camis.sync.logger.model.result.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+;
 
 //TODO: check if SyncLoggerService can be replaced by a Sink subscriber
 @Service

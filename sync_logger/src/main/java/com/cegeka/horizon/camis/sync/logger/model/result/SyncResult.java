@@ -1,9 +1,6 @@
-package com.cegeka.horizon.camis.sync_logger.model.syncresult;
+package com.cegeka.horizon.camis.sync.logger.model.result;
 
 import com.cegeka.horizon.camis.domain.EmployeeIdentification;
-import com.cegeka.horizon.camis.domain.ResourceId;
-
-import java.time.LocalDate;
 
 
 public interface SyncResult {

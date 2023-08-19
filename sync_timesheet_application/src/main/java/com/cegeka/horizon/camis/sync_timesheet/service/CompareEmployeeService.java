@@ -2,7 +2,6 @@ package com.cegeka.horizon.camis.sync_timesheet.service;
 
 import com.cegeka.horizon.camis.domain.EmployeeIdentification;
 import com.cegeka.horizon.camis.domain.WorkOrder;
-import com.cegeka.horizon.camis.sync_logger.model.syncresult.SuccessfulSync;
 import com.cegeka.horizon.camis.sync_timesheet.service.command.CreateTimesheetEntryCommand;
 import com.cegeka.horizon.camis.sync_timesheet.service.command.ErrorCommand;
 import com.cegeka.horizon.camis.sync_timesheet.service.command.NothingToSyncCommand;

@@ -2,9 +2,9 @@ package com.cegeka.horizon.camis.sync_timesheet.service;
 
 import com.cegeka.horizon.camis.domain.EmployeeIdentification;
 import com.cegeka.horizon.camis.domain.WorkOrder;
-import com.cegeka.horizon.camis.sync_logger.model.syncresult.SyncResult;
-import com.cegeka.horizon.camis.sync_logger.model.syncresult.CamisWorkorderInfo;
-import com.cegeka.horizon.camis.sync_logger.service.SyncLoggerService;
+import com.cegeka.horizon.camis.sync.logger.model.result.SyncResult;
+import com.cegeka.horizon.camis.sync.logger.model.result.CamisWorkorderInfo;
+import com.cegeka.horizon.camis.sync.logger.service.SyncLoggerService;
 import com.cegeka.horizon.camis.sync_timesheet.service.command.SyncCommand;
 import com.cegeka.horizon.camis.timesheet.*;
 import org.slf4j.Logger;

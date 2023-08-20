@@ -4,7 +4,6 @@ import com.cegeka.horizon.camis.domain.EmployeeIdentification;
 import com.cegeka.horizon.camis.domain.WorkOrder;
 import com.cegeka.horizon.camis.sync.logger.model.result.CamisWorkorderInfo;
 import com.cegeka.horizon.camis.sync.logger.model.result.SyncResult;
-import com.cegeka.horizon.camis.sync.logger.service.SyncLoggerService;
 import com.cegeka.horizon.camis.timesheet.TimesheetService;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -22,7 +21,7 @@ public class NothingToSyncCommand implements SyncCommand {
     }
 
     @Override
-    public SyncResult execute(WebClient webClient, TimesheetService timesheetService, SyncLoggerService syncLoggerService) {
-        return syncLoggerService.logAndAddSyncRecordWithNoAction(employeeId, new CamisWorkorderInfo(date,"No Sync Action needed for " + employeeId.name() + " on workOrder " + workOrder.value() + " and date " + date, workOrder));
+    public SyncResult execute(WebClient webClient, TimesheetService timesheetService) {
+        return SyncResult.noActionSyncCorrect(employeeId, new CamisWorkorderInfo(date,"No Sync Action needed for " + employeeId.name() + " on workOrder " + workOrder.value() + " and date " + date, workOrder));
     }
 }

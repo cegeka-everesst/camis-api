@@ -13,12 +13,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.threeten.extra.LocalDateRange;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Sinks;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static reactor.core.publisher.Flux.fromIterable;
+import static reactor.core.publisher.Flux.fromStream;
 
 @Service
 public class SyncTimesheetService {
@@ -26,50 +28,56 @@ public class SyncTimesheetService {
 
     private final TimesheetService timesheetService;
     private final CompareEmployeeService compareEmployeeService;
-    private final SyncLoggerService syncLoggerService;
 
-    public SyncTimesheetService(TimesheetService timesheetService, CompareEmployeeService compareEmployeeService, SyncLoggerService syncLoggerService) {
+    public SyncTimesheetService(TimesheetService timesheetService, CompareEmployeeService compareEmployeeService) {
         this.timesheetService = timesheetService;
         this.compareEmployeeService = compareEmployeeService;
-        this.syncLoggerService = syncLoggerService;
     }
 
     public Flux<SyncResult> sync(WebClient webClient, List<Employee> inputEmployees, double minimumHoursLogged) {
-        Sinks.Many<SyncResult> sink = Sinks.many().multicast().onBackpressureBuffer();
+        Flux<SyncResult> minimalHoursValidation =
+                fromStream(new MinimalDailyHoursLoggedValidator(minimumHoursLogged)
+                        .validate(inputEmployees));
 
-        new MinimalDailyHoursLoggedValidator(minimumHoursLogged, syncLoggerService)
-                .validate(inputEmployees)
-                .forEach(syncResult -> sink.tryEmitNext(syncResult));
+        Flux<SyncResult> syncResults =
+                fromIterable(inputEmployees)
+                .flatMap(inputEmployee ->
+                        fromStream(inputEmployee.weeklyTimesheets().stream()
+                                .map(weeklyTimesheet -> new WeeklyTimesheetToSync(inputEmployee, weeklyTimesheet))))
+                .flatMap(
+                    inputTimesheet -> {
 
-        inputEmployees.stream()
-        .flatMap(inputEmployee ->
-                        inputEmployee.weeklyTimesheets().stream()
-                                .map(weeklyTimesheet -> new WeeklyTimesheetToSync(inputEmployee, weeklyTimesheet)))
-        .forEach(inputTimesheet -> {
-            Optional<WeeklyTimesheet> existingCamisTimesheet = retrieveOriginalLogging(webClient, inputTimesheet);
+                        Optional<WeeklyTimesheet> existingCamisTimesheet = retrieveOriginalLogging(webClient, inputTimesheet);
 
-            logger.debug("input information of employee {} : {}", inputTimesheet.employee().name(), inputTimesheet.employee());
-            logger.debug("camis information of employee {} : {}", inputTimesheet.employee().name(), existingCamisTimesheet);
+                        logger.debug("input information of employee {} : {}", inputTimesheet.employee().name(), inputTimesheet.employee());
+                        logger.debug("camis information of employee {} : {}", inputTimesheet.employee().name(), existingCamisTimesheet);
 
-            List<SyncCommand> syncCommands = compareEmployeeService.compare(inputTimesheet.employee(), inputTimesheet.timesheet(), existingCamisTimesheet);
+                        List<SyncCommand> syncCommands = compareEmployeeService.compare(inputTimesheet.employee(), inputTimesheet.timesheet(), existingCamisTimesheet);
 
-            if (syncCommands.stream().anyMatch(SyncCommand::isError)) {
-                sink.tryEmitNext(
-                        syncLoggerService.logAndAddSyncRecordWithOtherError(
-                                new EmployeeIdentification(inputTimesheet.employee().resourceId(),
+                        if (syncCommands.stream().anyMatch(SyncCommand::isError)) {
+                            return Flux.just(combineErrorMessages(inputTimesheet, syncCommands));
+                        } else {
+                            return Flux.fromIterable(syncCommands).flatMap(syncCommand -> Flux.just(syncCommand.execute(webClient, timesheetService)));
+                        }
+                    }
+                );
+        return Flux.concat(minimalHoursValidation, syncResults)
+                .doOnNext(syncResult -> new SyncLoggerService().log(syncResult))
+                .onBackpressureBuffer();
+
+        //TODO: retrieve after updates and check correspondences, for example missing holidays
+    }
+
+    private SyncResult combineErrorMessages(WeeklyTimesheetToSync inputTimesheet, List<SyncCommand> syncCommands) {
+        return
+                SyncResult.otherSyncError(
+                        new EmployeeIdentification(inputTimesheet.employee().resourceId(),
                                 inputTimesheet.employee().name()),
-                                new CamisWorkorderInfo(inputTimesheet.timesheet().startDate(),
-                        String.format("Not syncing any of employee %s timesheets due to %s",
+                        new CamisWorkorderInfo(inputTimesheet.timesheet().startDate(),
+                                String.format("Not syncing any of employee %s timesheets due to %s",
                                         inputTimesheet.employee().name(),
                                         syncCommands.stream().filter(SyncCommand::isError).map(SyncCommand::toString).reduce(String::concat).get()),
-                                        WorkOrder.empty())));
-            } else {
-                syncCommands.forEach(syncCommand -> sink.tryEmitNext(syncCommand.execute(webClient, timesheetService, syncLoggerService)));
-            }
-            waitBetweenEmployeesToNotOverextentCamisService();
-        });
-        return sink.asFlux();
-        //TODO: retrieve after updates and check correspondences, for example missing holidays
+                                WorkOrder.empty()));
     }
 
     public void retrieve(WebClient webClient, List<Employee> inputEmployees) {
@@ -100,7 +108,7 @@ public class SyncTimesheetService {
 
     private void removeDoubleTimesheetsLogging(WebClient webClient, WeeklyTimesheetToSync weeklyTimesheetToSync) {
         try{
-            TimeUnit.SECONDS.sleep(2);
+            waitBetweenEmployeesToNotOverextentCamisService();
             LocalDateRange timesheetDuration = weeklyTimesheetToSync.timesheet().getTimesheetDuration();
             Optional<WeeklyTimesheet> camisTimesheetEntry = timesheetService.getTimesheetEntries(webClient, weeklyTimesheetToSync.employee().resourceId(), weeklyTimesheetToSync.employee().name(), timesheetDuration);
             if(camisTimesheetEntry.isPresent()){
@@ -146,7 +154,7 @@ public class SyncTimesheetService {
 
     private static void waitBetweenEmployeesToNotOverextentCamisService() {
         try {
-            TimeUnit.SECONDS.sleep(2);
+            TimeUnit.SECONDS.sleep(1);
         } catch (InterruptedException e) {
             logger.error("error while sleeping");
         }

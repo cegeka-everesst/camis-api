@@ -4,7 +4,6 @@ import com.cegeka.horizon.camis.domain.EmployeeIdentification;
 import com.cegeka.horizon.camis.domain.WorkOrder;
 import com.cegeka.horizon.camis.sync.logger.model.result.CamisWorkorderInfo;
 import com.cegeka.horizon.camis.sync.logger.model.result.SyncResult;
-import com.cegeka.horizon.camis.sync.logger.service.SyncLoggerService;
 import com.cegeka.horizon.camis.timesheet.LoggedHoursByDay;
 import com.cegeka.horizon.camis.timesheet.TimeCode;
 import com.cegeka.horizon.camis.timesheet.TimesheetService;
@@ -24,15 +23,15 @@ public class CreateTimesheetEntryCommand implements SyncCommand {
     }
 
     @Override
-    public SyncResult execute(WebClient webClient, TimesheetService timesheetService, SyncLoggerService syncLoggerService) {
+    public SyncResult execute(WebClient webClient, TimesheetService timesheetService) {
         try {
             timesheetService.createTimesheetEntry(webClient, employeeId.resourceId(), timeCode, workOrder, loggedHoursByDay);
-            return syncLoggerService.logAndAddSyncRecordWithUpdate(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(),"Updated timesheetLine of employee " + employeeId.name() + " on date " + loggedHoursByDay.date() + " with workOrder " + workOrder.value() + " and hours " + loggedHoursByDay.hours(),  workOrder), loggedHoursByDay.hours());
+            return SyncResult.success(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(),"Updated timesheetLine of employee " + employeeId.name() + " on date " + loggedHoursByDay.date() + " with workOrder " + workOrder.value() + " and hours " + loggedHoursByDay.hours(),  workOrder), loggedHoursByDay.hours());
         } catch (Exception e) {
             if (employeeId.resourceId().isExternal() && timeCode.equals(TimeCode.NO_ASSIGNMENT)) {
-                return syncLoggerService.logAndAddSyncRecordWithUpdate(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(),"Could not update timesheetLine of external employee " + employeeId.name() + " BUT OKAY on date " + loggedHoursByDay.date() + " with workOrder " + workOrder.value() + " and hours " + loggedHoursByDay.hours(), workOrder), loggedHoursByDay.hours());
+                return SyncResult.warning(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(),"Could not update timesheetLine of external employee " + employeeId.name() + " BUT OKAY on date " + loggedHoursByDay.date() + " with workOrder " + workOrder.value() + " and hours " + loggedHoursByDay.hours(), workOrder), loggedHoursByDay.hours());
             } else {
-                return syncLoggerService.logAndAddSyncRecordWithUpdate(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(), "Error occurred when trying to update timesheetLine of employee " + employeeId.name() + " on date " + loggedHoursByDay.date() + " with workOrder " + workOrder.value() + " and hours " + loggedHoursByDay.hours(), workOrder), loggedHoursByDay.hours());
+                return SyncResult.updateTimesheetLineSyncError(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(), "Error occurred when trying to update timesheetLine of employee " + employeeId.name() + " on date " + loggedHoursByDay.date() + " with workOrder " + workOrder.value() + " and hours " + loggedHoursByDay.hours(), workOrder), loggedHoursByDay.hours());
             }
         }
     }

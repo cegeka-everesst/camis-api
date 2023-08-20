@@ -1,10 +1,8 @@
 package com.cegeka.horizon.camis.sync_timesheet.service;
 
-import com.cegeka.horizon.camis.sync.logger.service.SyncLoggerService;
 import com.cegeka.horizon.camis.timesheet.Employee;
 import com.cegeka.horizon.camis.timesheet.testbuilder.EmployeeTestBuilder;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.threeten.extra.LocalDateRange;
 
 import java.util.List;
@@ -16,7 +14,6 @@ import static com.cegeka.horizon.camis.timesheet.testbuilder.WeeklyTimesheetTest
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MinimalDailyHoursLoggedValidatorTest {
-    @Mock private SyncLoggerService syncLoggerService;
 
     @Test
     public void givenEmployeesWithConnectingPeriods_thenUnion(){
@@ -33,7 +30,7 @@ class MinimalDailyHoursLoggedValidatorTest {
         List<Employee> employees = List.of(employee1, employee2);
 
         LocalDateRange dateRange =
-                new MinimalDailyHoursLoggedValidator(8, syncLoggerService).determineMaximumPeriod(employees);
+                new MinimalDailyHoursLoggedValidator(8).determineMaximumPeriod(employees);
         assertThat(dateRange.getStart()).isEqualTo(WEEK_0_MONDAY);
         assertThat(dateRange.getEndInclusive()).isEqualTo(WEEK_1_FRIDAY);
     }
@@ -53,7 +50,7 @@ class MinimalDailyHoursLoggedValidatorTest {
         List<Employee> employees = List.of(employee1, employee2);
 
         LocalDateRange dateRange =
-                new MinimalDailyHoursLoggedValidator(8, syncLoggerService).determineMaximumPeriod(employees);
+                new MinimalDailyHoursLoggedValidator(8).determineMaximumPeriod(employees);
         assertThat(dateRange.getStart()).isEqualTo(WEEK_0_TUESDAY);
         assertThat(dateRange.getEndInclusive()).isEqualTo(WEEK_1_FRIDAY);
     }
@@ -73,7 +70,7 @@ class MinimalDailyHoursLoggedValidatorTest {
         List<Employee> employees = List.of(employee1, employee2);
 
         LocalDateRange dateRange =
-                new MinimalDailyHoursLoggedValidator(8, syncLoggerService).determineMaximumPeriod(employees);
+                new MinimalDailyHoursLoggedValidator(8).determineMaximumPeriod(employees);
         assertThat(dateRange.getStart()).isEqualTo(WEEK_0_MONDAY);
         assertThat(dateRange.getEndInclusive()).isEqualTo(WEEK_1_FRIDAY);
     }

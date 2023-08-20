@@ -3,7 +3,6 @@ package com.cegeka.horizon.camis.sync_timesheet.service;
 import com.cegeka.horizon.camis.domain.WorkOrder;
 import com.cegeka.horizon.camis.sync.logger.model.result.CamisWorkorderInfo;
 import com.cegeka.horizon.camis.sync.logger.model.result.SyncResult;
-import com.cegeka.horizon.camis.sync.logger.service.SyncLoggerService;
 import com.cegeka.horizon.camis.timesheet.Employee;
 import org.threeten.extra.LocalDateRange;
 
@@ -18,11 +17,9 @@ import static java.time.format.DateTimeFormatter.ISO_DATE;
 public class MinimalDailyHoursLoggedValidator {
 
     private final double minimumHoursLogged;
-    private final SyncLoggerService loggerService;
 
-    public MinimalDailyHoursLoggedValidator(double minimumHoursLogged, SyncLoggerService loggerService) {
+    public MinimalDailyHoursLoggedValidator(double minimumHoursLogged) {
         this.minimumHoursLogged = minimumHoursLogged;
-        this.loggerService = loggerService;
     }
 
     Stream<SyncResult> validate(List<Employee> inputEmployees) {
@@ -32,7 +29,7 @@ public class MinimalDailyHoursLoggedValidator {
                     .stream().flatMap(inputEmployee -> dateRange.stream()
                     .filter(isWeekend().negate())
                     .filter(date -> ! inputEmployee.hasMinimumDailyHoursLogged(date, minimumHoursLogged))
-                    .map(date -> loggerService.logAndAddSyncRecordWithHoursMinimum(
+                    .map(date -> SyncResult.hoursMinimumSyncError(
                                 inputEmployee.id(),
                                 new CamisWorkorderInfo(date, String.format("Less than %.1f hours logged on %s by %s",
                                 minimumHoursLogged,

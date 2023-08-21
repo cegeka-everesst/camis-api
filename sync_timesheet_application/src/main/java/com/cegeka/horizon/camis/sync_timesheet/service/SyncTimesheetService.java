@@ -1,10 +1,9 @@
 package com.cegeka.horizon.camis.sync_timesheet.service;
 
-import com.cegeka.horizon.camis.domain.EmployeeIdentification;
 import com.cegeka.horizon.camis.domain.WorkOrder;
 import com.cegeka.horizon.camis.sync.logger.model.result.SyncResult;
-import com.cegeka.horizon.camis.sync.logger.model.result.CamisWorkorderInfo;
 import com.cegeka.horizon.camis.sync.logger.service.SyncLoggerService;
+import com.cegeka.horizon.camis.sync_timesheet.service.command.ErrorCommand;
 import com.cegeka.horizon.camis.sync_timesheet.service.command.SyncCommand;
 import com.cegeka.horizon.camis.timesheet.*;
 import org.slf4j.Logger;
@@ -19,7 +18,6 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.joining;
 import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Flux.fromStream;
 
@@ -55,11 +53,16 @@ public class SyncTimesheetService {
 
                         List<SyncCommand> syncCommands = compareEmployeeService.compare(inputTimesheet.employee(), inputTimesheet.timesheet(), existingCamisTimesheet);
 
-                        if (syncCommands.stream().anyMatch(SyncCommand::isError)) {
-                            return Flux.just(combineErrorMessages(inputTimesheet, syncCommands));
-                        } else {
-                            return Flux.fromIterable(syncCommands).flatMap(syncCommand -> Flux.just(syncCommand.execute(webClient, timesheetService)));
-                        }
+                        return Flux.concat(
+                                Flux.fromIterable(syncCommands).filter(syncCommand -> syncCommand.isError()).flatMap(
+                                        syncCommand -> {
+                                            ErrorCommand errorCommand = (ErrorCommand) syncCommand;
+                                            return Flux.just(SyncResult.otherSyncError(errorCommand.employeeId(), errorCommand.camisWorkorderInfo(), errorCommand.hoursInfo()));
+                                        }
+                                )
+                                ,
+                                Flux.fromIterable(syncCommands).filter(syncCommand -> !syncCommand.isError()).flatMap(syncCommand -> Flux.just(syncCommand.execute(webClient, timesheetService)))
+                        );
                     }
                 );
         return Flux.concat(minimalHoursValidation, syncResults)
@@ -67,18 +70,6 @@ public class SyncTimesheetService {
                 .onBackpressureBuffer();
 
         //TODO: retrieve after updates and check correspondences, for example missing holidays
-    }
-
-    private SyncResult combineErrorMessages(WeeklyTimesheetToSync inputTimesheet, List<SyncCommand> syncCommands) {
-        return
-                SyncResult.otherSyncError(
-                        new EmployeeIdentification(inputTimesheet.employee().resourceId(),
-                                inputTimesheet.employee().name()),
-                        new CamisWorkorderInfo(inputTimesheet.timesheet().startDate(),
-                                String.format("Not syncing any of employee %s timesheets due to %s",
-                                        inputTimesheet.employee().name(),
-                                        syncCommands.stream().filter(SyncCommand::isError).map(SyncCommand::toString).collect(joining(" , \n"))),
-                                WorkOrder.empty()));
     }
 
     public void retrieve(WebClient webClient, List<Employee> inputEmployees) {

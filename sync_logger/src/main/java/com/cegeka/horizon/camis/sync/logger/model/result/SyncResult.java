@@ -7,8 +7,9 @@ import static com.cegeka.horizon.camis.sync.logger.model.result.SyncResultType.*
 
 public record SyncResult(EmployeeIdentification employee, SyncResultType type, CamisWorkorderInfo workorderInfo, HoursInfo hoursInfo) {
     public static SyncResult otherSyncError(EmployeeIdentification employeeId,
-                                            CamisWorkorderInfo workorderInfo) {
-        return new SyncResult(employeeId, OTHER_SYNC_ERROR, workorderInfo, HoursInfo.empty());
+                                            CamisWorkorderInfo workorderInfo,
+                                            HoursInfo hoursInfo) {
+        return new SyncResult(employeeId, OTHER_SYNC_ERROR, workorderInfo, hoursInfo);
     }
 
     public static SyncResult hoursMinimumSyncError(EmployeeIdentification employeeId,

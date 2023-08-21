@@ -2,7 +2,7 @@ package com.cegeka.horizon.camis.sync.logger.model.result;
 
 public record HoursInfo(double inputHours, double camisHours) {
     public static HoursInfo empty() {
-        return new HoursInfo(0.0, 0.0);
+        return new HoursInfo(-1.0, -1.0);
     }
 
     public static HoursInfo inputHours(double inputHours) {

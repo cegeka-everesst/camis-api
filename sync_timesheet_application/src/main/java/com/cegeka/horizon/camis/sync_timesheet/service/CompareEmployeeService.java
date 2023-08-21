@@ -2,6 +2,8 @@ package com.cegeka.horizon.camis.sync_timesheet.service;
 
 import com.cegeka.horizon.camis.domain.EmployeeIdentification;
 import com.cegeka.horizon.camis.domain.WorkOrder;
+import com.cegeka.horizon.camis.sync.logger.model.result.CamisWorkorderInfo;
+import com.cegeka.horizon.camis.sync.logger.model.result.HoursInfo;
 import com.cegeka.horizon.camis.sync_timesheet.service.command.CreateTimesheetEntryCommand;
 import com.cegeka.horizon.camis.sync_timesheet.service.command.ErrorCommand;
 import com.cegeka.horizon.camis.sync_timesheet.service.command.NothingToSyncCommand;
@@ -44,7 +46,13 @@ public class CompareEmployeeService {
                     }else if(sum(camisHours) < inputHours.loggedHoursByDay().hours()){
                         result.add(new CreateTimesheetEntryCommand(new EmployeeIdentification(inputEmployee.resourceId(), inputEmployee.name()),  inputHours.workOrder(), inputHours.loggedHoursByDay().minus(sum(camisHours)), inputHours.timeCode()));
                     }else{
-                        result.add(new ErrorCommand(inputEmployee.name() + " sum(camisHours) > sum(tempoHours) on " + inputHours.loggedHoursByDay().date()));
+                        result.add(new ErrorCommand(
+                                new EmployeeIdentification(inputEmployee.resourceId(), inputEmployee.name()),
+                                new CamisWorkorderInfo(inputHours.loggedHoursByDay().date(), String.format(
+                                        "Unable to sync %s because there is already information in Camis & Tempo and sum(camisHours) > sum(tempoHours) on %s for work order %s"
+                                        ,inputEmployee.name()
+                                        ,inputHours.loggedHoursByDay().date(), inputHours.workOrder().value() ),
+                                        inputHours.workOrder()), HoursInfo.compare(inputHours.loggedHoursByDay().hours(), sum(camisHours))));
                         //TODO: deleting lines and adding, for now we just throw an error,
                     }
                 }

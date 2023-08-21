@@ -14,18 +14,18 @@ public record SyncResult(EmployeeIdentification employee, SyncResultType type, C
     public static SyncResult hoursMinimumSyncError(EmployeeIdentification employeeId,
                                                    CamisWorkorderInfo workorderInfo,
                                                    double inputHours) {
-        return new SyncResult(employeeId, INSUFFICIENT_HOURS, workorderInfo, HoursInfo.inputHours(inputHours));
+        return new SyncResult(employeeId, INSUFFICIENT_HOURS_ERROR, workorderInfo, HoursInfo.inputHours(inputHours));
     }
 
     public static SyncResult noActionSyncCorrect(EmployeeIdentification employeeId,
                                                  CamisWorkorderInfo workorderInfo) {
-        return new SyncResult(employeeId, NO_SYNC_ACTION_REQUIRED, workorderInfo, HoursInfo.empty());
+        return new SyncResult(employeeId, NO_SYNC_REQUIRED, workorderInfo, HoursInfo.empty());
     }
 
     public static SyncResult updateTimesheetLineSyncError(EmployeeIdentification employeeId,
                                                           CamisWorkorderInfo workorderInfo,
                                                           double inputHours) {
-        return new SyncResult(employeeId, UNABLE_TO_UPDATE_TIMESHEET,
+        return new SyncResult(employeeId, UNABLE_TO_UPDATE_TIMESHEET_ERROR,
                 workorderInfo, HoursInfo.inputHours(inputHours));
     }
 

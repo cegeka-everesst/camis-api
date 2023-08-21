@@ -2,9 +2,10 @@ package com.cegeka.horizon.camis.sync.logger.model.result;
 
 public enum SyncResultType {
 
-    NO_SYNC_ACTION_REQUIRED,
+    NO_SYNC_REQUIRED,
     WARNING,
-    INSUFFICIENT_HOURS,
+    INSUFFICIENT_HOURS_ERROR,
     SUCCESS,
-    OTHER_SYNC_ERROR, UNABLE_TO_UPDATE_TIMESHEET
+    OTHER_SYNC_ERROR,
+    UNABLE_TO_UPDATE_TIMESHEET_ERROR
 }

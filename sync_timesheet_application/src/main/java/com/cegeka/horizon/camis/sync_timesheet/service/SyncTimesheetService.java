@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.joining;
 import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Flux.fromStream;
 
@@ -76,7 +77,7 @@ public class SyncTimesheetService {
                         new CamisWorkorderInfo(inputTimesheet.timesheet().startDate(),
                                 String.format("Not syncing any of employee %s timesheets due to %s",
                                         inputTimesheet.employee().name(),
-                                        syncCommands.stream().filter(SyncCommand::isError).map(SyncCommand::toString).reduce(String::concat).get()),
+                                        syncCommands.stream().filter(SyncCommand::isError).map(SyncCommand::toString).collect(joining(" , \n"))),
                                 WorkOrder.empty()));
     }
 

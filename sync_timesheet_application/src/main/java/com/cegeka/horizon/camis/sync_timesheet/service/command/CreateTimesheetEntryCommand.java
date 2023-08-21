@@ -26,12 +26,20 @@ public class CreateTimesheetEntryCommand implements SyncCommand {
     public SyncResult execute(WebClient webClient, TimesheetService timesheetService) {
         try {
             timesheetService.createTimesheetEntry(webClient, employeeId.resourceId(), timeCode, workOrder, loggedHoursByDay);
-            return SyncResult.success(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(),"Updated timesheetLine of employee " + employeeId.name() + " on date " + loggedHoursByDay.date() + " with workOrder " + workOrder.value() + " and hours " + loggedHoursByDay.hours(),  workOrder), loggedHoursByDay.hours());
+            return SyncResult.success(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(),
+                    String.format("Updated timesheetLine of employee %s on date %s for work order %s (%s hours)",
+                            employeeId.name(), loggedHoursByDay.date(), workOrder.value(), loggedHoursByDay.hours()),  workOrder)
+                            , loggedHoursByDay.hours());
         } catch (Exception e) {
             if (employeeId.resourceId().isExternal() && timeCode.equals(TimeCode.NO_ASSIGNMENT)) {
-                return SyncResult.warning(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(),"Could not update timesheetLine of external employee " + employeeId.name() + " BUT OKAY on date " + loggedHoursByDay.date() + " with workOrder " + workOrder.value() + " and hours " + loggedHoursByDay.hours(), workOrder), loggedHoursByDay.hours());
+                return SyncResult.warning(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(),
+                        String.format("Could not update timesheetLine of external employee %s on date %s BUT for external employees it's okay" ,
+                                employeeId.name(), loggedHoursByDay.date()), workOrder)
+                            , loggedHoursByDay.hours());
             } else {
-                return SyncResult.updateTimesheetLineSyncError(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(), "Error occurred when trying to update timesheetLine of employee " + employeeId.name() + " on date " + loggedHoursByDay.date() + " with workOrder " + workOrder.value() + " and hours " + loggedHoursByDay.hours(), workOrder), loggedHoursByDay.hours());
+                return SyncResult.updateTimesheetLineSyncError(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(),
+                        String.format("Error occurred when trying to update timesheetLine of employee %s on date %s for work order %s, check the input & Camis entries side-by-side",
+                                employeeId.name(), loggedHoursByDay.date(), workOrder.value()), workOrder), loggedHoursByDay.hours());
             }
         }
     }

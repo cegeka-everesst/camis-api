@@ -22,6 +22,6 @@ public class NothingToSyncCommand implements SyncCommand {
 
     @Override
     public SyncResult execute(WebClient webClient, TimesheetService timesheetService) {
-        return SyncResult.noActionSyncCorrect(employeeId, new CamisWorkorderInfo(date,"No Sync Action needed for " + employeeId.name() + " on workOrder " + workOrder.value() + " and date " + date, workOrder));
+        return SyncResult.noActionSyncCorrect(employeeId, new CamisWorkorderInfo(date,String.format("No sync necessary for %s on work order %s and date %s, input & Camis already equal",employeeId.name(), workOrder.value(), date), workOrder));
     }
 }

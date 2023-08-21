@@ -9,7 +9,7 @@ public class SyncLoggerService {
 
     public void log(SyncResult syncResult) {
         switch (syncResult.type()){
-            case SUCCESS, NO_SYNC_ACTION_REQUIRED -> logger.info(syncResult.workorderInfo().message());
+            case SUCCESS, NO_SYNC_REQUIRED -> logger.info(syncResult.workorderInfo().message());
             case WARNING -> logger.warn(syncResult.workorderInfo().message());
             default -> logger.error(syncResult.workorderInfo().message());
         }

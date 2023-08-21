@@ -49,7 +49,7 @@ public class CompareEmployeeService {
                         result.add(new ErrorCommand(
                                 new EmployeeIdentification(inputEmployee.resourceId(), inputEmployee.name()),
                                 new CamisWorkorderInfo(inputHours.loggedHoursByDay().date(), String.format(
-                                        "Unable to sync %s because there is already information in Camis & Tempo and sum(camisHours) > sum(tempoHours) on %s for work order %s"
+                                        "Not syncing this date of %s because there is already information in Camis & Tempo and sum(camisHours) > sum(tempoHours) on %s for work order %s"
                                         ,inputEmployee.name()
                                         ,inputHours.loggedHoursByDay().date(), inputHours.workOrder().value() ),
                                         inputHours.workOrder()), HoursInfo.compare(inputHours.loggedHoursByDay().hours(), sum(camisHours))));

@@ -7,8 +7,10 @@ import static java.time.DayOfWeek.SUNDAY;
 import static java.time.temporal.TemporalAdjusters.next;
 import static java.time.temporal.TemporalAdjusters.previous;
 
-public class EuropeanWeek {
-    static LocalDate startOfWeek(LocalDate localDate) {
+public final class EuropeanWeek {
+
+    private  EuropeanWeek(){}
+    public static LocalDate startOfWeek(LocalDate localDate) {
         if(localDate.getDayOfWeek() == MONDAY){
             return localDate;
         }else{
@@ -16,7 +18,7 @@ public class EuropeanWeek {
         }
     }
 
-    static LocalDate endOfWeek(LocalDate localDate) {
+    public static LocalDate endOfWeek(LocalDate localDate) {
         if(localDate.getDayOfWeek() == SUNDAY){
             return localDate;
         }else{

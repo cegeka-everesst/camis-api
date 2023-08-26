@@ -8,10 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static java.time.DayOfWeek.MONDAY;
-import static java.time.DayOfWeek.SUNDAY;
-import static java.time.temporal.TemporalAdjusters.next;
-import static java.time.temporal.TemporalAdjusters.previous;
+import static com.cegeka.horizon.camis.timesheet.EuropeanWeek.endOfWeek;
+import static com.cegeka.horizon.camis.timesheet.EuropeanWeek.startOfWeek;
 
 public class TimesheetLine {
     private final TimesheetLineIdentifier identifier;
@@ -42,20 +40,12 @@ public class TimesheetLine {
 
     public LocalDate startDate() {
         LocalDate localDate = hoursByDays.stream().map(LoggedHoursByDay::date).sorted().findFirst().get();
-        if(localDate.getDayOfWeek() == MONDAY){
-            return localDate;
-        }else{
-            return localDate.with(previous(MONDAY));
-        }
+        return startOfWeek(localDate);
     }
 
     public LocalDate endDate() {
         LocalDate localDate = hoursByDays.stream().map(LoggedHoursByDay::date).sorted().findFirst().get();
-        if(localDate.getDayOfWeek() == SUNDAY){
-            return localDate;
-        }else{
-            return localDate.with(next(SUNDAY));
-        }
+        return endOfWeek(localDate);
     }
 
     public TimesheetLineIdentifier identifier(){

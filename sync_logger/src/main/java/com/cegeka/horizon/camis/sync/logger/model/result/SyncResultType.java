@@ -14,4 +14,8 @@ public enum SyncResultType {
     SyncResultType(boolean problematic) {
         this.problematic = problematic;
     }
+
+    public boolean isProblematic() {
+        return problematic;
+    }
 }

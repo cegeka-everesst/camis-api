@@ -77,6 +77,7 @@ public class Employee {
                         loggedHoursByDayDetail -> loggedHoursByDayDetail.loggedHoursByDay().date().equals(date)
                 ).mapToDouble(loggedHoursByDayDetail -> loggedHoursByDayDetail.loggedHoursByDay().hours())
                 .sum();
+
         return sumForDate - minimalDailyHours >= 0;
     }
 

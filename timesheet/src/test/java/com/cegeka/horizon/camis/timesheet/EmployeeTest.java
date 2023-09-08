@@ -139,6 +139,7 @@ class EmployeeTest {
                 .withLine(aTimesheetLine()
                         .withWorkOrder(WORK_ORDER_2)
                         .withLoggedHours(aLoggedHours(4, WEEK_1_MONDAY))
+                        .withLoggedHours(aLoggedHours(7.999997, WEEK_1_THURSDAY))
                         .withLoggedHours(aLoggedHours(3, WEEK_1_TUESDAY))
                 );
 
@@ -149,6 +150,8 @@ class EmployeeTest {
         assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_TUESDAY, 8)).isEqualTo(true);
         assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_WEDNESDAY, 8)).isEqualTo(true);
         assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_FRIDAY, 8)).isEqualTo(true);
+        assertThat(employee.hasMinimumDailyHoursLogged(WEEK_1_THURSDAY, 8)).isEqualTo(true);
     }
+
 
 }

@@ -42,7 +42,7 @@ public class CompareEmployeeService {
                     result.add(new CreateTimesheetEntryCommand(new EmployeeIdentification(inputEmployee.resourceId(), inputEmployee.name()),  inputHours.workOrder(), inputHours.loggedHoursByDay(), inputHours.timeCode()));
                 }else{
                     if(abs(sum(camisHours) - inputHours.loggedHoursByDay().hours()) < 0.01){
-                        result.add(new NothingToSyncCommand(new EmployeeIdentification(inputEmployee.resourceId(), inputEmployee.name()), inputHours.workOrder(), inputHours.loggedHoursByDay().date()));
+                        result.add(new NothingToSyncCommand(new EmployeeIdentification(inputEmployee.resourceId(), inputEmployee.name()), inputHours.workOrder(), inputHours.loggedHoursByDay().date(), inputHours.loggedHoursByDay().hours()));
                     }else if(sum(camisHours) < inputHours.loggedHoursByDay().hours()){
                         result.add(new CreateTimesheetEntryCommand(new EmployeeIdentification(inputEmployee.resourceId(), inputEmployee.name()),  inputHours.workOrder(), inputHours.loggedHoursByDay().minus(sum(camisHours)), inputHours.timeCode()));
                     }else{

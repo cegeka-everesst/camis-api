@@ -19,8 +19,9 @@ public record SyncResult(EmployeeIdentification employee, SyncResultType type, C
     }
 
     public static SyncResult noActionSyncCorrect(EmployeeIdentification employeeId,
-                                                 CamisWorkorderInfo workorderInfo) {
-        return new SyncResult(employeeId, NO_SYNC_REQUIRED, workorderInfo, HoursInfo.empty());
+                                                 CamisWorkorderInfo workorderInfo,
+                                                  double inputHours) {
+        return new SyncResult(employeeId, NO_SYNC_REQUIRED, workorderInfo, HoursInfo.compare(inputHours,inputHours));
     }
 
     public static SyncResult updateTimesheetLineSyncError(EmployeeIdentification employeeId,

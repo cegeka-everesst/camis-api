@@ -13,15 +13,17 @@ public class NothingToSyncCommand implements SyncCommand {
     private final EmployeeIdentification employeeId;
     private final WorkOrder workOrder;
     private final LocalDate date;
+    private final double hours;
 
-    public NothingToSyncCommand(EmployeeIdentification employerData, WorkOrder workOrder, LocalDate date) {
+    public NothingToSyncCommand(EmployeeIdentification employerData, WorkOrder workOrder, LocalDate date, double hours) {
         this.employeeId = employerData;
         this.workOrder = workOrder;
         this.date = date;
+        this.hours = hours;
     }
 
     @Override
     public SyncResult execute(WebClient webClient, TimesheetService timesheetService) {
-        return SyncResult.noActionSyncCorrect(employeeId, new CamisWorkorderInfo(date,String.format("No sync necessary for %s on work order %s and date %s, \n hours of input & Camis are already equal",employeeId.name(), workOrder.value(), date), workOrder));
+        return SyncResult.noActionSyncCorrect(employeeId, new CamisWorkorderInfo(date,String.format("No sync necessary for %s on work order %s and date %s, \n hours of input & Camis are already equal",employeeId.name(), workOrder.value(), date), workOrder), hours);
     }
 }

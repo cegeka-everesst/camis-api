@@ -34,7 +34,7 @@ public class MinimalDailyHoursLoggedValidator {
                                 new CamisWorkorderInfo(date, String.format("Less than %.1f hours logged on %s by %s",
                                 minimumHoursLogged,
                                 date.format(ISO_DATE),
-                                inputEmployee.name()), WorkOrder.empty()), minimumHoursLogged)
+                                inputEmployee.name()), WorkOrder.empty()), inputEmployee.dailyHoursLogged(date))
                     ));
     }
 

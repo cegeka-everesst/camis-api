@@ -73,12 +73,7 @@ public class Employee {
     }
 
     public boolean hasMinimumDailyHoursLogged(LocalDate date, double minimalDailyHours) {
-        double sumForDate = loggedHoursDetails().filter(
-                        loggedHoursByDayDetail -> loggedHoursByDayDetail.loggedHoursByDay().date().equals(date)
-                ).mapToDouble(loggedHoursByDayDetail -> loggedHoursByDayDetail.loggedHoursByDay().hours())
-                .sum();
-
-        return sumForDate - minimalDailyHours >= 0;
+        return dailyHoursLogged(date) - minimalDailyHours >= 0;
     }
 
     public LocalDateRange loggedHoursRange() {
@@ -95,6 +90,13 @@ public class Employee {
 
     public EmployeeIdentification id() {
         return id;
+    }
+
+    public double dailyHoursLogged(LocalDate date) {
+        return loggedHoursDetails().filter(
+                        loggedHoursByDayDetail -> loggedHoursByDayDetail.loggedHoursByDay().date().equals(date)
+                ).mapToDouble(loggedHoursByDayDetail -> loggedHoursByDayDetail.loggedHoursByDay().hours())
+                .sum();
     }
 
     public static class MergeEmployees implements java.util.function.BiFunction<Employee, Employee, Employee> {

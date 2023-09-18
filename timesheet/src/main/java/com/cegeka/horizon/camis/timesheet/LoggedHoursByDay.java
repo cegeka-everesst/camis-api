@@ -21,7 +21,7 @@ public record LoggedHoursByDay (LocalDate date, double hours) {
 
     @Override
     public double hours() {
-        return Math.ceil(hours * 100.0) / 100.0;
+        return Math.round(hours * 100.0) / 100.0;
     }
 
     @Override

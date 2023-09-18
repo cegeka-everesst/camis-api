@@ -40,8 +40,7 @@ public class CreateTimesheetEntryCommand implements SyncCommand {
                 return SyncResult.updateTimesheetLineSyncError(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(),
                         String.format("Error occurred when trying to update timesheetLine of " +
                                         "employee %s on date %s for work order %s, " +
-                                        "possibly the timesheet is already submitted or " +
-                                        "check the input & Camis entries side-by-side",
+                                        "probably the timesheet is already submitted. Contact Cegeka accounting to open up your Camis week & fix manually.",
                                 employeeId.name(), loggedHoursByDay.date(), workOrder.value()), workOrder), loggedHoursByDay.hours());
             }
         }

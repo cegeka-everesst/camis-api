@@ -34,10 +34,10 @@ public class CheckWorkOrderService {
                                             start);
                                     if(!accessAllowed.access()){
                                         logger.error("Access for {} for work order {} on date {} is NOT ALLOWED",
-                                                employee.name(), workOrder.value(), start.format(ofPattern("dd/MM/yyyy")));
+                                                employee.resourceId(), workOrder.value(), start.format(ofPattern("dd/MM/yyyy")));
                                     }else{
                                         logger.info("Access for {} for work order {} on date {} is ALLOWED",
-                                                employee.name(), workOrder.value(), start.format(ofPattern("dd/MM/yyyy")));
+                                                employee.resourceId(), workOrder.value(), start.format(ofPattern("dd/MM/yyyy")));
                                     }
                                 }
                         )

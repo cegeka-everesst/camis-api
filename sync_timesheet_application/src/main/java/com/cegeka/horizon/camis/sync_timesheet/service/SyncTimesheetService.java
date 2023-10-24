@@ -48,8 +48,8 @@ public class SyncTimesheetService {
 
                         Optional<WeeklyTimesheet> existingCamisTimesheet = retrieveOriginalLogging(webClient, inputTimesheet);
 
-                        logger.debug("input information of employee {} : {}", inputTimesheet.employee().name(), inputTimesheet.employee());
-                        logger.debug("camis information of employee {} : {}", inputTimesheet.employee().name(), existingCamisTimesheet);
+                        logger.debug("input information of employee {} : {}", inputTimesheet.employee().resourceId(), inputTimesheet.employee());
+                        logger.debug("camis information of employee {} : {}", inputTimesheet.employee().resourceId(), existingCamisTimesheet);
 
                         List<SyncCommand> syncCommands = compareEmployeeService.compare(inputTimesheet.employee(), inputTimesheet.timesheet(), existingCamisTimesheet);
 
@@ -84,7 +84,7 @@ public class SyncTimesheetService {
     private Optional<WeeklyTimesheet> retrieveOriginalLogging(WebClient webClient, WeeklyTimesheetToSync weeklyTimesheetToSync) {
         LocalDateRange timesheetDuration = weeklyTimesheetToSync.timesheet().getTimesheetDuration();
         Optional<WeeklyTimesheet> camisTimesheetEntry = timesheetService.getTimesheetEntries(webClient, weeklyTimesheetToSync.employee().resourceId(), weeklyTimesheetToSync.employee().name(), timesheetDuration);
-        logger.info("Retrieved original Camis timesheet entries for {} with result {} ", weeklyTimesheetToSync.employee().name(), camisTimesheetEntry);
+        logger.info("Retrieved original Camis timesheet entries for {} with result {} ", weeklyTimesheetToSync.employee().resourceId(), camisTimesheetEntry);
         waitBetweenEmployeesToNotOverextentCamisService();
         return camisTimesheetEntry;
     }
@@ -107,7 +107,7 @@ public class SyncTimesheetService {
 
                 List<TimesheetLineIdentifier> linesToBeDeleted = extractLinesWithExactSameLoggedHoursByDayButDifferentLineIdentifier(camisTimesheetEntry.get().lines().stream().toList());
                 if(linesToBeDeleted.size() > 0){
-                    logger.error("Deleting double Camis timesheet entries for {} in week {} ", weeklyTimesheetToSync.employee().name(), timesheetDuration);
+                    logger.error("Deleting double Camis timesheet entries for {} in week {} ", weeklyTimesheetToSync.employee().resourceId(), timesheetDuration);
                 }
                     linesToBeDeleted
                             .forEach(lineIdentifier -> timesheetService.deleteTimesheetEntry(webClient, lineIdentifier, weeklyTimesheetToSync.employee().resourceId()));

@@ -28,20 +28,20 @@ public class CreateTimesheetEntryCommand implements SyncCommand {
             timesheetService.createTimesheetEntry(webClient, employeeId.resourceId(), timeCode, workOrder, loggedHoursByDay);
             return SyncResult.success(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(),
                     String.format("Updated timesheetLine of employee %s on date %s for work order %s (%s hours)",
-                            employeeId.name(), loggedHoursByDay.date(), workOrder.value(), loggedHoursByDay.hours()),  workOrder)
+                            employeeId.resourceId(), loggedHoursByDay.date(), workOrder.value(), loggedHoursByDay.hours()),  workOrder)
                             , loggedHoursByDay.hours());
         } catch (Exception e) {
             if (employeeId.resourceId().isExternal() && timeCode.equals(TimeCode.NO_ASSIGNMENT)) {
                 return SyncResult.warning(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(),
                         String.format("Could not update timesheetLine of external employee %s on date %s BUT for external employees it's okay" ,
-                                employeeId.name(), loggedHoursByDay.date()), workOrder)
+                                employeeId.resourceId(), loggedHoursByDay.date()), workOrder)
                             , loggedHoursByDay.hours());
             } else {
                 return SyncResult.updateTimesheetLineSyncError(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(),
                         String.format("Error occurred when trying to update timesheetLine of " +
                                         "employee %s on date %s for work order %s, " +
                                         "probably the timesheet is already submitted. Contact Cegeka accounting to open up your Camis week & fix manually.",
-                                employeeId.name(), loggedHoursByDay.date(), workOrder.value()), workOrder), loggedHoursByDay.hours());
+                                employeeId.resourceId(), loggedHoursByDay.date(), workOrder.value()), workOrder), loggedHoursByDay.hours());
             }
         }
     }

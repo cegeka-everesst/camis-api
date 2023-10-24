@@ -50,7 +50,7 @@ public class CompareEmployeeService {
                                 new EmployeeIdentification(inputEmployee.resourceId(), inputEmployee.name()),
                                 new CamisWorkorderInfo(inputHours.loggedHoursByDay().date(), String.format(
                                         "Not syncing this date of %s because there is already information in Camis & Tempo and sum(camisHours) > sum(tempoHours) on %s for work order %s"
-                                        ,inputEmployee.name()
+                                        ,inputEmployee.resourceId()
                                         ,inputHours.loggedHoursByDay().date(), inputHours.workOrder().value() ),
                                         inputHours.workOrder()), HoursInfo.compare(inputHours.loggedHoursByDay().hours(), sum(camisHours))));
                         //TODO: deleting lines and adding, for now we just throw an error,

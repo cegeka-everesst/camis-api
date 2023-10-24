@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 public class Employee {
     private final EmployeeIdentification id;
     private final List<WeeklyTimesheet> weeklyTimeSheets = new ArrayList<>();
-
     public Employee(EmployeeIdentification id) {
         this.id = id;
     }

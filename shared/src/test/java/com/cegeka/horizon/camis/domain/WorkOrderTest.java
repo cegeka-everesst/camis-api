@@ -12,6 +12,11 @@ class WorkOrderTest {
     }
 
     @Test
+    public void givenValidWorkOrderCanContainDashes_whenConstruct_thenCreated(){
+        new WorkOrder("PZ--001.001");
+    }
+
+    @Test
     public void givenEmptyWorkOrder_whenConstruct_thenCreated(){
         new WorkOrder("");
     }

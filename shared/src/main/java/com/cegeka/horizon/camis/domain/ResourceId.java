@@ -13,4 +13,9 @@ public record ResourceId(String value) {
     public boolean isExternal(){
         return value.startsWith("I");
     }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }

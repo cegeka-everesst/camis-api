@@ -55,4 +55,4 @@ Under profile, Developer Settings
 add `Fine-grained personal access tokens` under the name GithubPackagesRegistry
 
 When you `Release` a new version, this will trigger a Github Action that upon success will publish artifacts to the Github Packages repository.
-This in turn can then be used in dependent project https://github.com/wardbryon/EveresstTempoSyncTool to retrieve the necessary libraries.
+This in turn can then be used in dependent project https://github.com/wardbryon/EveresstTempoSyncTool to retrieve the necessary libraries.# camis-api-test-url-change

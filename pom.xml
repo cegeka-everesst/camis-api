@@ -26,7 +26,7 @@
     </modules>
 
     <properties>
-        <revision>1.0.0-sprint.161</revision>
+        <revision>1.1.0-SNAPSHOT</revision>
         <thirdparty-dependencies.version>8.1.1</thirdparty-dependencies.version>
 
         <semver.skip>false</semver.skip>

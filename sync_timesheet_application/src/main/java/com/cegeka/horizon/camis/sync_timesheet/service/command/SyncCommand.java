@@ -5,6 +5,7 @@ import com.cegeka.horizon.camis.timesheet.TimesheetService;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public interface SyncCommand {
+
     SyncResult execute(WebClient webClient, TimesheetService timesheetService);
 
     default boolean isError() {

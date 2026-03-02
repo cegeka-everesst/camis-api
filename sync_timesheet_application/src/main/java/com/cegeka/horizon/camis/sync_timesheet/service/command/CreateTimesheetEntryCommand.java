@@ -10,6 +10,7 @@ import com.cegeka.horizon.camis.timesheet.TimesheetService;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public class CreateTimesheetEntryCommand implements SyncCommand {
+
     private final EmployeeIdentification employeeId;
     private final WorkOrder workOrder;
     private final LoggedHoursByDay loggedHoursByDay;
@@ -27,15 +28,15 @@ public class CreateTimesheetEntryCommand implements SyncCommand {
         try {
             timesheetService.createTimesheetEntry(webClient, employeeId.resourceId(), timeCode, workOrder, loggedHoursByDay);
             return SyncResult.success(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(),
-                    String.format("Updated timesheetLine of employee %s on date %s for work order %s (%s hours)",
-                            employeeId.resourceId(), loggedHoursByDay.date(), workOrder.value(), loggedHoursByDay.hours()),  workOrder)
-                            , loggedHoursByDay.hours());
+                            String.format("Updated timesheetLine of employee %s on date %s for work order %s (%s hours)",
+                                    employeeId.resourceId(), loggedHoursByDay.date(), workOrder.value(), loggedHoursByDay.hours()), workOrder)
+                    , loggedHoursByDay.hours());
         } catch (Exception e) {
             if (employeeId.resourceId().isExternal() && timeCode.equals(TimeCode.NO_ASSIGNMENT)) {
                 return SyncResult.warning(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(),
-                        String.format("Could not update timesheetLine of external employee %s on date %s BUT for external employees it's okay" ,
-                                employeeId.resourceId(), loggedHoursByDay.date()), workOrder)
-                            , loggedHoursByDay.hours());
+                                String.format("Could not update timesheetLine of external employee %s on date %s BUT for external employees it's okay",
+                                        employeeId.resourceId(), loggedHoursByDay.date()), workOrder)
+                        , loggedHoursByDay.hours());
             } else {
                 return SyncResult.updateTimesheetLineSyncError(employeeId, new CamisWorkorderInfo(loggedHoursByDay.date(),
                         String.format("Error occurred when trying to update timesheetLine of " +
@@ -53,5 +54,4 @@ public class CreateTimesheetEntryCommand implements SyncCommand {
     public WorkOrder workOrder() {
         return workOrder;
     }
-
 }

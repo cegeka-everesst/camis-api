@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class HoursLoggedCsvReaderTest {
 
     @Test
-    public void giveInputCsv_whenParse_thenCorrectEmployeeContents(){
+    void giveInputCsv_whenParse_thenCorrectEmployeeContents() {
         InputStream resourceAsStream = getClass().getResourceAsStream("/hoursLoggedCsvReader.csv");
         List<Employee> employees = new HoursLoggedCsvReader(resourceAsStream).readCsv();
 
@@ -25,9 +25,8 @@ class HoursLoggedCsvReaderTest {
         assertThat(timesheetLineLMAC005.workOrder()).isEqualTo(new WorkOrder("LMAC000.005"));
         assertThat(timesheetLineLMAC005.loggedHours()).hasSize(2);
         assertThat(timesheetLineLMAC005.loggedHours().get(0).hours()).isEqualTo(5);
-        assertThat(timesheetLineLMAC005.loggedHours().get(0).date()).isEqualTo(of(2022,12,23));
+        assertThat(timesheetLineLMAC005.loggedHours().get(0).date()).isEqualTo(of(2022, 12, 23));
         assertThat(timesheetLineLMAC005.loggedHours().get(1).hours()).isEqualTo(8);
-        assertThat(timesheetLineLMAC005.loggedHours().get(1).date()).isEqualTo(of(2022,12,24));
+        assertThat(timesheetLineLMAC005.loggedHours().get(1).date()).isEqualTo(of(2022, 12, 24));
     }
-
 }

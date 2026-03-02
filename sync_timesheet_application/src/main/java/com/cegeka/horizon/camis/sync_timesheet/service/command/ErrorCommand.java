@@ -8,6 +8,7 @@ import com.cegeka.horizon.camis.timesheet.TimesheetService;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public class ErrorCommand implements SyncCommand {
+
     private final EmployeeIdentification employeeId;
     private final CamisWorkorderInfo camisWorkorderInfo;
     private final HoursInfo hoursInfo;

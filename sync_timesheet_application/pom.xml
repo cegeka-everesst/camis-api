@@ -1,0 +1,61 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.cegeka.everesst.horizon.camis</groupId>
+        <artifactId>sync-timesheet-parent</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>sync_timesheet_application</artifactId>
+
+    <properties>
+        <multimodule.basedir>${project.basedir}/..</multimodule.basedir>
+        <sonar.skip>true</sonar.skip>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.cegeka.everesst.horizon.camis</groupId>
+            <artifactId>sync_timesheet_shared</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.cegeka.everesst.horizon.camis</groupId>
+            <artifactId>sync_timesheet_logger</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.cegeka.everesst.horizon.camis</groupId>
+            <artifactId>sync_timesheet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.cegeka.everesst.horizon.camis</groupId>
+            <artifactId>sync_timesheet_workorder_access</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.cegeka.everesst.horizon.camis</groupId>
+            <artifactId>sync_timesheet</artifactId>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

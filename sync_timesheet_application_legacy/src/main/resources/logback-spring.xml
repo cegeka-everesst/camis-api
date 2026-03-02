@@ -45,7 +45,7 @@
     <logger name="SyncTimesheets" level="DEBUG" additivity="false">
         <appender-ref ref="SYNC_TIMESHEETS"/>
     </logger>
-    <root level="${rootLevel}" >
+    <root level="${rootLevel}">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>
     </root>

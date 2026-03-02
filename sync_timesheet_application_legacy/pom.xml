@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.cegeka.everesst.horizon.camis</groupId>
+        <artifactId>sync-timesheet-parent</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>sync_timesheet_application_legacy</artifactId>
+
+    <properties>
+        <multimodule.basedir>${project.basedir}/..</multimodule.basedir>
+        <sonar.skip>true</sonar.skip>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.cegeka.everesst.horizon.camis</groupId>
+            <artifactId>sync_timesheet_application</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.cegeka.everesst.horizon.camis</groupId>
+            <artifactId>sync_timesheet_web_client_factory</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.cegeka.everesst.horizon.camis</groupId>
+            <artifactId>sync_timesheet_logger</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.cegeka.everesst.horizon.camis</groupId>
+            <artifactId>sync_timesheet</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

@@ -3,7 +3,13 @@ package com.cegeka.horizon.camis.sync_timesheet.csv;
 import com.cegeka.horizon.camis.domain.EmployeeIdentification;
 import com.cegeka.horizon.camis.domain.ResourceId;
 import com.cegeka.horizon.camis.domain.WorkOrder;
-import com.cegeka.horizon.camis.timesheet.*;
+import com.cegeka.horizon.camis.timesheet.Employee;
+import com.cegeka.horizon.camis.timesheet.LoggedHoursByDay;
+import com.cegeka.horizon.camis.timesheet.Status;
+import com.cegeka.horizon.camis.timesheet.TimeCode;
+import com.cegeka.horizon.camis.timesheet.TimesheetLine;
+import com.cegeka.horizon.camis.timesheet.TimesheetLineIdentifier;
+import com.cegeka.horizon.camis.timesheet.WeeklyTimesheet;
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
@@ -25,7 +31,7 @@ public class HoursLoggedCsvReader {
     public static final char DECIMAL_SEPARATOR = ',';
     private final InputStream csvInputStream;
 
-    public HoursLoggedCsvReader(InputStream inputStream){
+    public HoursLoggedCsvReader(InputStream inputStream) {
         this.csvInputStream = inputStream;
     }
 
@@ -37,15 +43,15 @@ public class HoursLoggedCsvReader {
     private List<Employee> mapToEmployeeTimesheets(List<HoursLoggedByDay> hoursLoggedByDays) {
         Map<ResourceId, Employee> employees = new HashMap<>();
         hoursLoggedByDays.stream().filter(hoursLoggedByDay -> hoursLoggedByDay.hoursLogged() > 0).forEach(
-            hoursLoggedByDay -> {
-                Employee employee = new Employee(new EmployeeIdentification(hoursLoggedByDay.resourceId(), hoursLoggedByDay.employeeName()));
-                WeeklyTimesheet weeklyTimesheet = new WeeklyTimesheet();
-                TimesheetLine timesheetLine = new TimesheetLine(TimesheetLineIdentifier.TO_CREATE, Status.DRAFT, "", hoursLoggedByDay.timeCode(), hoursLoggedByDay.workOrder());
-                timesheetLine.addLoggedHours(new LoggedHoursByDay(hoursLoggedByDay.localDate(), hoursLoggedByDay.hoursLogged()));
-                weeklyTimesheet.addLine(timesheetLine);
-                employee.addWeeklyTimesheet(weeklyTimesheet);
-                employees.merge(hoursLoggedByDay.resourceId(), employee, new Employee.MergeEmployees());
-            }
+                hoursLoggedByDay -> {
+                    Employee employee = new Employee(new EmployeeIdentification(hoursLoggedByDay.resourceId(), hoursLoggedByDay.employeeName()));
+                    WeeklyTimesheet weeklyTimesheet = new WeeklyTimesheet();
+                    TimesheetLine timesheetLine = new TimesheetLine(TimesheetLineIdentifier.TO_CREATE, Status.DRAFT, "", hoursLoggedByDay.timeCode(), hoursLoggedByDay.workOrder());
+                    timesheetLine.addLoggedHours(new LoggedHoursByDay(hoursLoggedByDay.localDate(), hoursLoggedByDay.hoursLogged()));
+                    weeklyTimesheet.addLine(timesheetLine);
+                    employee.addWeeklyTimesheet(weeklyTimesheet);
+                    employees.merge(hoursLoggedByDay.resourceId(), employee, new Employee.MergeEmployees());
+                }
 
         );
         return employees.values().stream().sorted(new Employee.SortByName()).toList();
@@ -69,13 +75,12 @@ public class HoursLoggedCsvReader {
                         nextRecord[2],
                         new TimeCode(nextRecord[3]),
                         new WorkOrder(nextRecord[4]),
-                        Double.parseDouble(nextRecord[5].replace(DECIMAL_SEPARATOR,'.'))
-                        ));
+                        Double.parseDouble(nextRecord[5].replace(DECIMAL_SEPARATOR, '.'))
+                ));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return csvLines;
     }
-
 }

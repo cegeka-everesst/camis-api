@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.LocalDate;
 
 public class NothingToSyncCommand implements SyncCommand {
+
     private final EmployeeIdentification employeeId;
     private final WorkOrder workOrder;
     private final LocalDate date;
@@ -24,6 +25,6 @@ public class NothingToSyncCommand implements SyncCommand {
 
     @Override
     public SyncResult execute(WebClient webClient, TimesheetService timesheetService) {
-        return SyncResult.noActionSyncCorrect(employeeId, new CamisWorkorderInfo(date,String.format("No sync necessary for %s on work order %s and date %s, \n hours of input & Camis are already equal",employeeId.resourceId(), workOrder.value(), date), workOrder), hours);
+        return SyncResult.noActionSyncCorrect(employeeId, new CamisWorkorderInfo(date, String.format("No sync necessary for %s on work order %s and date %s, \n hours of input & Camis are already equal", employeeId.resourceId(), workOrder.value(), date), workOrder), hours);
     }
 }

@@ -1,6 +1,5 @@
 package com.cegeka.horizon.camis.sync_timesheet_legacy;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,10 +10,13 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication(scanBasePackages = "com.cegeka.horizon.camis.*")
 public class SyncTimesheetAppLegacy {
 
-   @Autowired
-    private OperationExecutor executor;
+    private final OperationExecutor executor;
 
-    public static void main(String[] args) {
+    public SyncTimesheetAppLegacy(OperationExecutor executor) {
+        this.executor = executor;
+    }
+
+    static void main(String[] args) {
         new SpringApplicationBuilder(SyncTimesheetAppLegacy.class).web(WebApplicationType.NONE).run(args);
     }
 

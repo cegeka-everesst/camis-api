@@ -4,18 +4,18 @@ import com.cegeka.horizon.camis.sync_timesheet.csv.HoursLoggedCsvReader;
 import com.cegeka.horizon.camis.sync_timesheet.service.CheckWorkOrderService;
 import com.cegeka.horizon.camis.sync_timesheet.service.SyncTimesheetService;
 import com.cegeka.horizon.camis.timesheet.Employee;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import static com.cegeka.horizon.camis.web_client_factory.WebClientFactory.getWebClient;
-
 import java.io.FileInputStream;
 import java.util.List;
 
+import static com.cegeka.horizon.camis.web_client_factory.WebClientFactory.getWebClient;
+
 @Component
 public class OperationExecutor {
+
     @Value("${operation}")
     private String operation;
     @Value("${input}")
@@ -28,12 +28,16 @@ public class OperationExecutor {
     private String clientSecret;
     @Value("${minimumDailyHours}")
     private String minimumDailyHours;
-    @Autowired
-    private CheckWorkOrderService checkWorkOrderService;
-    @Autowired
-    private SyncTimesheetService syncTimesheetService;
 
-    enum Operation{
+    private final CheckWorkOrderService checkWorkOrderService;
+    private final SyncTimesheetService syncTimesheetService;
+
+    public OperationExecutor(CheckWorkOrderService checkWorkOrderService, SyncTimesheetService syncTimesheetService) {
+        this.checkWorkOrderService = checkWorkOrderService;
+        this.syncTimesheetService = syncTimesheetService;
+    }
+
+    enum Operation {
         CHECK_WORK_ORDERS,
         SYNC_TIMESHEETS,
         VIEW_TIMESHEETS,
@@ -48,7 +52,8 @@ public class OperationExecutor {
             case VIEW_TIMESHEETS -> syncTimesheetService.retrieve(webClient, employees);
             case REMOVE_DOUBLE_TIMESHEETS -> syncTimesheetService.removeDoubleTimesheets(webClient, employees);
             case SYNC_TIMESHEETS -> syncTimesheetService.sync(webClient, employees, Double.parseDouble(minimumDailyHours))
-                                    .subscribe(syncResult -> {});
+                    .subscribe(syncResult -> {
+                    });
         }
     }
 }

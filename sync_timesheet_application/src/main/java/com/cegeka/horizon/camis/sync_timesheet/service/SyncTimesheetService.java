@@ -10,7 +10,12 @@ import com.cegeka.horizon.camis.sync.logger.model.result.SyncResultType;
 import com.cegeka.horizon.camis.sync.logger.service.SyncLoggerService;
 import com.cegeka.horizon.camis.sync_timesheet.service.command.ErrorCommand;
 import com.cegeka.horizon.camis.sync_timesheet.service.command.SyncCommand;
-import com.cegeka.horizon.camis.timesheet.*;
+import com.cegeka.horizon.camis.timesheet.Employee;
+import com.cegeka.horizon.camis.timesheet.LoggedHoursByDay;
+import com.cegeka.horizon.camis.timesheet.TimesheetLine;
+import com.cegeka.horizon.camis.timesheet.TimesheetLineIdentifier;
+import com.cegeka.horizon.camis.timesheet.TimesheetService;
+import com.cegeka.horizon.camis.timesheet.WeeklyTimesheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,6 +34,7 @@ import static reactor.core.publisher.Flux.fromStream;
 
 @Service
 public class SyncTimesheetService {
+
     private static final Logger logger = LoggerFactory.getLogger("SyncTimesheets");
     private static final String CAMIS_COMPLETED = "-9999999";
 

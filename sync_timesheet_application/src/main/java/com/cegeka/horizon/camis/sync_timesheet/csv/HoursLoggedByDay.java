@@ -12,4 +12,5 @@ public record HoursLoggedByDay(LocalDate localDate,
                                TimeCode timeCode,
                                WorkOrder workOrder,
                                double hoursLogged) {
+
 }

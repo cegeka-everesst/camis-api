@@ -9,20 +9,22 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static com.cegeka.horizon.camis.timesheet.testbuilder.EmployeeTestBuilder.anEmployee;
-import static com.cegeka.horizon.camis.timesheet.testbuilder.LoggedHoursByDayTestBuilder.aLoggedHours;
-import static com.cegeka.horizon.camis.timesheet.testbuilder.TestLocalDates.*;
-import static com.cegeka.horizon.camis.timesheet.testbuilder.TestWorkOrders.WORK_ORDER_1;
-import static com.cegeka.horizon.camis.timesheet.testbuilder.TestWorkOrders.WORK_ORDER_2;
-import static com.cegeka.horizon.camis.timesheet.testbuilder.TimesheetLineTestBuilder.aTimesheetLine;
-import static com.cegeka.horizon.camis.timesheet.testbuilder.WeeklyTimesheetTestBuilder.aWeeklyTimesheet;
+import static com.cegeka.horizon.camis.timesheet.builder.EmployeeTestBuilder.anEmployee;
+import static com.cegeka.horizon.camis.timesheet.builder.LoggedHoursByDayTestBuilder.aLoggedHours;
+import static com.cegeka.horizon.camis.timesheet.builder.TestLocalDates.WEEK_0_MONDAY;
+import static com.cegeka.horizon.camis.timesheet.builder.TestLocalDates.WEEK_0_TUESDAY;
+import static com.cegeka.horizon.camis.timesheet.builder.TestLocalDates.WEEK_0_WEDNESDAY;
+import static com.cegeka.horizon.camis.timesheet.builder.TestWorkOrders.WORK_ORDER_1;
+import static com.cegeka.horizon.camis.timesheet.builder.TestWorkOrders.WORK_ORDER_2;
+import static com.cegeka.horizon.camis.timesheet.builder.TimesheetLineTestBuilder.aTimesheetLine;
+import static com.cegeka.horizon.camis.timesheet.builder.WeeklyTimesheetTestBuilder.aWeeklyTimesheet;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class CompareEmployeeServiceTest {
 
     @Test
-    public void givenExactTimesheetLine_whenCompare_NoAction(){
+    void givenExactTimesheetLine_whenCompare_NoAction() {
         WeeklyTimesheet inputTimesheet = aWeeklyTimesheet()
                 .withLine(aTimesheetLine().withWorkOrder(WORK_ORDER_1).withLoggedHours(aLoggedHours(6, WEEK_0_MONDAY))).build();
 
@@ -34,7 +36,7 @@ class CompareEmployeeServiceTest {
     }
 
     @Test
-    public void givenMoreHoursTimesheetLine_whenCompare_ErrorCommand(){
+    void givenMoreHoursTimesheetLine_whenCompare_ErrorCommand() {
         WeeklyTimesheet inputTimesheet = aWeeklyTimesheet()
                 .withLine(aTimesheetLine().withWorkOrder(WORK_ORDER_1).withLoggedHours(
                         aLoggedHours(6, WEEK_0_MONDAY))).build();
@@ -50,7 +52,7 @@ class CompareEmployeeServiceTest {
     }
 
     @Test
-    public void giveIncompleteTimesheetLineWithMissingDay_whenCompare_AddCommand(){
+    void giveIncompleteTimesheetLineWithMissingDay_whenCompare_AddCommand() {
         WeeklyTimesheet inputTimesheet = aWeeklyTimesheet()
                 .withLine(aTimesheetLine().withWorkOrder(WORK_ORDER_1).withLoggedHours(
                         aLoggedHours(6, WEEK_0_MONDAY),
@@ -69,7 +71,7 @@ class CompareEmployeeServiceTest {
     }
 
     @Test
-    public void givenIncompleteTimesheetLineWithMissingDay_whenCompare_AddCommand(){
+    void givenIncompleteTimesheetLineWithMissingDay_whenCompare_AddCommand() {
         WeeklyTimesheet inputTimesheet = aWeeklyTimesheet()
                 .withLine(aTimesheetLine().withWorkOrder(WORK_ORDER_1).withLoggedHours(
                         aLoggedHours(6, WEEK_0_MONDAY),
@@ -88,7 +90,7 @@ class CompareEmployeeServiceTest {
     }
 
     @Test
-    public void givenIncompleteTimesheetLineWithMissingHoursOnDay_whenCompare_AddCommand(){
+    void givenIncompleteTimesheetLineWithMissingHoursOnDay_whenCompare_AddCommand() {
         WeeklyTimesheet inputTimesheet = aWeeklyTimesheet()
                 .withLine(aTimesheetLine().withWorkOrder(WORK_ORDER_1).withLoggedHours(aLoggedHours(8, WEEK_0_MONDAY))).build();
 
@@ -103,7 +105,7 @@ class CompareEmployeeServiceTest {
     }
 
     @Test
-    public void givenIncompleteTimesheetLineWithMissingHoursOnDayDifferentWorkOrder_whenCompare_AddCommand(){
+    void givenIncompleteTimesheetLineWithMissingHoursOnDayDifferentWorkOrder_whenCompare_AddCommand() {
         WeeklyTimesheet inputTimesheet = aWeeklyTimesheet()
                 .withLine(aTimesheetLine().withWorkOrder(WORK_ORDER_1).withLoggedHours(aLoggedHours(7, WEEK_0_MONDAY)),
                         aTimesheetLine().withWorkOrder(WORK_ORDER_2).withLoggedHours(aLoggedHours(3, WEEK_0_MONDAY))).build();
@@ -125,7 +127,7 @@ class CompareEmployeeServiceTest {
     }
 
     @Test
-    public void givenUnexistingTimesheetLine_whenCompare_AddCommand(){
+    void givenUnexistingTimesheetLine_whenCompare_AddCommand() {
 
         WeeklyTimesheet inputTimesheet = aWeeklyTimesheet()
                 .withLine(aTimesheetLine().withWorkOrder(WORK_ORDER_1)
@@ -142,5 +144,4 @@ class CompareEmployeeServiceTest {
         createTimesheetEntryCommand = (CreateTimesheetEntryCommand) new CompareEmployeeService().compare(anEmployee().build(), inputTimesheet, Optional.empty()).get(1);
         assertThat(createTimesheetEntryCommand.loggedHours()).isEqualTo(aLoggedHours(8, WEEK_0_WEDNESDAY).build());
     }
-
 }

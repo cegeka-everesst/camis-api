@@ -1,6 +1,6 @@
 ^(?!.*I011111;Pppppp, Jjjj).*\r?\n
 
-with 
+with
 I011111 = resource Id
 Pppppp = last name
 Jjjj = first name

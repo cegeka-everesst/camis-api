@@ -20,6 +20,13 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
           cache: maven
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+          settings-path: ${{ github.workspace }}
 
       - name: Build with Maven + Unit tests
-        run: mvn --batch-mode --no-transfer-progress -e -U test
+        run: mvn --batch-mode --no-transfer-progress -e -U -s "${{ github.workspace }}/settings.xml" test
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}

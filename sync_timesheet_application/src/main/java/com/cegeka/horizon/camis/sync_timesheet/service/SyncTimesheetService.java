@@ -1,7 +1,12 @@
 package com.cegeka.horizon.camis.sync_timesheet.service;
 
+import com.cegeka.horizon.camis.domain.EmployeeIdentification;
+import com.cegeka.horizon.camis.domain.ResourceId;
 import com.cegeka.horizon.camis.domain.WorkOrder;
+import com.cegeka.horizon.camis.sync.logger.model.result.CamisWorkorderInfo;
+import com.cegeka.horizon.camis.sync.logger.model.result.HoursInfo;
 import com.cegeka.horizon.camis.sync.logger.model.result.SyncResult;
+import com.cegeka.horizon.camis.sync.logger.model.result.SyncResultType;
 import com.cegeka.horizon.camis.sync.logger.service.SyncLoggerService;
 import com.cegeka.horizon.camis.sync_timesheet.service.command.ErrorCommand;
 import com.cegeka.horizon.camis.sync_timesheet.service.command.SyncCommand;
@@ -18,6 +23,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.threeten.extra.LocalDateRange;
 import reactor.core.publisher.Flux;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -30,6 +36,7 @@ import static reactor.core.publisher.Flux.fromStream;
 public class SyncTimesheetService {
 
     private static final Logger logger = LoggerFactory.getLogger("SyncTimesheets");
+    private static final String CAMIS_COMPLETED = "-9999999";
 
     private final TimesheetService timesheetService;
     private final CompareEmployeeService compareEmployeeService;
@@ -44,6 +51,7 @@ public class SyncTimesheetService {
                 fromStream(new MinimalDailyHoursLoggedValidator(minimumHoursLogged)
                         .validate(inputEmployees));
 
+        logger.info("STARTING TIMESHEETS SYNC");
         Flux<SyncResult> syncResults =
                 fromIterable(inputEmployees)
                         .flatMap(inputEmployee ->
@@ -60,7 +68,7 @@ public class SyncTimesheetService {
                                     List<SyncCommand> syncCommands = compareEmployeeService.compare(inputTimesheet.employee(), inputTimesheet.timesheet(), existingCamisTimesheet);
 
                                     return Flux.concat(
-                                            Flux.fromIterable(syncCommands).filter(syncCommand -> syncCommand.isError()).flatMap(
+                                            Flux.fromIterable(syncCommands).filter(SyncCommand::isError).flatMap(
                                                     syncCommand -> {
                                                         ErrorCommand errorCommand = (ErrorCommand) syncCommand;
                                                         return Flux.just(SyncResult.otherSyncError(errorCommand.employeeId(), errorCommand.camisWorkorderInfo(), errorCommand.hoursInfo()));
@@ -71,8 +79,9 @@ public class SyncTimesheetService {
                                     );
                                 }
                         );
-        return Flux.concat(minimalHoursValidation, syncResults)
+        return Flux.concat(minimalHoursValidation, syncResults, getCompletedSyncResult())
                 .doOnNext(syncResult -> new SyncLoggerService().log(syncResult))
+                .doOnComplete(() -> logger.info("THE CAMIS SYNC IS COMPLETED"))
                 .onBackpressureBuffer();
 
         //TODO: retrieve after updates and check correspondences, for example missing holidays
@@ -139,7 +148,6 @@ public class SyncTimesheetService {
     }
 
     private static class LoggedHoursTimesheetLineIdentifier {
-
         private final WorkOrder workOrder;
         private final TimesheetLineIdentifier identifier;
         private final LoggedHoursByDay loggedHours;
@@ -157,5 +165,13 @@ public class SyncTimesheetService {
         } catch (InterruptedException e) {
             logger.error("error while sleeping");
         }
+    }
+
+    private static Flux<SyncResult> getCompletedSyncResult() {
+        return Flux.just(new SyncResult(
+                new EmployeeIdentification(new ResourceId(CAMIS_COMPLETED), "CAMIS COMPLETED"),
+                SyncResultType.SUCCESS,
+                new CamisWorkorderInfo(LocalDate.now(), "CAMIS COMPLETED", new WorkOrder(CAMIS_COMPLETED)),
+                HoursInfo.inputHours(0.0)));
     }
 }
